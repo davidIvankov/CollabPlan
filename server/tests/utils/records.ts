@@ -29,14 +29,16 @@ export const clearTables = async <
         sql`DELETE FROM ${sql.table(tableName)};`.execute(db)
       )
     )
-
-    return
+  }
+  // eslint-disable-next-line no-restricted-syntax
+  for (const tableName of tableNames) {
+    // eslint-disable-next-line no-await-in-loop
+    await db.deleteFrom(tableName).execute()
   }
 
   // assume PostgreSQL, truncate all tables
-  const tableNamesSql = sql.join(tableNames.map(sql.table), sql.raw(', '))
-
-  await sql`TRUNCATE TABLE ${tableNamesSql} CASCADE;`.execute(db)
+  // const tableNamesSql = sql.join(tableNames.map(sql.table), sql.raw(', '))
+  // await sql`TRUNCATE TABLE ${tableNamesSql} CASCADE;`.execute(db)
 }
 
 /**

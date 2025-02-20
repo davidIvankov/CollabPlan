@@ -1,8 +1,9 @@
-import type { User } from '@server/database/types'
+import type { Project, User } from '@server/database/types'
 import type { Insertable } from 'kysely'
 import { random } from '@tests/utils/random'
 import { v4 as uuidv4 } from 'uuid'
 import type { AuthUser, UserPublic } from '../user'
+import type { ProjectInsertableNoUser } from '../project'
 
 export const uuidRegex =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -49,4 +50,30 @@ export const userPublicMatcher = (
   id: expect.stringMatching(uuidRegex),
   ...overrides,
   ...fakePublicUser(overrides),
+})
+
+export const fakeProject = <T extends Partial<Insertable<Project>>>(
+  overrides: T
+): Insertable<Project> => ({
+  name: random.string(),
+  createdBy: uuidv4(),
+  ...overrides,
+})
+
+export const fakeInsertableProjectNoUser = <
+  T extends Partial<Insertable<Project>>,
+>(
+  overrides: T
+): ProjectInsertableNoUser => ({
+  name: random.string(),
+  ...overrides,
+})
+
+export const projectMatcher = (
+  overrides: Partial<Insertable<Project>> = {}
+) => ({
+  id: expect.stringMatching(uuidRegex),
+  createdAt: expect.any(Date),
+  ...overrides, // for id
+  ...fakeProject(overrides),
 })
