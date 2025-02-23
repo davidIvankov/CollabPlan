@@ -25,7 +25,7 @@ const [project] = await insertAll(
   fakeProject({ createdBy: userOne.id })
 )
 
-const [participant] = await insertAll(
+await insertAll(
   db,
   TABLES.PROJECT_PARTICIPANT,
   fakeProjectParticipant({ userId: userTwo.id, projectId: project.id })

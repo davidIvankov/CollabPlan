@@ -19,7 +19,6 @@ export default authenticatedProcedure
         message: 'You must be logged in to update availability.',
       })
     }
-    console.log(input.availability)
 
     return repos.projectParticipantRepository.setAvailability({
       ...input,

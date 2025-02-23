@@ -2,6 +2,7 @@ import {
   fakeProject,
   fakeUser,
   projectMatcher,
+  projectParticipantMatcher,
 } from '@server/entities/tests/fakes'
 import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
@@ -37,5 +38,15 @@ describe('create', () => {
 
     expect(insertion).toEqual(projectMatcher(project))
     expect(projects).toEqual([insertion])
+  })
+
+  it('adds creator as admin automatically', async () => {
+    const project = await create(fakeProject({ createdBy: id }))
+    const projectId = project.id
+    const [participant] = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+
+    expect(participant).toEqual(
+      projectParticipantMatcher({ projectId, userId: id, role: 'admin' })
+    )
   })
 })
