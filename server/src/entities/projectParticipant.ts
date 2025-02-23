@@ -1,18 +1,7 @@
 import { z } from 'zod'
 import type { Insertable, Selectable } from 'kysely'
 import type { ProjectParticipant } from '@server/database'
-import { idSchema } from './shared'
-
-/* export interface ProjectParticipant {
-  availability: Generated<Json>
-  projectId: string
-  role: Generated<string>
-  userId: string
-} */
-export const availabilitySlotSchema = z.object({
-  start: z.string().datetime(),
-  end: z.string().datetime(),
-})
+import { availabilitySlotSchema, idSchema } from './shared'
 
 export const availabilitySchema = z.array(availabilitySlotSchema).default([])
 

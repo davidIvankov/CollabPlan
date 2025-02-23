@@ -36,12 +36,12 @@ export interface ProjectParticipant {
 export interface Task {
   assignedTo: string | null
   createdAt: Generated<Timestamp>
-  dependsOn: Generated<string[] | null>
   description: string | null
+  duration: number
   id: Generated<string>
   name: string
-  orderIndex: number
   projectId: string
+  scheduledTime: Generated<Json | null>
   status: Generated<string>
 }
 

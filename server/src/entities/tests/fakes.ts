@@ -1,9 +1,15 @@
-import type { Project, ProjectParticipant, User } from '@server/database/types'
+import type {
+  Project,
+  ProjectParticipant,
+  Task,
+  User,
+} from '@server/database/types'
 import type { Insertable } from 'kysely'
 import { random } from '@tests/utils/random'
 import { v4 as uuidv4 } from 'uuid'
 import type { AuthUser, UserPublic } from '../user'
 import type { ProjectInsertableNoUser } from '../project'
+import type { TaskInsertable } from '../task'
 
 export const uuidRegex =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -27,6 +33,28 @@ export const fakePublicUser = <T extends Partial<Insertable<User>>>(
 ) => ({
   name: 'John Doe',
   email: 'johndoe@example.com',
+  ...overrides,
+})
+
+export const fakeInsertableTask = <T extends Partial<Insertable<Task>>>(
+  overrides: T
+): TaskInsertable => ({
+  duration: 2,
+  name: random.string(),
+  projectId: uuidv4(),
+  ...overrides,
+})
+
+export const fakeTask = <T extends Partial<Task>>(overrides: T): Task => ({
+  status: 'todo',
+  id: uuidv4(),
+  createdAt: new Date(),
+  duration: random.integer(),
+  name: random.string(),
+  projectId: uuidv4(),
+  assignedTo: null,
+  scheduledTime: {},
+  description: null,
   ...overrides,
 })
 
