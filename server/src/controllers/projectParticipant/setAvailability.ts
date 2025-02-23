@@ -1,0 +1,28 @@
+import { setAvailabilitySchema } from '@server/entities/projectParticipant'
+import { projectParticipantRepository } from '@server/repositories/projectParticipantRepo'
+import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
+import provideRepos from '@server/trpc/provideRepos'
+import { TRPCError } from '@trpc/server'
+
+export default authenticatedProcedure
+  .use(provideRepos({ projectParticipantRepository }))
+  .input(setAvailabilitySchema)
+  .mutation(async ({ input, ctx: { authUser, repos } }) => {
+    const row = repos.projectParticipantRepository.get({
+      projectId: input.projectId,
+      userId: authUser.id,
+    })
+
+    if (!row) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'You must be logged in to update availability.',
+      })
+    }
+    console.log(input.availability)
+
+    return repos.projectParticipantRepository.setAvailability({
+      ...input,
+      userId: authUser.id,
+    })
+  })

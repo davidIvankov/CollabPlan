@@ -1,6 +1,6 @@
 export const TABLES = {
   USER: 'user',
   PROJECT: 'project',
-  PROJECT_PARTICIPANT: 'project_participant',
+  PROJECT_PARTICIPANT: 'projectParticipant',
   TASK: 'task',
 } as const

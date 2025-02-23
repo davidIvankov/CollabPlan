@@ -3,10 +3,12 @@ import create from './create'
 import getById from './getById'
 import update from './update'
 import getByCreatedBy from './getByCreatedBy'
+import deleteProject from './deleteProject'
 
 export default router({
   create,
   getById,
   update,
   getByCreatedBy,
+  deleteProject,
 })

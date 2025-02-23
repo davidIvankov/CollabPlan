@@ -1,4 +1,4 @@
-import type { Project, User } from '@server/database/types'
+import type { Project, ProjectParticipant, User } from '@server/database/types'
 import type { Insertable } from 'kysely'
 import { random } from '@tests/utils/random'
 import { v4 as uuidv4 } from 'uuid'
@@ -51,6 +51,15 @@ export const userPublicMatcher = (
   ...overrides,
   ...fakePublicUser(overrides),
 })
+export const fakeProjectParticipant = <
+  T extends Partial<Insertable<ProjectParticipant>>,
+>(
+  overrides: T
+): Insertable<ProjectParticipant> => ({
+  projectId: uuidv4(),
+  userId: uuidv4(),
+  ...overrides,
+})
 
 export const fakeProject = <T extends Partial<Insertable<Project>>>(
   overrides: T
@@ -76,4 +85,14 @@ export const projectMatcher = (
   createdAt: expect.any(Date),
   ...overrides, // for id
   ...fakeProject(overrides),
+})
+
+export const projectParticipantMatcher = (
+  overrides: Partial<Insertable<ProjectParticipant>>
+) => ({
+  projectId: expect.stringMatching(uuidRegex),
+  userId: expect.stringMatching(uuidRegex),
+  role: 'member',
+  availability: [],
+  ...overrides,
 })

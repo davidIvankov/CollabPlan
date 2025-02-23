@@ -16,7 +16,7 @@ export function projectRepository(db: Database) {
         .returning(projectKeysPublic)
         .executeTakeFirstOrThrow()
     },
-    async getByCreatedBy(userId: string): Promise<ProjectPublic[]> {
+    async getByCreatedBy(userId: string | null): Promise<ProjectPublic[]> {
       return db
         .selectFrom(TABLES.PROJECT)
         .select(projectKeysPublic)
@@ -36,6 +36,13 @@ export function projectRepository(db: Database) {
       return db
         .updateTable(TABLES.PROJECT)
         .set({ name })
+        .where('id', '=', id)
+        .returning(projectKeysPublic)
+        .executeTakeFirst()
+    },
+    async remove(id: string) {
+      return db
+        .deleteFrom(TABLES.PROJECT)
         .where('id', '=', id)
         .returning(projectKeysPublic)
         .executeTakeFirst()

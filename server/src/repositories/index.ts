@@ -1,6 +1,7 @@
 import type { Database } from '@server/database'
 import { userRepository } from './userRepositorsitory'
 import { projectRepository } from './projectRepository'
+import { projectParticipantRepository } from './projectParticipantRepo'
 
 export type RepositoryFactory = <T>(db: Database) => T
 
@@ -8,6 +9,7 @@ export type RepositoryFactory = <T>(db: Database) => T
 const repositories = {
   userRepository,
   projectRepository,
+  projectParticipantRepository,
 }
 
 export type RepositoriesFactories = typeof repositories

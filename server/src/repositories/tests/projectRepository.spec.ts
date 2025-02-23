@@ -3,6 +3,7 @@ import {
   projectMatcher,
   fakeProject,
   fakeUser,
+  fakeProjectParticipant,
 } from '@server/entities/tests/fakes'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll, selectAll } from '@tests/utils/records'
@@ -84,7 +85,7 @@ describe('update', async () => {
   })
 
   afterAll(async () => {
-    await clearTables(db, [TABLES.PROJECT, TABLES.USER])
+    await clearTables(db, [TABLES.PROJECT])
   })
 
   it('should successfully update the project', async () => {
@@ -110,5 +111,43 @@ describe('update', async () => {
     expect(updatedProject).toEqual(
       projectMatcher({ ...oldProjects[1], name: NEW_NAME })
     )
+  })
+})
+
+describe('Project Repository - Delete', async () => {
+  beforeAll(async () => {
+    await insertAll(db, TABLES.PROJECT, [projectOne, projectTwo])
+  })
+
+  afterAll(async () => {
+    await clearTables(db, [
+      TABLES.PROJECT,
+      TABLES.USER,
+      TABLES.PROJECT_PARTICIPANT,
+    ])
+  })
+
+  it('should delete a project by ID successfully', async () => {
+    const projects = await selectAll(db, TABLES.PROJECT)
+
+    const removedProject = await repository.remove(projects[0].id)
+    const projectsAfterDeletion = await selectAll(db, TABLES.PROJECT)
+
+    expect(removedProject).toEqual(projects[0])
+    expect(projectsAfterDeletion).toHaveLength(1)
+  })
+
+  it('should delete all the connected rows in other tables', async () => {
+    const [project] = await selectAll(db, TABLES.PROJECT)
+    await insertAll(
+      db,
+      TABLES.PROJECT_PARTICIPANT,
+      fakeProjectParticipant({ userId: userOne.id, projectId: project.id })
+    )
+
+    await repository.remove(project.id)
+    const projectParticipants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+
+    expect(projectParticipants).toHaveLength(0)
   })
 })
