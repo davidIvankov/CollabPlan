@@ -39,7 +39,7 @@ export const fakePublicUser = <T extends Partial<Insertable<User>>>(
 export const fakeInsertableTask = <T extends Partial<Insertable<Task>>>(
   overrides: T
 ): TaskInsertable => ({
-  duration: 2,
+  duration: 120,
   name: random.string(),
   projectId: uuidv4(),
   ...overrides,

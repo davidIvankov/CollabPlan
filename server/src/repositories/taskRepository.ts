@@ -1,6 +1,11 @@
 import type { Database } from '@server/database'
 import { TABLES } from '@server/database/dbConstants'
-import { taskKeysAll, type TaskInsertable } from '@server/entities/task'
+import {
+  taskKeysAll,
+  type TaskAssignArgumentsRepo,
+  type TaskInsertable,
+  type TaskSelectable,
+} from '@server/entities/task'
 
 export function taskRepository(db: Database) {
   return {
@@ -8,6 +13,22 @@ export function taskRepository(db: Database) {
       return db
         .insertInto(TABLES.TASK)
         .values(taskInsertable)
+        .returning(taskKeysAll)
+        .executeTakeFirstOrThrow()
+    },
+    async getById(taskId: string): Promise<TaskSelectable> {
+      return db
+        .selectFrom(TABLES.TASK)
+        .select(taskKeysAll)
+        .where('id', '=', taskId)
+        .executeTakeFirstOrThrow()
+    },
+    async assign(assignValues: TaskAssignArgumentsRepo) {
+      const { id, userId, scheduledTime } = assignValues
+      return db
+        .updateTable(TABLES.TASK)
+        .where('id', '=', id)
+        .set({ assignedTo: userId, scheduledTime })
         .returning(taskKeysAll)
         .executeTakeFirstOrThrow()
     },

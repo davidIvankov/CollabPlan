@@ -6,3 +6,4 @@ export const availabilitySlotSchema = z.object({
   start: z.string().datetime(),
   end: z.string().datetime(),
 })
+export type Slot = { start: string; end: string }

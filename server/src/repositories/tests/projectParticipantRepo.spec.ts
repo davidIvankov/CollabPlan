@@ -72,10 +72,6 @@ describe('setAvailability', () => {
     ])
   })
 
-  afterAll(async () => {
-    await clearTables(db, [TABLES.PROJECT_PARTICIPANT])
-  })
-
   it('sets availability correctly', async () => {
     const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
     const oldAvailability = participants[1].availability
@@ -98,5 +94,71 @@ describe('setAvailability', () => {
         end: '2025-02-25T12:00:00Z',
       },
     ])
+  })
+})
+
+describe('changeRole', () => {
+  afterAll(async () => {
+    await clearTables(db, [TABLES.PROJECT_PARTICIPANT])
+  })
+  const argumanet = { userId: userTwo.id, role: 'admin', projectId: project.id }
+  it('changes role of the participant', async () => {
+    await repository.changeRole(argumanet)
+    const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+
+    expect(participants[1].role).toBe('admin')
+  })
+})
+describe('removeAvailability', () => {
+  beforeAll(async () => {
+    await insertAll(db, TABLES.PROJECT_PARTICIPANT, [
+      {
+        ...projectParticipant,
+        availability: JSON.stringify([
+          { start: '2025-02-25T11:00:00Z', end: '2025-02-25T13:00:00Z' },
+        ]),
+      },
+    ])
+  })
+
+  afterAll(async () => {
+    await clearTables(db, [TABLES.PROJECT_PARTICIPANT])
+  })
+
+  it('removes availability correctly', async () => {
+    const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+    const oldAvailability = participants[0].availability
+    const slot = { start: '2025-02-25T11:30:00Z', end: '2025-02-25T12:00:00Z' }
+
+    await repository.removeAvailability({
+      projectId: project.id,
+      userId: userTwo.id,
+      scheduledTime: slot,
+    })
+    const participantsUpdated = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+    const newAvailability = participantsUpdated[0].availability
+
+    expect(oldAvailability).not.toEqual(newAvailability)
+    expect(newAvailability).toEqual([
+      { start: '2025-02-25T11:00:00Z', end: '2025-02-25T11:30:00Z' },
+      { start: '2025-02-25T12:00:00Z', end: '2025-02-25T13:00:00Z' },
+    ])
+  })
+
+  it('removes full interval interval if they match', async () => {
+    const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+    const oldAvailability = participants[0].availability
+    const slot = { start: '2025-02-25T11:00:00Z', end: '2025-02-25T13:00:00Z' }
+
+    await repository.removeAvailability({
+      projectId: project.id,
+      userId: userTwo.id,
+      scheduledTime: slot,
+    })
+    const participantsUpdated = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+    const newAvailability = participantsUpdated[0].availability
+
+    expect(oldAvailability).not.toEqual(newAvailability)
+    expect(newAvailability).toEqual([])
   })
 })

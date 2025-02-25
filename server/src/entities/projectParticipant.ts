@@ -31,13 +31,24 @@ export const setAvailabilitySchema = projectParticipantSchema.omit({
   role: true,
   userId: true,
 })
+
+export const changeRoleSchema = projectParticipantSchema.pick({
+  role: true,
+  userId: true,
+  projectId: true,
+})
+
 export type InsertableSetAvailability = {
   userId: string
   projectId: string
   availability: { start: string; end: string }[]
 }
 
-export type ProjecParticipantInsertable = Insertable<
+export type UpdateRoleInsertable = Insertable<
+  Pick<ProjectParticipant, 'role' | 'userId' | 'projectId'>
+>
+
+export type ProjectParticipantInsertable = Insertable<
   Omit<ProjectParticipant, 'availability'> &
     Partial<Pick<ProjectParticipant, 'role'>>
 >

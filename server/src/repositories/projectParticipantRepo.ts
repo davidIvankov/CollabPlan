@@ -1,16 +1,19 @@
-import type { Database } from '@server/database'
+import type { Database, JsonArray, JsonObject } from '@server/database'
 import { TABLES } from '@server/database/dbConstants'
 import {
   projectParticipantKeysPublic,
   type InsertableSetAvailability,
-  type ProjecParticipantInsertable,
+  type ProjectParticipantInsertable,
   type ProjectParticipantPublic,
+  type UpdateRoleInsertable,
 } from '@server/entities/projectParticipant'
+import type { Slot } from '@server/entities/shared'
+import { type TaskAssignArguments } from '../entities/task'
 
 export function projectParticipantRepository(db: Database) {
   return {
     async create(
-      insertableProjectParticipant: ProjecParticipantInsertable
+      insertableProjectParticipant: ProjectParticipantInsertable
     ): Promise<ProjectParticipantPublic> {
       return db
         .insertInto(TABLES.PROJECT_PARTICIPANT)
@@ -19,13 +22,24 @@ export function projectParticipantRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
     async get(
-      query: ProjecParticipantInsertable
-    ): Promise<ProjectParticipantPublic | null> {
+      query: ProjectParticipantInsertable
+    ): Promise<ProjectParticipantPublic> {
       return db
         .selectFrom(TABLES.PROJECT_PARTICIPANT)
         .select(projectParticipantKeysPublic)
         .where('userId', '=', query.userId)
         .where('projectId', '=', query.projectId)
+        .executeTakeFirstOrThrow()
+    },
+    async changeRole(argument: UpdateRoleInsertable) {
+      const { role, userId, projectId } = argument
+
+      return db
+        .updateTable(TABLES.PROJECT_PARTICIPANT)
+        .where('userId', '=', userId)
+        .where('projectId', '=', projectId)
+        .set({ role })
+        .returning(projectParticipantKeysPublic)
         .executeTakeFirstOrThrow()
     },
     async setAvailability(availabilityInsert: InsertableSetAvailability) {
@@ -38,17 +52,7 @@ export function projectParticipantRepository(db: Database) {
         .executeTakeFirstOrThrow()
 
       // All this belove to make typescript error stop!! it works don't know how?
-      const oldAvailabilityArray = Array.isArray(oldAvailability.availability)
-        ? oldAvailability.availability.filter(
-            (slot): slot is { start: string; end: string } =>
-              typeof slot === 'object' &&
-              slot !== null &&
-              'start' in slot &&
-              'end' in slot &&
-              typeof slot.start === 'string' &&
-              typeof slot.end === 'string'
-          )
-        : [] // default to empty array if it's not an array
+      const oldAvailabilityArray = makeIterable(oldAvailability.availability)
 
       const newAvailability = mergeAvailability([
         ...oldAvailabilityArray,
@@ -56,6 +60,30 @@ export function projectParticipantRepository(db: Database) {
       ])
 
       // adds availability slot and sorts it and merges it if the cover the same time
+      return db
+        .updateTable(TABLES.PROJECT_PARTICIPANT)
+        .set({ availability: JSON.stringify(newAvailability) })
+        .where('userId', '=', userId)
+        .where('projectId', '=', projectId)
+        .returning(['availability'])
+        .executeTakeFirst()
+    },
+    async removeAvailability(args: TaskAssignArguments) {
+      const { projectId, userId, scheduledTime } = args
+      const oldAvailability = await db
+        .selectFrom(TABLES.PROJECT_PARTICIPANT)
+        .where('userId', '=', userId)
+        .where('projectId', '=', projectId)
+        .select(['availability'])
+        .executeTakeFirstOrThrow()
+
+      const oldAvailabilityArray = makeIterable(oldAvailability.availability)
+
+      const newAvailability = remove(
+        oldAvailabilityArray,
+        scheduledTime as Slot
+      )
+
       return db
         .updateTable(TABLES.PROJECT_PARTICIPANT)
         .set({ availability: JSON.stringify(newAvailability) })
@@ -100,4 +128,54 @@ function mergeAvailability(slots: { start: string; end: string }[]) {
   merged.push(currentSlot)
 
   return merged
+}
+
+function makeIterable(
+  oldAvailability: string | number | boolean | JsonArray | JsonObject | null
+) {
+  return Array.isArray(oldAvailability)
+    ? oldAvailability.filter(isValidSlot)
+    : [] // default to empty array if it's not an array
+}
+
+function isValidSlot(slot: unknown): slot is { start: string; end: string } {
+  return (
+    typeof slot === 'object' &&
+    slot !== null &&
+    'start' in slot &&
+    'end' in slot &&
+    typeof slot.start === 'string' &&
+    typeof slot.end === 'string'
+  )
+}
+
+function remove(availability: Slot[], slot: Slot): Slot[] {
+  return availability.flatMap((interval) => {
+    let result: Slot | Slot[] = interval
+
+    if (isInInterval(slot, interval)) {
+      result = splitInterval(interval, slot)
+    }
+    return result
+  })
+}
+
+function isInInterval(slot: Slot, interval: Slot) {
+  return slot.start >= interval.start && interval.end >= slot.end
+}
+
+function splitInterval(interval: Slot, slot: Slot) {
+  const result = []
+
+  // If the removed part cuts the start
+  if (slot.start > interval.start) {
+    result.push({ start: interval.start, end: slot.start })
+  }
+
+  // If the removed part cuts the end
+  if (slot.end < interval.end) {
+    result.push({ start: slot.end, end: interval.end })
+  }
+
+  return result
 }
