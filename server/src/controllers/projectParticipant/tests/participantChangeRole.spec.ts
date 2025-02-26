@@ -7,7 +7,7 @@ import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll, selectAll } from '@tests/utils/records'
-import { TABLES } from '@server/database/dbConstants'
+import { ROLE, TABLES } from '@server/database/dbConstants'
 import projectParticipantRouter from '..'
 
 const createCaller = createCallerFactory(projectParticipantRouter)
@@ -44,13 +44,13 @@ describe('changeRole', () => {
 
   it('changes role of the selected user if authUser is owner', async () => {
     await changeRole({
-      role: 'admin',
+      role: ROLE.ADMIN,
       userId: userTwo.id,
       projectId: project.id,
     })
     const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
 
-    expect(participants[0].role).toBe('admin')
+    expect(participants[0].role).toBe(ROLE.ADMIN)
   })
 
   it('throw error if authUser is not owner', async () => {
@@ -58,7 +58,7 @@ describe('changeRole', () => {
 
     await expect(
       invalidCaller.changeRole({
-        role: 'admin',
+        role: ROLE.ADMIN,
         userId: userTwo.id,
         projectId: project.id,
       })

@@ -21,14 +21,29 @@ export function projectParticipantRepository(db: Database) {
         .returning(projectParticipantKeysPublic)
         .executeTakeFirstOrThrow()
     },
+
     async get(
       query: ProjectParticipantInsertable
     ): Promise<ProjectParticipantPublic> {
+      const { userId, projectId } = query
+
       return db
         .selectFrom(TABLES.PROJECT_PARTICIPANT)
         .select(projectParticipantKeysPublic)
-        .where('userId', '=', query.userId)
-        .where('projectId', '=', query.projectId)
+        .where('userId', '=', userId)
+        .where('projectId', '=', projectId)
+        .executeTakeFirstOrThrow()
+    },
+    async remove(
+      query: ProjectParticipantInsertable
+    ): Promise<ProjectParticipantPublic> {
+      const { userId, projectId } = query
+
+      return db
+        .deleteFrom(TABLES.PROJECT_PARTICIPANT)
+        .where('userId', '=', userId)
+        .where('projectId', '=', projectId)
+        .returning(projectParticipantKeysPublic)
         .executeTakeFirstOrThrow()
     },
     async changeRole(argument: UpdateRoleInsertable) {
@@ -79,10 +94,7 @@ export function projectParticipantRepository(db: Database) {
 
       const oldAvailabilityArray = makeIterable(oldAvailability.availability)
 
-      const newAvailability = remove(
-        oldAvailabilityArray,
-        scheduledTime as Slot
-      )
+      const newAvailability = remove(oldAvailabilityArray, scheduledTime)
 
       return db
         .updateTable(TABLES.PROJECT_PARTICIPANT)
@@ -151,6 +163,7 @@ function isValidSlot(slot: unknown): slot is { start: string; end: string } {
 
 function remove(availability: Slot[], slot: Slot): Slot[] {
   return availability.flatMap((interval) => {
+    console.log(slot)
     let result: Slot | Slot[] = interval
 
     if (isInInterval(slot, interval)) {

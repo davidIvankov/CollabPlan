@@ -53,10 +53,6 @@ describe('get', () => {
     ])
   })
 
-  afterAll(async () => {
-    await clearTables(db, [TABLES.PROJECT_PARTICIPANT])
-  })
-
   it('returns participant when projectId and userId provided', async () => {
     const participant = await repository.get(projectParticipant)
 
@@ -64,6 +60,17 @@ describe('get', () => {
   })
 })
 
+describe('remove', () => {
+  afterAll(async () => {
+    await clearTables(db, [TABLES.PROJECT_PARTICIPANT])
+  })
+  it('removes participant', async () => {
+    await repository.remove({ userId: userOne.id, projectId: project.id })
+    const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+
+    expect(participants).toHaveLength(1)
+  })
+})
 describe('setAvailability', () => {
   beforeAll(async () => {
     await insertAll(db, TABLES.PROJECT_PARTICIPANT, [

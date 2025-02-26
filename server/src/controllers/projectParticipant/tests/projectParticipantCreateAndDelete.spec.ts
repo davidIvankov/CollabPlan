@@ -19,22 +19,14 @@ const [userOne, userTwo] = await insertAll(db, TABLES.USER, [
   fakeUser(),
   fakeUser({ email: 'fake@gmail.com' }),
 ])
-const [project] = await insertAll(
-  db,
-  TABLES.PROJECT,
-  fakeProject({ createdBy: userOne.id })
-)
+const [project, projectTwo] = await insertAll(db, TABLES.PROJECT, [
+  fakeProject({ createdBy: userOne.id }),
+  fakeProject({ createdBy: userOne.id }),
+])
 
-const { create } = createCaller({ db, authUser: { id: userOne.id } })
+const { create, remove } = createCaller({ db, authUser: { id: userOne.id } })
 
 describe('create', () => {
-  afterEach(async () => {
-    await clearTables(db, [TABLES.PROJECT])
-  })
-  afterAll(async () => {
-    await clearTables(db, [TABLES.USER])
-  })
-
   it('creates project participant if input is valid', async () => {
     const insertion = await create({
       userId: userOne.id,
@@ -56,5 +48,40 @@ describe('create', () => {
         userId: userTwo.id,
       })
     ).rejects.toThrow(/add participant to/)
+  })
+})
+
+describe('remove', () => {
+  beforeAll(async () => {
+    await insertAll(db, TABLES.PROJECT_PARTICIPANT, {
+      userId: userTwo.id,
+      projectId: project.id,
+    })
+  })
+
+  afterAll(async () => {
+    await clearTables(db, [
+      TABLES.USER,
+      TABLES.PROJECT,
+      TABLES.PROJECT_PARTICIPANT,
+    ])
+  })
+
+  it('deletes participant', async () => {
+    const deletion = await remove({ userId: userTwo.id, projectId: project.id })
+
+    expect(deletion).toMatchObject({
+      userId: userTwo.id,
+      projectId: project.id,
+    })
+  })
+
+  it('throws error if non creator tres to delete', async () => {
+    await expect(
+      createCaller({ db, authUser: { id: userTwo.id } }).remove({
+        projectId: projectTwo.id,
+        userId: userTwo.id,
+      })
+    ).rejects.toThrow(/remove participant from /)
   })
 })

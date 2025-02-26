@@ -17,7 +17,6 @@ export default authenticatedProcedure
     const taskDuration = (await repos.taskRepository.getById(input.id)).duration
 
     if (taskDuration !== getDurationInMinutes(input.scheduledTime)) {
-      console.log(getDurationInMinutes(input.scheduledTime))
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: `Invalid slot duration: expected ${taskDuration} minutes, but got different.`,

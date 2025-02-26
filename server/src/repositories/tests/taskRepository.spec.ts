@@ -6,7 +6,7 @@ import {
 } from '@server/entities/tests/fakes'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll, selectAll } from '@tests/utils/records'
-import { TABLES } from '../../database/dbConstants'
+import { TABLES, TASK_STATUS } from '../../database/dbConstants'
 import { taskRepository } from '../taskRepository'
 
 const db = await wrapInRollbacks(createTestDatabase())
@@ -23,11 +23,7 @@ const [project] = await insertAll(
 )
 
 const task = fakeInsertableTask({ projectId: project.id })
-const [taskOne] = await insertAll(
-  db,
-  TABLES.TASK,
-  fakeInsertableTask({ projectId: project.id })
-)
+const [taskOne] = await insertAll(db, TABLES.TASK, task)
 describe('create', () => {
   it('creates task', async () => {
     await repository.create(task)
@@ -45,14 +41,6 @@ describe('getById', () => {
 })
 
 describe('assign', () => {
-  afterAll(async () => {
-    await clearTables(db, [
-      TABLES.PROJECT,
-      TABLES.PROJECT_PARTICIPANT,
-      TABLES.USER,
-      TABLES.TASK,
-    ])
-  })
   const assignmentData = {
     id: taskOne.id,
     scheduledTime: {
@@ -69,5 +57,43 @@ describe('assign', () => {
     const { userId, ...rest } = assignmentData
     expect(update).toMatchObject({ assignedTo: userId, ...rest })
     expect(entries[0]).toMatchObject({ assignedTo: userId, ...rest })
+  })
+})
+
+describe('setStatus', () => {
+  it('sets status correctly', async () => {
+    await repository.setStatus(taskOne.id)
+    const tasks = await selectAll(db, TABLES.TASK)
+
+    expect(tasks[0]).toMatchObject({
+      id: taskOne.id,
+      status: TASK_STATUS.REVIEW,
+    })
+  })
+})
+
+describe('reviewTask', () => {
+  afterAll(async () => {
+    await clearTables(db, [
+      TABLES.PROJECT,
+      TABLES.PROJECT_PARTICIPANT,
+      TABLES.USER,
+      TABLES.TASK,
+    ])
+  })
+
+  it('reviews task', async () => {
+    await repository.reviewTask({
+      id: taskOne.id,
+      status: TASK_STATUS.DONE,
+      description: 'done well',
+    })
+    const tasks = await selectAll(db, TABLES.TASK)
+
+    expect(tasks[0]).toMatchObject({
+      id: taskOne.id,
+      status: TASK_STATUS.DONE,
+      description: 'done well',
+    })
   })
 })

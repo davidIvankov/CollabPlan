@@ -1,9 +1,10 @@
 import type { Database } from '@server/database'
-import { TABLES } from '@server/database/dbConstants'
+import { TABLES, TASK_STATUS } from '@server/database/dbConstants'
 import {
   taskKeysAll,
   type TaskAssignArgumentsRepo,
   type TaskInsertable,
+  type TaskReview,
   type TaskSelectable,
 } from '@server/entities/task'
 
@@ -29,6 +30,24 @@ export function taskRepository(db: Database) {
         .updateTable(TABLES.TASK)
         .where('id', '=', id)
         .set({ assignedTo: userId, scheduledTime })
+        .returning(taskKeysAll)
+        .executeTakeFirstOrThrow()
+    },
+    async setStatus(taskId: string) {
+      return db
+        .updateTable(TABLES.TASK)
+        .where('id', '=', taskId)
+        .set({ status: TASK_STATUS.REVIEW })
+        .returning(['id', 'status'])
+        .executeTakeFirstOrThrow()
+    },
+    async reviewTask(reviewData: TaskReview) {
+      const { id, ...updates } = reviewData
+
+      return db
+        .updateTable(TABLES.TASK)
+        .where('id', '=', id)
+        .set(updates)
         .returning(taskKeysAll)
         .executeTakeFirstOrThrow()
     },

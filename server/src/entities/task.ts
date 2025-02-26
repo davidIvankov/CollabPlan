@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import type { Insertable, Selectable } from 'kysely'
 import type { Task } from '@server/database'
+import { TASK_STATUS } from '@server/database/dbConstants'
 import {
   availabilitySlotSchema,
   idSchema,
@@ -17,7 +18,9 @@ export const taskSchema = z.object({
   name: z.string().min(1).max(500),
   projectId: idSchema,
   scheduledTime: z.union([availabilitySlotSchema, z.null()]),
-  status: z.enum(['todo', 'review', 'done']).default('todo'),
+  status: z
+    .enum([TASK_STATUS.TODO, TASK_STATUS.REVIEW, TASK_STATUS.DONE])
+    .default(TASK_STATUS.DONE),
 })
 
 export const taskKeysAll = Object.keys(taskSchema.shape) as (keyof Task)[]
@@ -36,11 +39,28 @@ export const taskAssignSchema = z.object({
   projectId: idSchema,
 })
 
-export type TaskAssignArguments = Insertable<
-  Pick<Task, 'id' | 'scheduledTime' | 'projectId'>
-> & {
+export const taskReviewSchema = z.object({
+  description: stringSchema.nullable().default(null).optional(),
+  id: idSchema,
+  name: z.string().min(1).max(500).optional(),
+  projectId: idSchema,
+  status: z
+    .enum([TASK_STATUS.TODO, TASK_STATUS.REVIEW, TASK_STATUS.DONE])
+    .default(TASK_STATUS.DONE),
+})
+
+export type TaskAssignArguments = Insertable<Pick<Task, 'id' | 'projectId'>> & {
   userId: string
+  scheduledTime: Slot
 }
+export type TaskReview = Insertable<
+  Partial<
+    Omit<
+      Task,
+      'assignedTo' | 'createdAt' | 'duration' | 'projectId' | 'scheduledTime'
+    >
+  >
+> & { id: string }
 
 export type TaskAssignArgumentsRepo = Insertable<{
   id: string

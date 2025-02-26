@@ -1,13 +1,14 @@
 import { z } from 'zod'
 import type { Insertable, Selectable } from 'kysely'
 import type { ProjectParticipant } from '@server/database'
+import { ROLE } from '@server/database/dbConstants'
 import { availabilitySlotSchema, idSchema } from './shared'
 
 export const availabilitySchema = z.array(availabilitySlotSchema).default([])
 
 export const projectParticipantSchema = z.object({
   userId: idSchema,
-  role: z.enum(['member', 'admin']),
+  role: z.enum([ROLE.MEMBER, ROLE.ADMIN]),
   projectId: idSchema,
   availability: availabilitySchema,
 })
@@ -30,6 +31,11 @@ export const projectParticipantInsertableSchema = projectParticipantSchema
 export const setAvailabilitySchema = projectParticipantSchema.omit({
   role: true,
   userId: true,
+})
+
+export const removeAvailabilitySchema = z.object({
+  projectId: idSchema,
+  scheduledTime: availabilitySlotSchema,
 })
 
 export const changeRoleSchema = projectParticipantSchema.pick({
