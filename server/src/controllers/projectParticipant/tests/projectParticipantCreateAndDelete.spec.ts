@@ -80,7 +80,7 @@ describe('remove', () => {
     await expect(
       createCaller({ db, authUser: { id: userTwo.id } }).remove({
         projectId: projectTwo.id,
-        userId: userTwo.id,
+        userId: userOne.id,
       })
     ).rejects.toThrow(/remove participant from /)
   })

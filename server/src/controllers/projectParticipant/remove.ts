@@ -11,7 +11,9 @@ export default authenticatedProcedure
   .mutation(async ({ input, ctx: { authUser, repos } }) => {
     const project = await repos.projectRepository.getById(input.projectId)
 
-    checkOwnership(project, authUser, 'remove participant from ')
+    if (authUser.id !== input.userId) {
+      checkOwnership(project, authUser, 'remove participant from ')
+    }
 
     return repos.projectParticipantRepository.remove(input)
   })

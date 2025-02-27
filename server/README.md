@@ -113,6 +113,10 @@ or
 yarn migrate
 ```
 
+## Database Schema
+
+You can view the database schema diagram [here](https://dbdiagram.io/d/Project-menagment-67113c6b97a66db9a35cc211).
+
 ## API Endpoints
 
 ### Project
@@ -130,30 +134,83 @@ yarn migrate
 - **Output**:
   ```json
   {
-    "projectId": "string",
+    "id": "string",
     "name": "string",
-    "description": "string"
+    "description": "string",
+    "createdBy": "string"
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
+  `
 
-#### Get a Project
+#### Delete a Project
 
-- **Procedure**: `project.get`
+- **Procedure**: `project.deleteProject`
 - **Input**:
+
   ```json
-  {
-    "projectId": "string"
-  }
+  "id"
+
+
+  // UUID of the project to be deleted
   ```
+
 - **Output**:
   ```json
   {
-    "projectId": "string",
+    "id": "string",
     "name": "string",
-    "description": "string"
+    "description": "string",
+    "createdBy": "string"
   }
   ```
+- **Authentication**: Uses `authProcedure` to check if the user is authenticated.
+  `
+
+#### Get Projects by Creator
+
+- **Procedure**: `project.getByCreatedBy`
+- **Input**:
+
+  ```json
+  "id"
+  ```
+
+- **Output**:
+
+```
+[
+  {
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "createdBy": "string"
+  }
+]
+```
+
+#### Get Project by ID
+
+- **Procedure**: `project.getById`
+- **Input**:
+
+  ```json
+  "id"
+
+
+  // UUID of the project to be retrieved
+  ```
+
+- **Output**:
+
+```
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "createdBy": "string"
+}
+```
 
 #### Update a Project
 
@@ -161,7 +218,7 @@ yarn migrate
 - **Input**:
   ```json
   {
-    "projectId": "string",
+    "id": "string",
     "name": "string",
     "description": "string"
   }
@@ -169,7 +226,7 @@ yarn migrate
 - **Output**:
   ```json
   {
-    "projectId": "string",
+    "id": "string",
     "name": "string",
     "description": "string"
   }
@@ -180,15 +237,17 @@ yarn migrate
 
 - **Procedure**: `project.delete`
 - **Input**:
+
   ```json
-  {
-    "projectId": "string"
-  }
+  "projectId"
   ```
+
 - **Output**:
   ```json
   {
-    "projectId": "string"
+    "id": "string",
+    "name": "string",
+    "description": "string"
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
@@ -203,8 +262,7 @@ yarn migrate
   {
     "userId": "string",
     "projectId": "string",
-    "role": "string",
-    "availability": "array"
+    "role": "string" // optional
   }
   ```
 - **Output**:
@@ -213,7 +271,7 @@ yarn migrate
     "userId": "string",
     "projectId": "string",
     "role": "string",
-    "availability": "array"
+    "availability": { "start": "string", "end": "string" }[]
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
@@ -234,7 +292,7 @@ yarn migrate
     "userId": "string",
     "projectId": "string",
     "role": "string",
-    "availability": "array"
+    "availability": { "start": "string", "end": "string" }[]
   }
   ```
 
@@ -254,7 +312,7 @@ yarn migrate
     "userId": "string",
     "projectId": "string",
     "role": "string",
-    "availability": "array"
+    "availability": { "start": "string", "end": "string" }[]
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
@@ -276,7 +334,7 @@ yarn migrate
     "userId": "string",
     "projectId": "string",
     "role": "string",
-    "availability": "array"
+    "availability": { "start": "string", "end": "string" }[]
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
@@ -287,9 +345,26 @@ yarn migrate
 - **Input**:
   ```json
   {
-    "userId": "string",
     "projectId": "string",
+    "availability": { "start": "string", "end": "string" }[]
+  }
+  ```
+- **Output**:
+  ```json
+  {
     "availability": "array"
+  }
+  ```
+- **Authentication**: Uses `authProcedure` to check if the user is authenticated.
+
+#### remove Availability of a Project Participant
+
+- **Procedure**: `projectParticipant.removeAvailability`
+- **Input**:
+  ```json
+  {
+    "projectId": "string",
+    "scheduledTime": { "start": "string", "end": "string" }
   }
   ```
 - **Output**:
@@ -310,79 +385,92 @@ yarn migrate
   {
     "projectId": "string",
     "name": "string",
-    "description": "string",
-    "assigneeId": "string"
+    "description": "string", //optional
+    "duration": "number" //in minutes
   }
   ```
 - **Output**:
   ```json
   {
-    "taskId": "string",
+    "createdAt": "string",
+    "duration": "number",
+    "scheduledTime": { "start": "string", "end": "string" },
+    "id": "string",
     "projectId": "string",
     "name": "string",
     "description": "string",
-    "assigneeId": "string"
+    "assignedTo": "string",
+    "status": "string"
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
 
-#### Get a Task
+#### assign a Task
 
-- **Procedure**: `task.get`
+- **Procedure**: `task.assign`
 - **Input**:
   ```json
   {
-    "taskId": "string"
+    "id": "string",
+    "scheduledTime": { "start": "string", "end": "string" }
   }
   ```
 - **Output**:
   ```json
   {
-    "taskId": "string",
+    "createdAt": "string",
+    "duration": "number",
+    "scheduledTime": { "start": "string", "end": "string" },
+    "id": "string",
     "projectId": "string",
     "name": "string",
     "description": "string",
-    "assigneeId": "string"
-  }
-  ```
-
-#### Update a Task
-
-- **Procedure**: `task.update`
-- **Input**:
-  ```json
-  {
-    "taskId": "string",
-    "name": "string",
-    "description": "string",
-    "assigneeId": "string"
-  }
-  ```
-- **Output**:
-  ```json
-  {
-    "taskId": "string",
-    "projectId": "string",
-    "name": "string",
-    "description": "string",
-    "assigneeId": "string"
+    "assignedTo": "string",
+    "status": "string"
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
 
-#### Delete a Task
+#### set task ready for the review
 
-- **Procedure**: `task.delete`
+- **Procedure**: `task.setReview`
+- **Input**:
+  ```json
+  "taskId"
+  ```
+- **Output**:
+  ```json
+  {
+    "id": "string",
+    "status": "string"
+  }
+  ```
+- **Authentication**: Uses `authProcedure` to check if the user is authenticated.
+
+#### review a Task
+
+- **Procedure**: `task.setReview`
 - **Input**:
   ```json
   {
-    "taskId": "string"
+    "id": "string",
+    "name": "string", //optional
+    "description": "string", //optional
+    "status": "string"
   }
   ```
 - **Output**:
   ```json
   {
-    "taskId": "string"
+    "createdAt": "string",
+    "duration": "number",
+    "scheduledTime": { "start": "string", "end": "string" },
+    "id": "string",
+    "projectId": "string",
+    "name": "string",
+    "description": "string",
+    "assignedTo": "string",
+    "status": "string"
   }
   ```
 - **Authentication**: Uses `authProcedure` to check if the user is authenticated.
@@ -402,7 +490,7 @@ yarn migrate
 - **Output**:
   ```json
   {
-    "token": "string"
+    "accessToken": "string"
   }
   ```
 
@@ -411,16 +499,15 @@ yarn migrate
 - **Procedure**: `user.search`
 - **Input**:
   ```json
-  {
-    "query": "string"
-  }
+  "string"
   ```
 - **Output**:
   ```json
   [
     {
-      "userId": "string",
-      "username": "string"
+      "id": "string",
+      "name": "string",
+      "email": "string"
     }
   ]
   ```
@@ -431,17 +518,15 @@ yarn migrate
 - **Input**:
   ```json
   {
-    "username": "string",
+    "email": "string",
     "password": "string",
-    "email": "string"
+    "name": "string"
   }
   ```
 - **Output**:
   ```json
   {
-    "userId": "string",
-    "username": "string",
-    "email": "string"
+    "id": "string"
   }
   ```
 
@@ -457,16 +542,4 @@ or
 
 ```bash
 yarn test
-```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
-
-```
-
 ```

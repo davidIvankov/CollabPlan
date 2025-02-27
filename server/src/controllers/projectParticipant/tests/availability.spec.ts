@@ -143,8 +143,6 @@ describe('remove availability', () => {
   })
 
   it('removes full time slot', async () => {
-    const unupdated = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
-    console.log(unupdated)
     const updated = await removeAvailability({
       projectId: project.id,
       scheduledTime: {

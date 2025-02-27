@@ -163,7 +163,6 @@ function isValidSlot(slot: unknown): slot is { start: string; end: string } {
 
 function remove(availability: Slot[], slot: Slot): Slot[] {
   return availability.flatMap((interval) => {
-    console.log(slot)
     let result: Slot | Slot[] = interval
 
     if (isInInterval(slot, interval)) {
