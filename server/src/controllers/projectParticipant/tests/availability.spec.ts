@@ -6,7 +6,7 @@ import {
 import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
-import { clearTables, insertAll, selectAll } from '@tests/utils/records'
+import { clearTables, insertAll } from '@tests/utils/records'
 import { TABLES } from '@server/database/dbConstants'
 import projectParticipantRouter from '..'
 
