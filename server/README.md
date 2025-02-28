@@ -24,20 +24,14 @@ This folder contains the backend server code for the project. The server is resp
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/yourproject.git
-   cd yourproject/server
+   git clone https://github.com/TuringCollegeSubmissions/divank-WD2.3.4.5.git
+   cd divank-WD2.3.4.5.git/server
    ```
 
 2. Install the dependencies:
 
    ```bash
    npm install
-   ```
-
-   or
-
-   ```bash
-   yarn install
    ```
 
 ### Configuration
@@ -57,12 +51,6 @@ To start the server in development mode, run:
 npm run dev
 ```
 
-or
-
-```bash
-yarn dev
-```
-
 The server will start on the port specified in the `.env` file (default is 3000).
 
 ### Building for Production
@@ -71,12 +59,6 @@ To build the server for production, run:
 
 ```bash
 npm run build
-```
-
-or
-
-```bash
-yarn build
 ```
 
 The compiled files will be placed in the `dist` folder.
@@ -89,12 +71,6 @@ To start the server in production mode, run:
 npm start
 ```
 
-or
-
-```bash
-yarn start
-```
-
 ## Database Migrations
 
 The server uses Kysely for database migrations. Migration files are located in the `src/database/migrations` folder.
@@ -104,13 +80,15 @@ The server uses Kysely for database migrations. Migration files are located in t
 To run the migrations, use the following command:
 
 ```bash
-npm run migrate
+npm run migrate:latest
 ```
 
-or
+### Generating Types
+
+To run the generate types, use the following command:
 
 ```bash
-yarn migrate
+npm run gen:types
 ```
 
 ## Database Schema
