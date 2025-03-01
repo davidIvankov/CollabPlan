@@ -1,3 +1,4 @@
+import { ROLE } from '@server/database/dbConstants'
 import { projectInsertableSchema } from '@server/entities/project'
 import { projectParticipantRepository } from '@server/repositories/projectParticipantRepo'
 import { projectRepository } from '@server/repositories/projectRepository'
@@ -16,7 +17,7 @@ export default authenticatedProcedure
     repos.projectParticipantRepository.create({
       userId: authUser.id,
       projectId,
-      role: 'admin',
+      role: ROLE.ADMIN,
     })
     return projectCreated
   })
