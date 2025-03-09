@@ -12,6 +12,7 @@ import { taskRepository } from '../taskRepository'
 const db = await wrapInRollbacks(createTestDatabase())
 const repository = taskRepository(db)
 
+await clearTables(db, [TABLES.USER, TABLES.PROJECT])
 const [userOne] = await insertAll(db, 'user', [
   fakeUser(),
   fakeUser({ email: 'stipe@gmail.com' }),
