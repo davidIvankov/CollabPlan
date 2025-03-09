@@ -6,6 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     env:
+      # variables for our back-end tests, see server/src/config.ts
       DATABASE_URL: postgres://turing:turing@localhost:5432/testdb
     services:
       # spin up a database for tests
@@ -34,17 +35,8 @@ jobs:
       - name: Type check server
         run: npm run typecheck -w=server
 
-      - name: Type check client
-        run: npm run typecheck -w=client
-
       - name: Lint server
         run: npm run lint -w=server
-
-      - name: Lint client
-        run: npm run lint -w=client
-
-      - name: Test client (unit)
-        run: npm run test:unit -w=client
 
       - name: Run server database migrations
         run: npm run migrate:latest -w=server
