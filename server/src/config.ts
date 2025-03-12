@@ -26,7 +26,7 @@ const schema = z
 
         throw new Error('You must provide a TOKEN_KEY in a production env!')
       }),
-      expiresIn: z.string().default('7d'),
+      expiresIn: z.number().default(604800),
       passwordCost: z.coerce.number().default(isDevTest ? 6 : 12),
     }),
 
@@ -61,3 +61,20 @@ function coerceBoolean(value: unknown) {
 
   return undefined
 }
+
+/* z
+        .string()
+        .refine(
+          (val) => {
+            try {
+              ms(val as StringValue)
+              return true
+            } catch {
+              return false
+            }
+          },
+          {
+            message: 'Invalid expiresIn format',
+          }
+        )
+        .default('7d') as unknown as StringValue */
