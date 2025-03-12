@@ -13,7 +13,13 @@ import config from './config'
 export default function createApp(db: Database) {
   const app = express()
 
-  app.use(cors())
+  app.use(
+    cors({
+      origin: '*', // Allow all origins (change for security in production)
+      methods: 'GET,POST,PUT,DELETE,OPTIONS',
+      allowedHeaders: 'Content-Type,Authorization',
+    })
+  )
   app.use(express.json())
 
   app.use('/api/health', (_, res) => {

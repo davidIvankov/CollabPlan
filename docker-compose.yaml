@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  # spin up a database
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: tasksync_db
+    ports:
+      - "5432"
+    volumes:
+      - tasksync_db:/var/lib/postgresql/data
+
+  # start up an API server
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    environment:
+      DATABASE_URL: postgres://turing:turing@postgres:5432/tasksync_db
+      PORT: 3000
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    environment:
+      API_PROXY_PASS: http://server:3000
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
+
+volumes:
+  tasksync_db:
