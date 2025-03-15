@@ -11,7 +11,7 @@ jobs:
       VITE_API_PATH: /api/v1/trpc
 
       # variables for our back-end tests, see server/src/config.ts
-      DATABASE_URL: postgres://turing:turing@localhost:5432/testdb
+      DATABASE_URL: postgres://turing:turing@localhost:5432/tasksync_db
     services:
       # spin up a database for tests
       postgres:
