@@ -17,6 +17,7 @@ COPY . .
 # we would need to set them here as build args.
 # ARG VITE_MY_CUSTOM_FRONT_END_ENV_VARIABLE
 
+
 # Switch to the client folder
 WORKDIR /app/client
 
