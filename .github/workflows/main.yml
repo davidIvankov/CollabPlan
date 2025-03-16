@@ -174,7 +174,7 @@ jobs:
           echo '{
             "client": {
               "image": "${{ env.LIGHTSAIL_CLIENT_IMAGE }}",
-              "command": ["nginx", "-g", "daemon off;"]
+              "command": ["nginx", "-g", "daemon off;"],
               "ports": {
                 "80": "HTTP"
               },
