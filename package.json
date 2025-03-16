@@ -7,5 +7,7 @@
     "client",
     "server"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "pino": "^9.6.0"
+  }
 }
