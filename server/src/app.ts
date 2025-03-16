@@ -9,6 +9,7 @@ import type { Database } from './database'
 import { appRouter } from './controllers'
 import type { Context } from './trpc'
 import config from './config'
+import logger from './logger'
 
 export default function createApp(db: Database) {
   const app = express()
@@ -23,6 +24,7 @@ export default function createApp(db: Database) {
   app.use(express.json())
 
   app.use('/api/health', (_, res) => {
+    logger.info('health ok')
     res.status(200).send('OK')
   })
 
@@ -40,14 +42,15 @@ export default function createApp(db: Database) {
   )
 
   if (config.env === 'development') {
-    app.use('/api/v1/trpc-panel', (_, res) =>
+    app.use('/api/v1/trpc-panel', (_, res) => {
+      logger.info('trpc panel ready')
       res.send(
         renderTrpcPanel(appRouter, {
           url: `http://localhost:${config.port}/api/v1/trpc`,
           transformer: 'superjson',
         })
       )
-    )
+    })
   }
 
   return app

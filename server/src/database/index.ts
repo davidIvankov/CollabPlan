@@ -5,15 +5,26 @@ import {
   PostgresDialect,
 } from 'kysely'
 import pg from 'pg'
+import logger from '@server/logger'
 import type { DB } from './types'
 
 export function createDatabase(options: pg.PoolConfig): Kysely<DB> {
-  return new Kysely<DB>({
-    dialect: new PostgresDialect({
-      pool: new pg.Pool(options),
-    }),
-    plugins: [new CamelCasePlugin(), new ParseJSONResultsPlugin()],
-  })
+  try {
+    const pool = new pg.Pool(options)
+
+    const db = new Kysely<DB>({
+      dialect: new PostgresDialect({ pool }),
+      plugins: [new CamelCasePlugin(), new ParseJSONResultsPlugin()],
+    })
+
+    logger.info('Database connection pool created successfully')
+
+    return db
+  } catch (error) {
+    if (error instanceof Error)
+      logger.error(`Failed to create database: ${error.message}`, { error })
+    throw error // Re-throw to handle it higher up in your app
+  }
 }
 
 export type Database = Kysely<DB>
