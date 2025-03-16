@@ -3,6 +3,8 @@ import { createDatabase } from './database'
 import config from './config'
 import logger from './logger'
 
+logger.info('something is logging')
+
 const database = createDatabase(config.database)
 const app = createApp(database)
 
