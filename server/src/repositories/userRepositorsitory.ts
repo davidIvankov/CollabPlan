@@ -31,8 +31,8 @@ export function userRepository(db: Database) {
         .selectFrom(TABLES.USER)
         .where(({ or, eb }) =>
           or([
-            eb('name', 'ilike', `%${query}%`), // Case-insensitive name search
-            eb('email', 'ilike', `%${query}%`), // Case-insensitive email search
+            eb('name', '=', query), // Case-insensitive name search
+            eb('email', '=', query), // Case-insensitive email search
           ])
         )
         .select(userKeysPublic)

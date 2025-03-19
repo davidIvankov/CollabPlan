@@ -71,7 +71,7 @@ export function projectParticipantRepository(db: Database) {
 
       const newAvailability = mergeAvailability([
         ...oldAvailabilityArray,
-        ...availability,
+        availability,
       ])
 
       // adds availability slot and sorts it and merges it if the cover the same time

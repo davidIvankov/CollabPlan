@@ -52,10 +52,10 @@ describe('search', () => {
   })
 
   test('should find a user by name', async () => {
-    const results = await repository.search('Alice')
-
+    const results = await repository.search('Alice Johnson')
+    console.log(results)
     expect(results.length).toBeGreaterThan(0)
-    expect(results[0].name).toContain('Alice')
+    expect(results[0].name).toBe('Alice Johnson')
   })
 
   test('should find a user by email', async () => {

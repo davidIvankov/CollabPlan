@@ -25,7 +25,7 @@ describe('search', () => {
   })
 
   it('should return users matching search query', async () => {
-    const response = await search('bo')
+    const response = await search('Bob Smith')
 
     expect(response).toHaveLength(1)
     expect(response[0].name).toBe('Bob Smith')

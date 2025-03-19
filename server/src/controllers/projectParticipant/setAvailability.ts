@@ -8,7 +8,7 @@ export default authenticatedProcedure
   .use(provideRepos({ projectParticipantRepository }))
   .input(setAvailabilitySchema)
   .mutation(async ({ input, ctx: { authUser, repos } }) => {
-    const row = repos.projectParticipantRepository.get({
+    const row = await repos.projectParticipantRepository.get({
       projectId: input.projectId,
       userId: authUser.id,
     })

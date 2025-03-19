@@ -28,9 +28,9 @@ export const projectParticipantInsertableSchema = projectParticipantSchema
   .omit({ availability: true })
   .partial({ role: true })
 
-export const setAvailabilitySchema = projectParticipantSchema.omit({
-  role: true,
-  userId: true,
+export const setAvailabilitySchema = z.object({
+  projectId: idSchema,
+  availability: z.object({ start: z.string(), end: z.string() }),
 })
 
 export const removeAvailabilitySchema = z.object({
@@ -47,7 +47,7 @@ export const changeRoleSchema = projectParticipantSchema.pick({
 export type InsertableSetAvailability = {
   userId: string
   projectId: string
-  availability: { start: string; end: string }[]
+  availability: { start: string; end: string }
 }
 
 export type UpdateRoleInsertable = Insertable<

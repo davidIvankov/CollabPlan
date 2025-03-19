@@ -1,1 +1,18 @@
+:root {
+  --text-green: #98ff98;
+  --background-grey: #222222;
+  --white: #fffff0;
+  --mobile-hero: 64px;
+  --mobile-text: 16px;
+}
 
+* {
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--background-grey);
+  color: var(--white);
+  font-size: var(--mobile-text);
+}
+
+a {
+  text-decoration: none;
+}

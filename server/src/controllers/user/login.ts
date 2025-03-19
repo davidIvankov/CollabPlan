@@ -24,11 +24,12 @@ export default publicProcedure
   )
   .mutation(async ({ input: { email, password }, ctx: { repos } }) => {
     const user = await repos.userRepository.findByEmail(email)
+    const message = 'Invalid email or password. Please try again.'
 
     if (!user) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
-        message: 'We could not find an account with this email address',
+        message,
       })
     }
 
@@ -37,7 +38,7 @@ export default publicProcedure
     if (!passwordMatch) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
-        message: 'Incorrect password. Please try again.',
+        message,
       })
     }
 

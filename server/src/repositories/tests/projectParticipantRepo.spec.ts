@@ -82,9 +82,7 @@ describe('setAvailability', () => {
   it('sets availability correctly', async () => {
     const participants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
     const oldAvailability = participants[1].availability
-    const slot = [
-      { start: '2025-02-25T11:00:00Z', end: '2025-02-25T12:00:00Z' },
-    ]
+    const slot = { start: '2025-02-25T11:00:00Z', end: '2025-02-25T12:00:00Z' }
 
     await repository.setAvailability({
       projectId: project.id,
@@ -101,6 +99,35 @@ describe('setAvailability', () => {
         end: '2025-02-25T12:00:00Z',
       },
     ])
+  })
+
+  it('sorts availability from earliest to latest', async () => {
+    const slotEarly = {
+      start: '2025-02-25T11:00:00Z',
+      end: '2025-02-25T12:00:00Z',
+    }
+
+    const slotLate = {
+      start: '2025-02-25T14:00:00Z',
+      end: '2025-02-25T14:30:00Z',
+    }
+
+    await repository.setAvailability({
+      projectId: project.id,
+      userId: userTwo.id,
+      availability: slotEarly,
+    })
+
+    await repository.setAvailability({
+      projectId: project.id,
+      userId: userTwo.id,
+      availability: slotLate,
+    })
+
+    const participantsUpdated = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+    const newAvailability = participantsUpdated[1].availability
+
+    expect(newAvailability).toEqual([slotEarly, slotLate])
   })
 })
 

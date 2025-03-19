@@ -14,7 +14,7 @@ export default authenticatedProcedure
       createdBy: authUser.id,
     })
     const projectId = projectCreated.id
-    repos.projectParticipantRepository.create({
+    await repos.projectParticipantRepository.create({
       userId: authUser.id,
       projectId,
       role: ROLE.ADMIN,

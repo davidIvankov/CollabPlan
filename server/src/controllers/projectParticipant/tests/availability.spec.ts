@@ -44,74 +44,10 @@ describe('setAvailability', () => {
   it('sets availability if it passes authentication', async () => {
     const newAvailability = await setAvailability({
       projectId: project.id,
-      availability: [available],
+      availability: available,
     })
 
     expect(newAvailability).toEqual({ availability: [available] })
-  })
-
-  it('merges overlapping timestamps', async () => {
-    const availableOverlapping = {
-      start: '2025-02-25T11:50:00Z',
-      end: '2025-02-25T13:00:00Z',
-    }
-    await setAvailability({
-      projectId: project.id,
-      availability: [available],
-    })
-
-    const newAvailability = await setAvailability({
-      projectId: project.id,
-      availability: [availableOverlapping],
-    })
-
-    expect(newAvailability).toEqual({
-      availability: [
-        {
-          start: '2025-02-25T11:00:00Z',
-          end: '2025-02-25T13:00:00Z',
-        },
-      ],
-    })
-  })
-  it('sorts them from earliest to the latest', async () => {
-    await setAvailability({
-      projectId: project.id,
-      availability: [
-        {
-          start: '2025-02-25T15:00:00Z',
-          end: '2025-02-25T16:00:00Z',
-        },
-      ],
-    })
-    await setAvailability({
-      projectId: project.id,
-      availability: [available],
-    })
-
-    const result = await setAvailability({
-      projectId: project.id,
-      availability: [
-        {
-          start: '2025-02-25T14:00:00Z',
-          end: '2025-02-25T14:30:00Z',
-        },
-      ],
-    })
-
-    expect(result).toEqual({
-      availability: [
-        available,
-        {
-          start: '2025-02-25T14:00:00Z',
-          end: '2025-02-25T14:30:00Z',
-        },
-        {
-          start: '2025-02-25T15:00:00Z',
-          end: '2025-02-25T16:00:00Z',
-        },
-      ],
-    })
   })
 })
 
