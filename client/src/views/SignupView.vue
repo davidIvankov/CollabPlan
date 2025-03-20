@@ -1,44 +1,68 @@
 <script lang="ts" setup>
-import { login } from '@/stores/user'
-import { ref } from 'vue'
 import PageForm from '@/components/PageForm.vue'
+import { ref } from 'vue'
+import { DEFAULT_SERVER_ERROR } from '@/consts'
+import { login, signup } from '@/stores/user'
 import { useRouter } from 'vue-router'
-import useErrorMessage from '@/composables/useErrorMessage'
 
 const router = useRouter()
 
 const userForm = ref({
+  name: '',
   email: '',
   password: '',
 })
 
-const [submitLogin, errorMessage] = useErrorMessage(async () => {
-  await login(userForm.value)
+const hasSucceeded = ref(false)
 
-  router.push('/dashboard/profile')
-})
+// Wrap our signup call in a try/catch block to catch any errors.
+// Set the error message if there is an error.
+const errorMessage = ref('')
+async function submitSignup() {
+  try {
+    await signup(userForm.value)
+
+    const { email, password } = userForm.value
+    await login({ email, password })
+
+    router.push('/dashboard/profile')
+    // clear error
+    errorMessage.value = ''
+  } catch (error) {
+    // set error, which will be automatically displayed
+    errorMessage.value = error instanceof Error ? error.message : DEFAULT_SERVER_ERROR
+  }
+}
 </script>
 
 <template>
-  <PageForm heading="Login" formLabel="Login" @submit="submitLogin">
+  <PageForm heading="Registration" formLabel="Signin" @submit="submitSignup">
     <template #default>
       <div class="inputs">
         <input
+          placeholder="name"
+          type="text"
+          v-model="userForm.name"
+          autocomplete="name"
+          :required="true"
+        />
+        <input
           placeholder="example@email.com"
+          label="Email"
           type="email"
-          autocomplete="username"
+          autocomplete="email"
           v-model="userForm.email"
           :required="true"
         />
-
         <input
           placeholder="password"
+          label="Password"
           id="password"
           name="password"
           type="password"
+          autocomplete="current-password"
           pattern="^.{8,}$"
           title="Password must be at least 8 characters long"
-          autocomplete="current-password"
           v-model="userForm.password"
           :required="true"
         />
@@ -47,14 +71,15 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
       <p v-if="errorMessage" data-testid="errorMessage" type="danger">
         {{ errorMessage }}
       </p>
+      <p v-if="hasSucceeded">jup</p>
 
-      <button type="submit" class="btn">Login</button>
+      <button type="submit" class="btn">Signup</button>
     </template>
 
     <template #footer>
       <div class="footer">
-        <p>Don't have an account?</p>
-        <RouterLink to="/signup" class="signIn"> Signup </RouterLink>
+        <p>Already member?</p>
+        <RouterLink to="/login" class="login"> Login </RouterLink>
       </div>
     </template>
   </PageForm>
@@ -80,12 +105,13 @@ button {
   align-items: center;
   justify-self: flex-end;
 }
+
 .footer p {
-  color: var(--text-green);
   font-weight: 700;
+  color: var(--text-green);
 }
 
-.signIn {
+.login {
   text-decoration: underline;
 }
 </style>

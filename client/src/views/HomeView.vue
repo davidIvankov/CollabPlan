@@ -7,12 +7,12 @@
   </header>
   <main class="content">
     <div class="buttons">
-      <RouterLink to="" class="btn">Login</RouterLink>
-      <RouterLink to="" class="btn">Registration</RouterLink>
+      <RouterLink to="/login" class="btn">Login</RouterLink>
+      <RouterLink to="/signup" class="btn">Registration</RouterLink>
     </div>
   </main>
 </template>
-<style>
+<style scoped>
 .header {
   display: flex;
   flex-direction: column;
@@ -34,18 +34,5 @@
   justify-content: flex-end;
   align-items: center;
   gap: 2vh;
-}
-
-.btn {
-  background-color: var(--white);
-  color: var(--background-grey);
-  width: calc(100% - 48px);
-  text-align: center;
-  padding: 14px;
-  font-size: 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
 }
 </style>
