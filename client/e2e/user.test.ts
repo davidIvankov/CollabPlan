@@ -4,18 +4,61 @@ import { fakeUser } from 'utils/fakeData'
 
 const user = fakeUser()
 
-// We are grouping these tests in a serial block to clearly
-// indicate that these tests should be run in the provided order.
-// However, ideally we would like to run each test in isolation.
-// That would allow us to develop faster and to see more clearly
-// which part of our flow is broken.
-// In this particular case, we might want to run the signup and
-// login tests one after the other because we want to make sure
-// that the signup + login flow works.
 test.describe.serial('login and sign in', () => {
-  test('visitor can see home page', async ({ page }) => {
-    await page.goto('/')
+  const URL_LOGGED_IN = '/dashboard/profile'
 
-    expect(page.getByTestId('app-name'))
+  test('visitor can signup', async ({ page }) => {
+    // Given (ARRANGE)
+    await page.goto('/signup')
+
+    // When (ACT)
+    const form = page.getByRole('form', { name: 'Signup' })
+
+    // We would prefer using getByRole, but flowbite components are
+    // not linking labels with inputs
+    await form.locator('input[data-testid="name"]').fill(user.name)
+    await form.locator('input[type="email"]').fill(user.email)
+    await form.locator('input[type="password"]').fill(user.password)
+    await form.locator('button[type="submit"]').click()
+
+    // Then (ASSERT)
+    await page.waitForURL('/dashboard/profile')
+  })
+
+  test('visitor can not access dashboard before login', async ({ page }) => {
+    await page.goto(URL_LOGGED_IN)
+
+    await page.waitForURL('/login')
+  })
+
+  test('visitor can login', async ({ page }) => {
+    await page.goto('/login')
+
+    const form = page.getByRole('form', { name: 'Login' })
+    await form.locator('input[type="email"]').fill(user.email)
+    await form.locator('input[type="password"]').fill(user.password)
+    await form.locator('button[type="submit"]').click()
+
+    await expect(page).toHaveURL(URL_LOGGED_IN)
+
+    await page.reload()
+    await expect(page).toHaveURL(URL_LOGGED_IN)
+  })
+
+  test('visitor can logout', async ({ page }) => {
+    const user = fakeUser()
+
+    await asUser(page, user, async () => {
+      await page.goto(URL_LOGGED_IN)
+      const logoutButton = page.getByTestId('logout')
+
+      // When (ACT)
+      await logoutButton.click()
+
+      await expect(page).toHaveURL('/login')
+
+      await page.goto(URL_LOGGED_IN)
+      await expect(page).toHaveURL('/login')
+    })
   })
 })

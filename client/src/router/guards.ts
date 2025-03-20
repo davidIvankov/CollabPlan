@@ -1,7 +1,7 @@
 import { isLoggedIn } from '@/stores/user'
 
 export const authenticate = () => {
-  if (!isLoggedIn.value) return { name: 'Login' }
+  if (!isLoggedIn.value) return { path: 'login' }
 
   return true
 }

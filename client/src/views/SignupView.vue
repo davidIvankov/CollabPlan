@@ -36,10 +36,11 @@ async function submitSignup() {
 </script>
 
 <template>
-  <PageForm heading="Registration" formLabel="Signin" @submit="submitSignup">
+  <PageForm heading="Registration" formLabel="Signup" @submit="submitSignup">
     <template #default>
       <div class="inputs">
         <input
+          data-testid="name"
           placeholder="name"
           type="text"
           v-model="userForm.name"
@@ -47,6 +48,7 @@ async function submitSignup() {
           :required="true"
         />
         <input
+          data-testid="email"
           placeholder="example@email.com"
           label="Email"
           type="email"
@@ -55,6 +57,7 @@ async function submitSignup() {
           :required="true"
         />
         <input
+          data-testid="password"
           placeholder="password"
           label="Password"
           id="password"

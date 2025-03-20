@@ -38,6 +38,13 @@ export function userRepository(db: Database) {
         .select(userKeysPublic)
         .execute()
     },
+    async get(userId: string): Promise<UserPublic> {
+      return db
+        .selectFrom(TABLES.USER)
+        .where('id', '=', userId)
+        .select(userKeysPublic)
+        .executeTakeFirstOrThrow()
+    },
   }
 }
 
