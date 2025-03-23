@@ -7,7 +7,7 @@ import { projectUpdateSchema } from '../../entities/project'
 export default authenticatedProcedure
   .use(provideRepos({ projectRepository }))
   .input(projectUpdateSchema)
-  .query(async ({ input, ctx: { repos, authUser } }) => {
+  .mutation(async ({ input, ctx: { repos, authUser } }) => {
     const project = await repos.projectRepository.getById(input.id)
     checkOwnership(project, authUser, 'update')
 

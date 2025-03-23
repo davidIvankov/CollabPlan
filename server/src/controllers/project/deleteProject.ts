@@ -7,7 +7,7 @@ import { idSchema } from '@server/entities/shared'
 export default authenticatedProcedure
   .use(provideRepos({ projectRepository }))
   .input(idSchema)
-  .query(async ({ input: projectId, ctx: { repos, authUser } }) => {
+  .mutation(async ({ input: projectId, ctx: { repos, authUser } }) => {
     const project = await repos.projectRepository.getById(projectId)
 
     if (!project) {

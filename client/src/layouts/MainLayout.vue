@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Navigation from '@/components/Navigation.vue'
 import { logout } from '@/stores/user'
 import { useRouter } from 'vue-router'
 
@@ -15,6 +16,7 @@ function logoutUser() {
     <img src="@/assets/icons/logout.svg" alt="logout" class="logout" />
   </button>
   <RouterView />
+  <Navigation></Navigation>
 </template>
 <style scoped>
 .logout {

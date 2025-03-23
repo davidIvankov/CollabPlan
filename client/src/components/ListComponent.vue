@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink } from 'vue-router'
+
 defineProps({
   title: {
     type: String,
@@ -13,6 +15,7 @@ defineProps({
     required: true, // "project-basic", "project-with-role", "participant"
   },
 })
+
 // Compute initials for participant avatars
 const getInitials = (name) => {
   return name ? name.substring(0, 2).toUpperCase() : '??'
@@ -23,18 +26,18 @@ const getInitials = (name) => {
     <h1>{{ title }}</h1>
 
     <ul>
-      <li v-for="item in listItems" :key="item.id" class="list-item">
+      <li :class="type" v-for="item in listItems" :key="item.id" class="list-item">
         <!-- 1. Basic Project (No Role) -->
-        <router-link
+        <RouterLink
           v-if="type === 'project-basic'"
           :to="`/dashboard/projects/${item.id}`"
           class="item-link"
         >
           <h3>{{ item.name }}</h3>
-        </router-link>
+        </RouterLink>
 
         <!-- 2. Project with Role -->
-        <router-link
+        <RouterLink
           v-else-if="type === 'project-with-role'"
           :to="`/dashboard/projects/${item.id}`"
           class="item-link"
@@ -43,7 +46,7 @@ const getInitials = (name) => {
           <p class="role">
             Role: <strong>{{ item.role }}</strong>
           </p>
-        </router-link>
+        </RouterLink>
 
         <!-- 3. Participant -->
         <div v-else-if="type === 'participant'" class="participant-item">
@@ -73,30 +76,31 @@ const getInitials = (name) => {
   color: white;
 }
 
+.project-basic,
+.project-with-role,
+.project-with-role *,
+.project-basic * {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
+.participant,
+.participant * {
+  background-color: #3498db;
+  color: white;
+}
 .list-item {
-  background-color: #2c3e50;
-  padding: 15px;
+  overflow: hidden;
   margin: 10px 0;
   border-radius: 8px;
   transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
-}
-
-.list-item:hover {
-  background-color: #34495e;
-}
-
-.item-link {
-  color: white;
-  text-decoration: none;
-  display: block;
-  width: 100%;
 }
 
 .item-link h3,
@@ -105,20 +109,15 @@ h1 {
   margin: 0;
 }
 
-.item-link p,
-.participant-item p {
-  color: #bdc3c7;
-}
-
 .role {
   font-size: 14px;
-  color: #f1c40f;
 }
 
 .participant-item {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 15px;
 }
 
 .avatar {
@@ -126,11 +125,17 @@ h1 {
   height: 40px;
   line-height: 40px;
   border-radius: 50%;
-  background-color: #3498db;
-  color: white;
+  background-color: var(--text-green);
+  color: var(--background-grey);
   font-weight: bold;
   font-size: 18px;
   text-align: center;
   display: inline-block;
+}
+
+.item-link {
+  width: 100%;
+  height: 100%;
+  padding: 15px;
 }
 </style>

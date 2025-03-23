@@ -16,14 +16,29 @@ const router = createRouter({
           component: () => import('../views/ProfileView.vue'),
         },
         {
-          path: 'projects/:id',
-          name: 'Project',
-          component: () => import('../views/ProjectDetailsView.vue'),
-        },
-        {
-          path: 'add-project',
-          name: 'add project',
-          component: () => import('../views/AddProjectForm.vue'),
+          path: 'projects',
+          children: [
+            {
+              path: '',
+              name: 'Projects',
+              component: () => import('../views/ProjectsView.vue'),
+            },
+            {
+              path: ':id',
+              name: 'Project',
+              component: () => import('../views/ProjectDetailsView.vue'),
+            },
+            {
+              path: ':id/update',
+              name: 'update',
+              component: () => import('../views/ProjectForm.vue'),
+            },
+            {
+              path: 'new',
+              name: 'add project',
+              component: () => import('../views/ProjectForm.vue'),
+            },
+          ],
         },
       ],
     },
