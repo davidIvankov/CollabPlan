@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { Project } from '@server/database'
-import type { Insertable, Selectable } from 'kysely'
+import type { Insertable, Selectable, Updateable } from 'kysely'
 import { idSchema } from './shared'
 
 export const projectSchema = z.object({
@@ -11,7 +11,13 @@ export const projectSchema = z.object({
   createdAt: z.date().default(() => new Date()),
 })
 
-export const projectUpdateSchema = projectSchema.pick({ id: true, name: true })
+export const projectUpdateSchema = projectSchema
+  .pick({
+    id: true,
+    name: true,
+    description: true,
+  })
+  .partial({ description: true })
 
 export const projectInsertableSchema = projectSchema.omit({
   id: true,
@@ -41,6 +47,5 @@ export type ProjectInsertableNoUser = Insertable<
   Omit<Project, 'createdBy' | 'id' | 'createdAt'>
 >
 
-export type ProjectUpdate = Selectable<
-  Pick<Project, 'id' | 'name' | 'description'>
->
+export type ProjectUpdate = Updateable<Pick<Project, 'name' | 'description'>> &
+  Pick<Selectable<Project>, 'id'>
