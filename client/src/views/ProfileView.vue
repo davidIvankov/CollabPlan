@@ -1,12 +1,21 @@
 <script lang="ts" setup>
 import { getUser } from '@/stores/user'
 import { onMounted, ref, computed, type Ref } from 'vue'
+import ListComponent from '@/components/ListComponent.vue'
 import type { UserPublic } from '../../../server/src/entities/user'
+import { getByCreatedBy } from '@/stores/project'
+import type { ProjectPublic } from '@server/shared/types'
 
 const user: Ref<UserPublic | undefined> = ref()
+const usersProjects = ref()
 
 onMounted(async () => {
   user.value = await getUser()
+  const fetchedProjects = await getByCreatedBy()
+  console.log(fetchedProjects)
+
+  usersProjects.value = fetchedProjects
+  console.log(usersProjects.value)
 })
 const userInitials = computed(() => {
   return user.value?.name ? user.value.name.substring(0, 2).toUpperCase() : ''
@@ -22,8 +31,13 @@ const userInitials = computed(() => {
     <p class="user-email">{{ user.email }}</p>
 
     <div class="projects">
-      <h3>My Projects</h3>
-      <RouterLink to="/create-project" class="add-project-btn">+ Add Project</RouterLink>
+      <ListComponent
+        v-if="usersProjects"
+        title="My Projects"
+        :listItems="usersProjects"
+        type="project-basic"
+      ></ListComponent>
+      <RouterLink to="/dashboard/add-project" class="add-project-btn">+ Add Project</RouterLink>
       <h3>Collaborating In</h3>
       <ul></ul>
     </div>

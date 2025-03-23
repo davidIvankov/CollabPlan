@@ -4,6 +4,7 @@ import setAvailability from './setAvailability'
 import changeRole from './changeRole'
 import remove from './remove'
 import removeAvailability from './removeAvailability'
+import getByProjectId from './getByProjectId'
 
 export default router({
   create,
@@ -11,4 +12,5 @@ export default router({
   changeRole,
   remove,
   removeAvailability,
+  getByProjectId,
 })

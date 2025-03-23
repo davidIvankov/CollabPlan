@@ -3,6 +3,7 @@ import { TABLES } from '@server/database/dbConstants'
 import {
   projectParticipantKeysPublic,
   type InsertableSetAvailability,
+  type ParticipantSelected,
   type ProjectParticipantInsertable,
   type ProjectParticipantPublic,
   type UpdateRoleInsertable,
@@ -82,6 +83,15 @@ export function projectParticipantRepository(db: Database) {
         .where('projectId', '=', projectId)
         .returning(['availability'])
         .executeTakeFirst()
+    },
+    async getByProjectId(projectId: string): Promise<ParticipantSelected[]> {
+      return db
+        .selectFrom(TABLES.PROJECT_PARTICIPANT)
+        .innerJoin(TABLES.USER, 'userId', 'user.id')
+        .where('projectId', '=', projectId)
+        .select(['name', 'userId', 'role'])
+        .$castTo<ParticipantSelected>()
+        .execute()
     },
     async removeAvailability(args: TaskAssignArguments) {
       const { projectId, userId, scheduledTime } = args

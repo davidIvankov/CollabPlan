@@ -4,6 +4,7 @@ import getById from './getById'
 import update from './update'
 import getByCreatedBy from './getByCreatedBy'
 import deleteProject from './deleteProject'
+import getByParticipant from './getByParticipant'
 
 export default router({
   create,
@@ -11,4 +12,5 @@ export default router({
   update,
   getByCreatedBy,
   deleteProject,
+  getByParticipant,
 })

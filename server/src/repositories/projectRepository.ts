@@ -2,6 +2,7 @@ import type { Database } from '@server/database'
 import { TABLES } from '@server/database/dbConstants'
 import {
   projectKeysPublic,
+  type ProjectByParticipant,
   type ProjectInsertable,
   type ProjectPublic,
   type ProjectUpdate,
@@ -23,6 +24,21 @@ export function projectRepository(db: Database) {
         .where('createdBy', '=', userId)
         .execute()
     },
+    async getByParticipantId(
+      userId: string | null
+    ): Promise<ProjectByParticipant[]> {
+      return db
+        .selectFrom(TABLES.PROJECT)
+        .innerJoin(
+          TABLES.PROJECT_PARTICIPANT,
+          'project.id',
+          'projectParticipant.projectId'
+        )
+        .where('userId', '=', userId)
+        .select(['project.id', 'project.name', 'projectParticipant.role'])
+        .$castTo<ProjectByParticipant>()
+        .execute()
+    },
     async getById(projectId: string): Promise<ProjectPublic | undefined> {
       return db
         .selectFrom(TABLES.PROJECT)
@@ -32,10 +48,10 @@ export function projectRepository(db: Database) {
     },
 
     async update(newProject: ProjectUpdate) {
-      const { id, name } = newProject
+      const { id, name, description } = newProject
       return db
         .updateTable(TABLES.PROJECT)
-        .set({ name })
+        .set({ name, description })
         .where('id', '=', id)
         .returning(projectKeysPublic)
         .executeTakeFirst()

@@ -31,6 +31,7 @@ defineEmits<{
 
 <style scoped>
 .container {
+  margin-top: 24px;
   width: 100%;
   display: flex;
   flex-direction: column;

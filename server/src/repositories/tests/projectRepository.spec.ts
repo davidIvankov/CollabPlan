@@ -32,7 +32,6 @@ describe('create', async () => {
 
   it('creates project if all inputs are correct', async () => {
     const insertion = await repository.create(projectOne)
-
     expect(insertion).toEqual(projectMatcher(projectOne))
     expect(await selectAll(db, TABLES.PROJECT)).toEqual([
       projectMatcher(projectOne),
@@ -53,6 +52,27 @@ describe('getById', () => {
     const selection = await repository.getById(projects[0].id)
 
     expect(selection).toEqual(projectMatcher(projectOne))
+  })
+})
+
+describe('getByParticipantId', () => {
+  afterAll(async () => {
+    await clearTables(db, [TABLES.PROJECT])
+  })
+
+  it('should return the correct project by participantId', async () => {
+    const project = await insertAll(db, TABLES.PROJECT, [
+      projectOne,
+      projectTwo,
+    ])
+    await insertAll(db, TABLES.PROJECT_PARTICIPANT, [
+      { userId: userNoProjects.id, projectId: project[0].id },
+    ])
+    const selection = await repository.getByParticipantId(userNoProjects.id)
+
+    expect(selection).toEqual([
+      { id: project[0].id, name: project[0].name, role: 'member' },
+    ])
   })
 })
 
@@ -80,6 +100,7 @@ describe('getByCreatedBy', () => {
 
 describe('update', async () => {
   const NEW_NAME = 'new Name'
+  const NEW_DESCRIPTION = 'new Description of the Project.'
   beforeAll(async () => {
     await insertAll(db, TABLES.PROJECT, [projectOne, projectTwo])
   })
@@ -92,7 +113,11 @@ describe('update', async () => {
     const oldProjects = await selectAll(db, TABLES.PROJECT)
     const oldName = oldProjects[0].name
 
-    await repository.update({ id: oldProjects[0].id, name: NEW_NAME })
+    await repository.update({
+      id: oldProjects[0].id,
+      name: NEW_NAME,
+      description: NEW_DESCRIPTION,
+    })
     const newProjects = await selectAll(db, TABLES.PROJECT)
     const newName = newProjects[1].name
 
@@ -106,10 +131,15 @@ describe('update', async () => {
     const updatedProject = await repository.update({
       id: oldProjects[1].id,
       name: NEW_NAME,
+      description: NEW_DESCRIPTION,
     })
 
     expect(updatedProject).toEqual(
-      projectMatcher({ ...oldProjects[1], name: NEW_NAME })
+      projectMatcher({
+        ...oldProjects[1],
+        name: NEW_NAME,
+        description: NEW_DESCRIPTION,
+      })
     )
   })
 })

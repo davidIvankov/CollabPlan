@@ -19,6 +19,12 @@ export const projectParticipantKeysAll = Object.keys(
 
 export const projectParticipantKeysPublic = projectParticipantKeysAll
 
+export type ParticipantSelected = {
+  name: string
+  id: string
+  role: 'admin' | 'member'
+}
+
 export type ProjectParticipantPublic = Pick<
   Selectable<ProjectParticipant>,
   (typeof projectParticipantKeysPublic)[number]

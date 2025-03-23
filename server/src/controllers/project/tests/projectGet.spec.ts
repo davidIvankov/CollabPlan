@@ -20,7 +20,10 @@ await insertAll(db, TABLES.PROJECT, [
 
 const [projectOne, projectTwo] = await selectAll(db, TABLES.PROJECT)
 
-const { getById, getByCreatedBy } = createCaller({ db })
+const { getById, getByCreatedBy } = createCaller({
+  db,
+  authUser: { id: user.id },
+})
 
 describe('getById', () => {
   it('should return the project if it exists', async () => {

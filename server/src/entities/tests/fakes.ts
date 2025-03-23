@@ -93,6 +93,7 @@ export const fakeProject = <T extends Partial<Insertable<Project>>>(
   overrides: T
 ): Insertable<Project> => ({
   name: random.string(),
+  description: random.sentence({ words: 10 }),
   createdBy: uuidv4(),
   ...overrides,
 })
@@ -103,6 +104,7 @@ export const fakeInsertableProjectNoUser = <
   overrides: T
 ): ProjectInsertableNoUser => ({
   name: random.string(),
+  description: random.sentence({ words: 10 }),
   ...overrides,
 })
 

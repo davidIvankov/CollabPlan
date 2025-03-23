@@ -15,6 +15,16 @@ const router = createRouter({
           name: 'Profile',
           component: () => import('../views/ProfileView.vue'),
         },
+        {
+          path: 'projects/:id',
+          name: 'Project',
+          component: () => import('../views/ProjectDetailsView.vue'),
+        },
+        {
+          path: 'add-project',
+          name: 'add project',
+          component: () => import('../views/AddProjectForm.vue'),
+        },
       ],
     },
     {

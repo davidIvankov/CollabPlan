@@ -22,6 +22,7 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>
 export interface Project {
   createdAt: Generated<Timestamp>
   createdBy: string | null
+  description: string | null
   id: Generated<string>
   name: string
 }

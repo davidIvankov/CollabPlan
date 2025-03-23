@@ -27,6 +27,7 @@
     "server": "^0.0.3",
     "superjson": "^2.2.1",
     "vue": "^3.4.21",
+    "vue-markdown-render": "^2.2.1",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

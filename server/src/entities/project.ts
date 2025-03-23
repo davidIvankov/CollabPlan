@@ -6,6 +6,7 @@ import { idSchema } from './shared'
 export const projectSchema = z.object({
   id: idSchema,
   name: z.string().min(1).max(500),
+  description: z.string().min(20).max(1000),
   createdBy: idSchema,
   createdAt: z.date().default(() => new Date()),
 })
@@ -17,6 +18,12 @@ export const projectInsertableSchema = projectSchema.omit({
   createdBy: true,
   createdAt: true,
 })
+
+export type ProjectByParticipant = {
+  id: string
+  name: string
+  role: 'admin' | 'member'
+}
 
 export const projectKeysAll = Object.keys(
   projectSchema.shape
@@ -34,4 +41,6 @@ export type ProjectInsertableNoUser = Insertable<
   Omit<Project, 'createdBy' | 'id' | 'createdAt'>
 >
 
-export type ProjectUpdate = Selectable<Pick<Project, 'id' | 'name'>>
+export type ProjectUpdate = Selectable<
+  Pick<Project, 'id' | 'name' | 'description'>
+>

@@ -25,6 +25,10 @@ a {
   width: 24px;
   height: 24px;
   border-radius: 50%;
+
+  position: absolute;
+  top: 24px;
+  left: 24px;
 }
 
 input {
@@ -34,7 +38,13 @@ input {
   border-radius: 8px;
   border: none;
 }
-
+textarea {
+  background-color: var(--grey-icon);
+  padding: 12px;
+  width: calc(100% - 24px);
+  border-radius: 8px;
+  border: none;
+}
 button {
   border: none;
   cursor: pointer;
