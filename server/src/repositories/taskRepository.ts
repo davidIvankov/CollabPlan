@@ -17,6 +17,13 @@ export function taskRepository(db: Database) {
         .returning(taskKeysAll)
         .executeTakeFirstOrThrow()
     },
+    async getByProjectId(projectId: string): Promise<TaskSelectable[]> {
+      return db
+        .selectFrom(TABLES.TASK)
+        .select(taskKeysAll)
+        .where('projectId', '=', projectId)
+        .execute()
+    },
     async getById(taskId: string): Promise<TaskSelectable> {
       return db
         .selectFrom(TABLES.TASK)

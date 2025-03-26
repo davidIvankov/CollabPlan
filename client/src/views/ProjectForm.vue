@@ -26,6 +26,7 @@ const [deleteProject, deletionError] = useErrorMessage(async () => {
   if (!confirm('Are you shore you want to delete this project?')) return
 
   await removeProject(projectId)
+  router.push('/dashboard/profile')
 })
 const [submitProject, errorMessage] = useErrorMessage(async () => {
   let newProject
@@ -39,7 +40,7 @@ const [submitProject, errorMessage] = useErrorMessage(async () => {
   } else {
     newProject = await createProject(project.value)
   }
-  router.push(`/dashboard/projects/${newProject?.id}`)
+  router.push(`/dashboard/projects/${newProject?.id}/details`)
 })
 </script>
 
@@ -109,9 +110,5 @@ button {
 .footer p {
   color: var(--text-green);
   font-weight: 700;
-}
-
-.signIn {
-  text-decoration: underline;
 }
 </style>

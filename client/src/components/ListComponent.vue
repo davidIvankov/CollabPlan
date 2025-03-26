@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { getInitials } from '@/utils/getInitials'
 
 defineProps({
   title: {
@@ -17,9 +18,6 @@ defineProps({
 })
 
 // Compute initials for participant avatars
-const getInitials = (name) => {
-  return name ? name.substring(0, 2).toUpperCase() : '??'
-}
 </script>
 <template>
   <div class="item-list">
@@ -30,7 +28,7 @@ const getInitials = (name) => {
         <!-- 1. Basic Project (No Role) -->
         <RouterLink
           v-if="type === 'project-basic'"
-          :to="`/dashboard/projects/${item.id}`"
+          :to="`/dashboard/projects/${item.id}/details`"
           class="item-link"
         >
           <h3>{{ item.name }}</h3>
@@ -39,7 +37,7 @@ const getInitials = (name) => {
         <!-- 2. Project with Role -->
         <RouterLink
           v-else-if="type === 'project-with-role'"
-          :to="`/dashboard/projects/${item.id}`"
+          :to="`/dashboard/projects/${item.id}/details`"
           class="item-link"
         >
           <h3>{{ item.name }}</h3>
@@ -70,10 +68,12 @@ const getInitials = (name) => {
 
 <style scoped>
 .item-list {
-  padding: 20px;
-  max-width: 800px;
+  width: 100%;
   margin: 0 auto;
   color: white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .project-basic,
@@ -85,7 +85,7 @@ const getInitials = (name) => {
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 20px;
 }
 

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import { authenticate } from './guards'
+import ProjectLayout from '@/layouts/ProjectLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,14 +26,33 @@ const router = createRouter({
             },
             {
               path: ':id',
-              name: 'Project',
-              component: () => import('../views/ProjectDetailsView.vue'),
+              component: ProjectLayout,
+              props: true,
+              children: [
+                {
+                  path: 'details',
+                  name: 'Project',
+                  component: () => import('../views/ProjectDetailsView.vue'),
+                },
+                {
+                  path: 'update',
+                  name: 'update',
+                  component: () => import('../views/ProjectForm.vue'),
+                },
+                {
+                  path: 'add-participant',
+                  name: 'Add Participant',
+                  component: () => import('../views/AddParticipantView.vue'),
+                },
+                { path: 'tasks', name: 'Tasks', component: () => import('../views/TasksView.vue') },
+                {
+                  path: 'add-task',
+                  name: 'Add Task',
+                  component: () => import('../views/TaskFormView.vue'),
+                },
+              ],
             },
-            {
-              path: ':id/update',
-              name: 'update',
-              component: () => import('../views/ProjectForm.vue'),
-            },
+
             {
               path: 'new',
               name: 'add project',

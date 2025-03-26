@@ -23,14 +23,13 @@ onMounted(async () => {
       :listItems="usersProjects"
       type="project-basic"
     ></ListComponent>
-    <RouterLink to="/dashboard/add-project" class="add-project-btn btn">+ Add Project</RouterLink>
+    <RouterLink to="/dashboard/projects/new" class="add-project-btn btn">+ Add Project</RouterLink>
     <ListComponent
       v-if="participatingIn"
       title="Collaborating in"
       :listItems="participatingIn"
       type="project-with-role"
     ></ListComponent>
-    <ul></ul>
   </div>
 </template>
 <style scoped>
