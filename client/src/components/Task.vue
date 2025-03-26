@@ -2,6 +2,9 @@
 import type { TaskSelectable } from '@server/shared/types'
 
 defineProps<{ task: TaskSelectable }>()
+
+const isEmptyObject = (obj: unknown): boolean =>
+  !!obj && typeof obj === 'object' && Object.keys(obj).length === 0
 </script>
 
 <template>
@@ -15,7 +18,7 @@ defineProps<{ task: TaskSelectable }>()
       <p><strong>Assigned to:</strong> {{ task?.assignedTo || 'Unassigned' }}</p>
       <p>
         <strong>Scheduled Time:</strong>
-        {{ task?.scheduledTime ? task?.scheduledTime : 'Not scheduled' }}
+        {{ !isEmptyObject(task?.scheduledTime) ? task?.scheduledTime : 'Not scheduled' }}
       </p>
       <p><strong>Duration:</strong> {{ task?.duration }} minutes</p>
     </div>

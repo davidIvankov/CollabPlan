@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getTasks } from '@/stores/task'
-import { type ProjectPublic, type TaskSelectable } from '@server/shared/types'
+import type { ProjectPublic, TaskSelectable } from '@server/shared/types'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Task from '@/components/Task.vue'
