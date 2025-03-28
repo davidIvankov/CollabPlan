@@ -3,6 +3,7 @@
   --button-blue: #3498db;
   --background-grey: #222222;
   --task-background: #ffae42;
+  --button-danger: #d9534f;
   --task-font: #4a2800;
   --white: #fffff0;
   --grey-icon: #3f3f3f;
@@ -41,11 +42,12 @@ input {
   width: calc(100% - 24px);
   border-radius: 8px;
   border: none;
-  color: inherit;
+  color: var(--white);
 }
 textarea {
   background-color: var(--grey-icon);
   padding: 12px;
+  color: var(--white);
   width: calc(100% - 24px);
   border-radius: 8px;
   border: none;

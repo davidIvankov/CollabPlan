@@ -52,13 +52,7 @@ const [submitProject, errorMessage] = useErrorMessage(async () => {
   >
     <template #default>
       <div class="inputs">
-        <input
-          placeholder="name"
-          type="text"
-          autocomplete="username"
-          v-model="project.name"
-          :required="true"
-        />
+        <input placeholder="name" type="text" v-model="project.name" :required="true" />
 
         <textarea
           v-model="project.description"

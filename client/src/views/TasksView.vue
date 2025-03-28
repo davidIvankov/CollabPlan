@@ -34,8 +34,10 @@ const goToAddTask = async () => {
 <style scoped>
 .tasks-container {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 16px;
+  margin-bottom: 20vw;
 }
 
 .add-task-button {

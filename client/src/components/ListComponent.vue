@@ -1,59 +1,87 @@
-<script setup>
+<script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { getInitials } from '@/utils/getInitials'
+import type { ParticipantSelected, ProjectByParticipant, ProjectPublic } from '@server/shared/types'
+import { authUserId } from '@/stores/user'
+import { onMounted, ref } from 'vue'
+import { getProjectById } from '@/stores/project'
+import { removeParticipant } from '@/stores/participant'
 
-defineProps({
-  title: {
-    type: String,
-    default: 'List',
-  },
-  listItems: {
-    type: Array,
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true, // "project-basic", "project-with-role", "participant"
-  },
+const project = ref<ProjectPublic | null>(null)
+const props = defineProps<{
+  title: string
+  projectId?: string
+  listItems: ParticipantSelected[] | ProjectByParticipant[] | ProjectPublic[]
+  type: 'project-basic' | 'project-with-role' | 'participant'
+}>()
+
+const localListItems = ref<ParticipantSelected[] | ProjectByParticipant[] | ProjectPublic[] | null>(
+  null
+)
+
+onMounted(async () => {
+  if (props.projectId) {
+    project.value = await getProjectById(props.projectId)
+  }
+  localListItems.value = props.listItems
 })
 
-// Compute initials for participant avatars
+const isDeletable = (userId: string) => {
+  return project.value?.createdBy === authUserId.value && authUserId.value !== userId
+}
+
+const remove = async (userId: string, name: string) => {
+  if (!confirm(`Delete participant ${name}!`)) return
+  await removeParticipant({ projectId: props.projectId as string, userId: userId })
+  localListItems.value = (localListItems.value as ParticipantSelected[]).filter(
+    (item: ParticipantSelected) => item.userId !== userId
+  )
+}
 </script>
 <template>
   <div class="item-list">
     <h1>{{ title }}</h1>
 
     <ul>
-      <li :class="type" v-for="item in listItems" :key="item.id" class="list-item">
-        <!-- 1. Basic Project (No Role) -->
+      <li
+        :class="type"
+        v-for="item in localListItems"
+        :key="(item as ProjectPublic).id"
+        class="list-item"
+      >
         <RouterLink
           v-if="type === 'project-basic'"
-          :to="`/dashboard/projects/${item.id}/details`"
+          :to="`/dashboard/projects/${(item as ProjectPublic).id}/details`"
           class="item-link"
         >
           <h3>{{ item.name }}</h3>
         </RouterLink>
 
-        <!-- 2. Project with Role -->
         <RouterLink
           v-else-if="type === 'project-with-role'"
-          :to="`/dashboard/projects/${item.id}/details`"
+          :to="`/dashboard/projects/${(item as ProjectByParticipant).id}/details`"
           class="item-link"
         >
           <h3>{{ item.name }}</h3>
           <p class="role">
-            Role: <strong>{{ item.role }}</strong>
+            Role: <strong>{{ (item as ParticipantSelected).role }}</strong>
           </p>
         </RouterLink>
 
-        <!-- 3. Participant -->
         <div v-else-if="type === 'participant'" class="participant-item">
           <span class="avatar">{{ getInitials(item.name) }}</span>
           <div>
             <h3>{{ item.name }}</h3>
             <p class="role">
-              Role: <strong>{{ item.role }}</strong>
+              Role: <strong>{{ (item as ParticipantSelected).role }}</strong>
             </p>
+            <button
+              v-if="isDeletable((item as ParticipantSelected).userId)"
+              @click="remove((item as ParticipantSelected).userId, item.name)"
+              class="delete-btn"
+            >
+              Remove
+            </button>
           </div>
         </div>
 
@@ -74,6 +102,16 @@ defineProps({
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+}
+
+.delete-btn {
+  background-color: var(--button-danger) !important;
+  color: var(--white);
+  padding: 10px 16px;
+  font-size: var(--mobile-text);
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .project-basic,

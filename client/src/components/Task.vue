@@ -32,7 +32,6 @@ const isEmptyObject = (obj: unknown): boolean =>
   border-radius: 8px;
   padding: 16px;
   margin: 16px;
-  width: 300px;
   max-width: 100%;
   display: flex;
   flex-direction: column;

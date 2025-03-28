@@ -21,7 +21,7 @@ export const projectParticipantKeysPublic = projectParticipantKeysAll
 
 export type ParticipantSelected = {
   name: string
-  id: string
+  userId: string
   role: 'admin' | 'member'
 }
 

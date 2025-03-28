@@ -1,18 +1,15 @@
 <script lang="ts" setup>
-import { getUser } from '@/stores/user'
-import { onMounted, ref, computed, type Ref } from 'vue'
+import { authUserId } from '@/stores/user'
+import { onMounted, ref } from 'vue'
 import ListComponent from '@/components/ListComponent.vue'
-import type { UserPublic } from '../../../server/src/entities/user'
 import { getByCreatedBy, getByParticipant } from '@/stores/project'
 
-const user: Ref<UserPublic | undefined> = ref()
 const usersProjects = ref()
 const participatingIn = ref()
 
 onMounted(async () => {
-  user.value = await getUser()
-  usersProjects.value = await getByCreatedBy()
-  participatingIn.value = await getByParticipant(user.value.id)
+  usersProjects.value = await getByCreatedBy(authUserId.value as string)
+  participatingIn.value = await getByParticipant(authUserId.value as string)
 })
 </script>
 <template>
