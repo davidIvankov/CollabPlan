@@ -13,11 +13,22 @@ const tasks = ref<TaskSelectable[] | null>()
 onMounted(async () => {
   tasks.value = await getTasks(projectId as string)
 })
+
+const reloadTasks = async () => {
+  tasks.value = await getTasks(projectId as string)
+}
 </script>
 
 <template>
   <ProjectNavigation :projectId="projectId as string"></ProjectNavigation>
-  <RouterView :projectId="projectId" v-if="tasks" :tasks="tasks" :userId="authUserId"></RouterView>
+  <RouterView
+    :projectId="projectId"
+    v-if="tasks"
+    :tasks="tasks"
+    :userId="authUserId"
+    @task-updated="reloadTasks"
+  ></RouterView>
+
   <RouterLink
     class="button"
     :to="`/dashboard/projects/${projectId}/calendar`"

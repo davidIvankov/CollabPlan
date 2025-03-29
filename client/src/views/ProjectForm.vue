@@ -100,6 +100,7 @@ const [submitProject, errorMessage] = useErrorMessage(async () => {
 button {
   width: var(100% - 10px);
   margin: auto;
+  margin-bottom: 10px;
 }
 
 .footer {

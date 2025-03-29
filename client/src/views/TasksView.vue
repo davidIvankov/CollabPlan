@@ -11,6 +11,7 @@ const project = ref<ProjectPublic | null>(null)
 const router = useRouter()
 const props = defineProps<{ projectId: string; userId: string }>()
 
+const emit = defineEmits(['task-updated'])
 const isOwner = computed(() => project.value?.createdBy === props.userId)
 
 onMounted(async () => {
@@ -31,6 +32,7 @@ const completedTasks = computed(() =>
 )
 const reloadTasks = async () => {
   tasks.value = await getTasks(props.projectId)
+  emit('task-updated')
 }
 
 const goToAddTask = async () => {
