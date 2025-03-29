@@ -138,6 +138,8 @@ const isEmptyObject = (obj: unknown): boolean =>
   border-radius: 8px 8px 0px 0px;
 }
 .add {
+  text-align: center;
+  background-color: var(--white);
   width: 100%;
   border-radius: 0px 0px 8px 8px;
   height: 42px;
@@ -148,7 +150,7 @@ const isEmptyObject = (obj: unknown): boolean =>
   display: flex;
 }
 .schedule {
-  width: 100%;
+  width: calc(100% - 36px);
 }
 
 .schedule-input {
