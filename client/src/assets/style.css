@@ -59,6 +59,7 @@ textarea {
   border: none;
 }
 button {
+  all: unset;
   border: none;
   cursor: pointer;
 }

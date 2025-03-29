@@ -94,7 +94,7 @@ const [submitTask, errorMessage] = useErrorMessage(async () => {
 }
 
 button {
-  width: 100%;
+  width: var(100% - 10px);
   margin: auto;
   background-color: var(--button-blue);
   color: var(--white);

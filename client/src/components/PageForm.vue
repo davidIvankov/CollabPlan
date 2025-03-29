@@ -1,4 +1,3 @@
-import { RouterLink } from 'vue-router';
 <script lang="ts" setup>
 defineProps<{
   heading: string
@@ -35,7 +34,6 @@ defineEmits<{
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 }
 p .formContainer {
   width: 100%;

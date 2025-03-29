@@ -98,7 +98,7 @@ async function submitSignup() {
   margin-bottom: 8vw;
 }
 button {
-  width: 100%;
+  width: var(100% - 10px);
   margin: auto;
 }
 
