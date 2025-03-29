@@ -47,6 +47,7 @@ const handleSearch = async () => {
     <input
       @input="handleSearch"
       v-model="searchQuery"
+      data-testid="search"
       type="text"
       class="search-input"
       placeholder="Search by name..."
@@ -59,7 +60,7 @@ const handleSearch = async () => {
           <p class="name">{{ user?.name }}</p>
           <p class="email">{{ user?.email }}</p>
         </div>
-        <button class="add-btn" @click="addParticipant(user?.id)">Add</button>
+        <button data-testid="add" class="add-btn" @click="addParticipant(user?.id)">Add</button>
       </div>
     </div>
   </div>
@@ -77,6 +78,7 @@ const handleSearch = async () => {
   background-color: inherit;
   margin: 0;
 }
+
 .search-container {
   width: 90%;
   max-width: 400px;
@@ -110,6 +112,7 @@ const handleSearch = async () => {
   gap: 2vw;
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Ensure the button sticks to the right */
   background: var(--grey-icon);
   padding: 12px;
   border-radius: 8px;
@@ -132,6 +135,10 @@ const handleSearch = async () => {
   margin-right: 10px;
 }
 
+.data {
+  flex: 1; /* Allow the data section to take up remaining space */
+}
+
 .add-btn {
   background-color: var(--button-blue);
   color: var(--white);
@@ -139,9 +146,10 @@ const handleSearch = async () => {
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
+  margin-left: auto; /* Push the button to the far right */
 }
 
-.invite-btn:hover {
+.add-btn:hover {
   background-color: #217dbb;
 }
 </style>

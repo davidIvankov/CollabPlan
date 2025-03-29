@@ -28,9 +28,15 @@ const [submitTask, errorMessage] = useErrorMessage(async () => {
   <PageForm heading="New Task" formLabel="NewTask" @submit="submitTask">
     <template #default>
       <div class="inputs">
-        <input placeholder="Task Name" type="text" v-model="task.name" :required="true" />
-
+        <input
+          aria-label="Name"
+          placeholder="Task Name"
+          type="text"
+          v-model="task.name"
+          :required="true"
+        />
         <textarea
+          aria-label="Description"
           v-model="task.description"
           placeholder="Enter task description..."
           rows="4"
@@ -40,7 +46,14 @@ const [submitTask, errorMessage] = useErrorMessage(async () => {
         <div class="duration">
           <label for="duration">Duration:</label>
           <div class="duration-input">
-            <input type="number" v-model="task.duration" min="1" id="duration" :required="true" />
+            <input
+              type="number"
+              aria-label="Duration"
+              v-model="task.duration"
+              min="1"
+              id="duration"
+              :required="true"
+            />
             <p class="min">Minutes</p>
           </div>
         </div>

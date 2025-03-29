@@ -65,7 +65,6 @@ describe('create', async () => {
   it('assigns user to the task if he has slots', async () => {
     const assignment = await assign({
       id: taskOne.id,
-      projectId: project.id,
       scheduledTime: {
         start: '2025-02-25T15:00:00Z',
         end: '2025-02-25T17:00:00Z',
@@ -85,7 +84,6 @@ describe('create', async () => {
     await expect(
       assign({
         id: taskOne.id,
-        projectId: project.id,
         scheduledTime: {
           start: '2025-02-25T15:00:00Z',
           end: '2025-02-25T16:00:00Z',

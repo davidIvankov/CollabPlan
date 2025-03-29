@@ -11,7 +11,6 @@ import {
   type MigrationProvider,
 } from 'kysely'
 import config from '@server/config'
-import logger from '@server/logger'
 import { createDatabase } from '..'
 
 const MIGRATIONS_PATH = '../migrations'
@@ -33,10 +32,8 @@ async function migrateLatest(db: Kysely<any>) {
 
   results?.forEach((it) => {
     if (it.status === 'Success') {
-      logger.info(`Migration "${it.migrationName}" was executed successfully.`)
       console.info(`Migration "${it.migrationName}" was executed successfully.`)
     } else if (it.status === 'Error') {
-      logger.error(`Failed to execute migration "${it.migrationName}".`)
       console.error(`Failed to execute migration "${it.migrationName}".`)
     }
   })

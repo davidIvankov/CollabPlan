@@ -18,6 +18,7 @@ defineProps<{
       :to="`/dashboard/projects/${projectId}/tasks`"
       class="nav-item"
       active-class="active"
+      data-testid="tasks"
     >
       Tasks
     </RouterLink>
@@ -30,7 +31,6 @@ defineProps<{
   justify-content: space-around;
   width: 100%;
   background-color: var(--background-grey);
-  padding: 12px;
   border-radius: 8px;
   margin-top: 16vw;
 }
@@ -53,5 +53,20 @@ defineProps<{
 .active {
   background-color: var(--text-green);
   color: var(--background-grey);
+}
+
+@media (min-width: 1024px) {
+  .navigation {
+    justify-content: space-between; /* Add more space between items */
+    width: 200px;
+    gap: 2vw;
+    margin: 20px auto; /* Reduce top margin and center horizontally */
+  }
+
+  .nav-item {
+    font-size: var(--desktop-text); /* Use a larger font size for desktop */
+    width: auto; /* Allow items to size dynamically */
+    padding: 12px 20px; /* Add more padding for better spacing */
+  }
 }
 </style>

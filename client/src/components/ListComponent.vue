@@ -97,11 +97,11 @@ const remove = async (userId: string, name: string) => {
 <style scoped>
 .item-list {
   width: 100%;
-  margin: 0 auto;
   color: white;
+  margin: 2vw;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
 .delete-btn {
@@ -131,6 +131,11 @@ h1 {
 .participant * {
   background-color: #3498db;
   color: white;
+}
+ul {
+  width: 50%;
+  margin: 0;
+  padding-left: 2vw;
 }
 .list-item {
   overflow: hidden;

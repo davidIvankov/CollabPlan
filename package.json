@@ -6,8 +6,5 @@
   "workspaces": [
     "client",
     "server"
-  ],
-  "dependencies": {
-    "pino": "^9.6.0"
-  }
+  ]
 }

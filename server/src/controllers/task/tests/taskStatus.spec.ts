@@ -60,16 +60,16 @@ await insertAll(db, TABLES.PROJECT_PARTICIPANT, [
   },
 ])
 
-const { setReview, reviewTask } = createCaller({
+const { setDone } = createCaller({
   db,
   authUser: { id: user.id },
 })
 
 describe('setReview', () => {
   it('sets task to review', async () => {
-    const response = await setReview(taskOne.id)
+    const response = await setDone(taskOne.id)
 
-    expect(response).toEqual({ id: taskOne.id, status: 'review' })
+    expect(response).toEqual({ id: taskOne.id, status: TASK_STATUS.DONE })
   })
 
   it('throws error if task not assigned to the user', async () => {
@@ -78,43 +78,8 @@ describe('setReview', () => {
       authUser: { id: userTwo.id },
     })
 
-    await expect(unauthorizedCaller.setReview(taskOne.id)).rejects.toThrow(
+    await expect(unauthorizedCaller.setDone(taskOne.id)).rejects.toThrow(
       /task is not assigned to you./
     )
-  })
-})
-
-describe('reviewTask', async () => {
-  const adminCaller = createCaller({
-    db,
-    authUser: { id: userTwo.id },
-  })
-
-  afterAll(async () => {
-    await clearTables(db, [
-      TABLES.PROJECT,
-      TABLES.PROJECT_PARTICIPANT,
-      TABLES.USER,
-    ])
-  })
-
-  it('sets status to value given', async () => {
-    const response = await adminCaller.reviewTask({
-      id: taskOne.id,
-      status: TASK_STATUS.DONE,
-      projectId: project.id,
-    })
-
-    expect(response).toMatchObject({ id: taskOne.id, status: TASK_STATUS.DONE })
-  })
-
-  it('throws error if non admin tries to make review', async () => {
-    await expect(
-      reviewTask({
-        id: taskOne.id,
-        status: TASK_STATUS.DONE,
-        projectId: project.id,
-      })
-    ).rejects.toThrow(/only admin/)
   })
 })

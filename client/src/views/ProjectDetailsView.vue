@@ -48,6 +48,7 @@ const leaveProject = async () => {
       type="participant"
     ></ListComponent>
     <RouterLink
+      data-testid="addParticipant"
       v-if="isOwner"
       :to="`/dashboard/projects/${route.params.id}/add-participant`"
       class="btn"
@@ -66,6 +67,8 @@ const leaveProject = async () => {
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .leave-btn {
   background-color: var(--button-danger);
@@ -85,5 +88,24 @@ h1 {
   font-size: 24px;
   margin-top: 48px;
   color: var(--text-green);
+}
+@media (min-width: 1024px) {
+  .project-details {
+    margin-top: 0; /* Remove top margin for proper vertical centering */
+    padding-bottom: 0; /* Remove bottom padding for proper vertical centering */
+    max-width: 600px; /* Make it narrower on desktop */
+    min-height: 70vh; /* Adjust height for desktop */
+    margin-left: auto; /* Center horizontally */
+    margin-right: auto; /* Center horizontally */
+  }
+
+  h1 {
+    font-size: 28px; /* Slightly larger font size for desktop */
+  }
+
+  .leave-btn {
+    width: auto; /* Allow the button to size dynamically */
+    padding: 12px 20px; /* Add more padding for better spacing */
+  }
 }
 </style>

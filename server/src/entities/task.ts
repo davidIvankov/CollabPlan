@@ -36,8 +36,9 @@ export const taskInsertableSchema = taskSchema.omit({
 export const taskAssignSchema = z.object({
   id: idSchema,
   scheduledTime: availabilitySlotSchema,
-  projectId: idSchema,
 })
+
+export const taskRemoveSchema = taskSchema.pick({ id: true, projectId: true })
 
 export const taskReviewSchema = z.object({
   description: stringSchema.nullable().default(null).optional(),
@@ -68,10 +69,7 @@ export type TaskAssignArgumentsRepo = Insertable<{
   userId: string
 }>
 
-export type TaskSelectable = Pick<
-  Selectable<Task>,
-  (typeof taskKeysAll)[number]
->
+export type TaskSelectable = Selectable<Task>
 export type TaskInsertable = Insertable<
   Omit<Task, 'assignedTo' | 'createdAt' | 'id' | 'scheduledTime' | 'status'>
 >

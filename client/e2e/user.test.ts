@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { asUser } from 'utils/api'
 import { fakeUser } from 'utils/fakeData'
 
-const user = fakeUser()
+const user = fakeUser({ name: 'Jure' })
 
 test.describe.serial('login and sign in', () => {
   const URL_LOGGED_IN = '/dashboard/profile'

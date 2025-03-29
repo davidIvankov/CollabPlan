@@ -21,7 +21,8 @@ export const fakeUser = <T extends Insertable<User>>(overrides: Partial<T> = {} 
 })
 
 export const fakeProject = <T extends Partial<Insertable<Project>>>(overrides: T = {} as T) => ({
-  name: random.sentence({ words: 5 }),
+  name: random.string(),
+  description: random.sentence({ words: 5 }),
   ...overrides,
 })
 

@@ -52,12 +52,19 @@ const [submitProject, errorMessage] = useErrorMessage(async () => {
   >
     <template #default>
       <div class="inputs">
-        <input placeholder="name" type="text" v-model="project.name" :required="true" />
+        <input
+          placeholder="name"
+          aria-label="Name"
+          type="text"
+          v-model="project.name"
+          :required="true"
+        />
 
         <textarea
           v-model="project.description"
           placeholder="Enter project description..."
           rows="5"
+          aria-label="Description"
           class="textarea"
           :required="true"
         ></textarea>

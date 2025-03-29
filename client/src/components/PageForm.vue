@@ -37,10 +37,8 @@ defineEmits<{
   flex-direction: column;
   align-items: flex-start;
 }
-
-.formContainer {
+p .formContainer {
   width: 100%;
-  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -64,5 +62,23 @@ defineEmits<{
 h2 {
   font-size: var(--mobile-title);
   margin-left: 0;
+}
+
+@media (min-width: 1024px) {
+  .formContainer {
+    width: 60%; /* Make the form narrower */
+    margin: 0 auto; /* Center the form horizontally */
+    gap: 2vw; /* Reduce the gap for a more compact layout */
+  }
+
+  .form {
+    height: auto; /* Allow the form to adjust its height dynamically */
+    padding: 20px; /* Add padding for better spacing */
+  }
+
+  h2 {
+    font-size: var(--desktop-title); /* Use a larger font size for desktop */
+    text-align: center; /* Center the heading */
+  }
 }
 </style>

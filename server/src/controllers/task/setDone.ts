@@ -18,5 +18,5 @@ export default authenticatedProcedure
       })
     }
 
-    return repos.taskRepository.setStatus(id)
+    return repos.taskRepository.setDone(id)
   })

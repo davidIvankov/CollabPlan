@@ -40,11 +40,18 @@ export function taskRepository(db: Database) {
         .returning(taskKeysAll)
         .executeTakeFirstOrThrow()
     },
-    async setStatus(taskId: string) {
+    async remove(taskId: string) {
+      return db
+        .deleteFrom(TABLES.TASK)
+        .where('id', '=', taskId)
+        .returning(taskKeysAll)
+        .executeTakeFirstOrThrow()
+    },
+    async setDone(taskId: string) {
       return db
         .updateTable(TABLES.TASK)
         .where('id', '=', taskId)
-        .set({ status: TASK_STATUS.REVIEW })
+        .set({ status: TASK_STATUS.DONE })
         .returning(['id', 'status'])
         .executeTakeFirstOrThrow()
     },

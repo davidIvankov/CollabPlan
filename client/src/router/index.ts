@@ -50,6 +50,11 @@ const router = createRouter({
                   name: 'Add Task',
                   component: () => import('../views/TaskFormView.vue'),
                 },
+                {
+                  path: 'calendar',
+                  name: 'Calendar',
+                  component: () => import('../views/CalendarView.vue'),
+                },
               ],
             },
 

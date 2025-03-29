@@ -28,22 +28,31 @@ const userInitials = computed(() => {
     <p class="user-email">{{ user.email }}</p>
 
     <div class="projects">
-      <ListComponent
-        v-if="usersProjects"
-        title="My Projects"
-        :listItems="usersProjects"
-        type="project-basic"
-      ></ListComponent>
+      <div class="lists-container">
+        <!-- First list -->
+        <div class="list">
+          <ListComponent
+            v-if="usersProjects"
+            title="My Projects"
+            :listItems="usersProjects"
+            type="project-basic"
+          ></ListComponent>
+        </div>
+
+        <!-- Second list -->
+        <div class="list">
+          <ListComponent
+            v-if="participatingIn"
+            title="Collaborating in"
+            :listItems="participatingIn"
+            type="project-with-role"
+          ></ListComponent>
+        </div>
+      </div>
+
       <RouterLink to="/dashboard/projects/new" class="add-project-btn btn"
         >+ Add Project</RouterLink
       >
-      <ListComponent
-        v-if="participatingIn"
-        title="Collaborating in"
-        :listItems="participatingIn"
-        type="project-with-role"
-      ></ListComponent>
-      <ul></ul>
     </div>
   </div>
 </template>
@@ -53,14 +62,24 @@ const userInitials = computed(() => {
   display: block;
   background-color: var(--button-blue);
   color: var(--white);
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
 }
 
 .profile {
   padding: 16px;
   text-align: center;
-  max-width: 400px; /* Limit width for mobile */
-  margin: auto;
-  color: var(--white); /* Light text for dark background */
+  margin-bottom: 10vw;
+  max-width: 400px;
+  color: var(--white);
+  margin: 0 auto; /* Center horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content vertically */
+  height: 100vh; /* Full viewport height for centering */
 }
 
 .user-icon {
@@ -91,6 +110,17 @@ const userInitials = computed(() => {
 .projects {
   text-align: left;
   margin-top: 20px;
+  width: 100%;
+}
+
+.lists-container {
+  display: flex;
+  flex-direction: column; /* Default for smaller screens */
+  gap: 20px;
+}
+
+.list {
+  flex: 1;
 }
 
 h3 {
@@ -114,8 +144,63 @@ li {
   border: 1px solid #444; /* Subtle border */
 }
 
-/* Add hover effect for better UI */
 li:hover {
   background: #444;
+}
+
+/* Media query for tablets (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .profile {
+    padding: 24px;
+    max-width: 600px;
+  }
+
+  .user-icon {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 28px;
+  }
+
+  .user-name {
+    font-size: 24px;
+  }
+
+  .user-email {
+    font-size: 16px;
+  }
+}
+
+/* Media query for desktop screens (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .profile {
+    padding: 32px;
+    max-width: 800px;
+  }
+
+  .user-icon {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    font-size: 32px;
+  }
+
+  .user-name {
+    font-size: 28px;
+  }
+
+  .user-email {
+    font-size: 18px;
+  }
+
+  .lists-container {
+    flex-direction: row; /* Display lists side by side */
+    justify-content: space-between;
+    gap: 40px; /* Add spacing between the lists */
+  }
+
+  .list {
+    max-width: 45%; /* Limit the width of each list */
+  }
 }
 </style>

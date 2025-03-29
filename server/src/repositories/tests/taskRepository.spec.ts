@@ -63,12 +63,12 @@ describe('assign', () => {
 
 describe('setStatus', () => {
   it('sets status correctly', async () => {
-    await repository.setStatus(taskOne.id)
+    await repository.setDone(taskOne.id)
     const tasks = await selectAll(db, TABLES.TASK)
 
     expect(tasks[0]).toMatchObject({
       id: taskOne.id,
-      status: TASK_STATUS.REVIEW,
+      status: TASK_STATUS.DONE,
     })
   })
 })

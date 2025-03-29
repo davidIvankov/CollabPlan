@@ -25,9 +25,9 @@ const [project] = await insertAll(
 const task = fakeInsertableTask({ projectId: project.id })
 const [taskOne] = await insertAll(db, TABLES.TASK, task)
 
-const { get } = createCaller({ db, authUser: { id: user.id } })
+const { remove } = createCaller({ db, authUser: { id: user.id } })
 
-describe('get', async () => {
+describe('remove', async () => {
   afterAll(async () => {
     await clearTables(db, [
       TABLES.PROJECT,
@@ -37,9 +37,9 @@ describe('get', async () => {
     ])
   })
 
-  it('get tasks of one project', async () => {
-    const response = await get(project.id)
+  it('remove task if authenticated.', async () => {
+    const response = await remove({ id: taskOne.id, projectId: project.id })
 
-    expect(response).toEqual([taskOne])
+    expect(response).toEqual(taskOne)
   })
 })
