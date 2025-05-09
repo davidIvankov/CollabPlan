@@ -89,7 +89,7 @@ export function projectParticipantRepository(db: Database) {
         .selectFrom(TABLES.PROJECT_PARTICIPANT)
         .innerJoin(TABLES.USER, 'userId', 'user.id')
         .where('projectId', '=', projectId)
-        .select(['name', 'userId', 'role'])
+        .select(['name', 'userId', 'role', 'email'])
         .$castTo<ParticipantSelected>()
         .execute()
     },

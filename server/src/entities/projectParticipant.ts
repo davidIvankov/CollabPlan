@@ -23,6 +23,7 @@ export type ParticipantSelected = {
   name: string
   userId: string
   role: 'admin' | 'member'
+  email: string
 }
 
 export type ProjectParticipantPublic = Pick<

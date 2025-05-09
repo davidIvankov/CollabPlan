@@ -36,7 +36,12 @@ describe('GetByProjectId', () => {
     const response = await getByProjectId(project.id)
 
     expect(response).toEqual([
-      { userId: userTwo.id, name: userTwo.name, role: 'member' },
+      {
+        userId: userTwo.id,
+        name: userTwo.name,
+        role: 'member',
+        email: userTwo.email,
+      },
     ])
   })
 })

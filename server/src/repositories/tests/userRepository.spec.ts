@@ -4,7 +4,7 @@ import { clearTables, insertAll } from '@tests/utils/records'
 import {
   fakeUser,
   userMatcher,
-  userPublicMatcher,
+  userPrivateMatcher,
 } from '@server/entities/tests/fakes'
 import { TABLES } from '@server/database/dbConstants'
 import { userRepository } from '../userRepositorsitory'
@@ -23,7 +23,7 @@ describe('create', () => {
     const insertion = await repository.create(user)
     const { password, ...userWithoutPassword } = user
 
-    expect(insertion).toEqual(userPublicMatcher(userWithoutPassword))
+    expect(insertion).toEqual(userPrivateMatcher(userWithoutPassword))
   })
 })
 describe('findByEmail', () => {
@@ -53,16 +53,8 @@ describe('search', () => {
 
   test('should find a user by name', async () => {
     const results = await repository.search('Alice Johnson')
-    console.log(results)
     expect(results.length).toBeGreaterThan(0)
     expect(results[0].name).toBe('Alice Johnson')
-  })
-
-  test('should find a user by email', async () => {
-    const results = await repository.search('bob@example.com')
-
-    expect(results.length).toBeGreaterThan(0)
-    expect(results[0].email).toBe('bob@example.com')
   })
 
   test('should return an empty array for non-existent users', async () => {

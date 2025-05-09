@@ -23,7 +23,7 @@ onMounted(async () => {
   if (props.projectId) {
     project.value = await getProjectById(props.projectId)
   }
-  localListItems.value = props.listItems
+  localListItems.value = props.listItems.map((item) => ({ ...item, showDetails: false }))
 })
 
 const isDeletable = (userId: string) => {
@@ -36,6 +36,10 @@ const remove = async (userId: string, name: string) => {
   localListItems.value = (localListItems.value as ParticipantSelected[]).filter(
     (item: ParticipantSelected) => item.userId !== userId
   )
+}
+
+const toggleDetails = (item: any) => {
+  item.showDetails = !item.showDetails
 }
 </script>
 <template>
@@ -69,9 +73,14 @@ const remove = async (userId: string, name: string) => {
         </RouterLink>
 
         <div v-else-if="type === 'participant'" class="participant-item">
-          <span class="avatar">{{ getInitials(item.name) }}</span>
-          <div>
+          <div class="top-row" @click="toggleDetails(item)">
+            <span class="avatar">{{ getInitials(item.name) }}</span>
             <h3>{{ item.name }}</h3>
+          </div>
+          <div v-if="item.showDetails" class="bottom-row">
+            <p class="email">
+              Email: <strong>{{ (item as ParticipantSelected).email }}</strong>
+            </p>
             <p class="role">
               Role: <strong>{{ (item as ParticipantSelected).role }}</strong>
             </p>
@@ -156,24 +165,100 @@ ul {
   font-size: 14px;
 }
 
-.participant-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px;
-}
-
 .avatar {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
   border-radius: 50%;
   background-color: var(--text-green);
   color: var(--background-grey);
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
   text-align: center;
   display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.participant-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 10px;
+  background-color: #3498db;
+  box-shadow: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.participant-item:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.top-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bottom-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #2c3e50; /* Darker color for better contrast */
+  color: white; /* Text color to ensure visibility */
+  padding: 10px;
+  overflow: hidden; /* Prevent content from overflowing the border radius */
+}
+
+.email,
+.role,
+.email *,
+.role * {
+  background-color: inherit;
+}
+
+.participant-item h3 {
+  font-size: 18px;
+  margin: 0;
+  color: #333;
+}
+
+.participant-item .email,
+.participant-item .role {
+  font-size: 14px;
+  color: inherit; /* Match text color to the container's color */
+  margin: 5px 0;
+}
+
+.delete-btn {
+  background-color: var(--button-danger);
+  color: var(--white);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #e74c3c;
 }
 
 .item-link {

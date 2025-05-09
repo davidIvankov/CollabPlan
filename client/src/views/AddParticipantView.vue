@@ -58,7 +58,6 @@ const handleSearch = async () => {
         <div class="avatar">{{ getInitials(user?.name) }}</div>
         <div class="data">
           <p class="name">{{ user?.name }}</p>
-          <p class="email">{{ user?.email }}</p>
         </div>
         <button data-testid="add" class="add-btn" @click="addParticipant(user?.id)">Add</button>
       </div>

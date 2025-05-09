@@ -53,7 +53,9 @@ input {
   border-radius: 8px;
   border: none;
   color: var(--white);
+  caret-color: auto;
 }
+
 textarea {
   background-color: var(--grey-icon);
   padding: 12px;
@@ -61,7 +63,9 @@ textarea {
   width: calc(100% - 24px);
   border-radius: 8px;
   border: none;
+  caret-color: auto;
 }
+
 button {
   all: unset;
   border: none;

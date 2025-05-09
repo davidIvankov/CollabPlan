@@ -29,7 +29,6 @@ describe('search', () => {
 
     expect(response).toHaveLength(1)
     expect(response[0].name).toBe('Bob Smith')
-    expect(response[0].email).toBe('bob@example.com')
   })
 
   it('should return an empty array if no users are found', async () => {

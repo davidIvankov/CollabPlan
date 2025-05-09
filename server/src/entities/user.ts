@@ -17,8 +17,14 @@ export const userSchema = z.object({
 // list keys that we will return to the client
 export const userKeysAll = Object.keys(userSchema.shape) as (keyof User)[]
 
-export const userKeysPublic = ['id', 'name', 'email'] as const
+export const userKeysPublic = ['id', 'name'] as const
 
+export const userKeysPrivate = ['id', 'name', 'email'] as const
+
+export type UserPrivate = Pick<
+  Selectable<User>,
+  (typeof userKeysPrivate)[number]
+>
 export type UserPublic = Pick<Selectable<User>, (typeof userKeysPublic)[number]>
 
 // a specific schema for authenticated user that is used in JWT

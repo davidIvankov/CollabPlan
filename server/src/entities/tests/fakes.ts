@@ -7,7 +7,7 @@ import type {
 import type { Insertable } from 'kysely'
 import { random } from '@tests/utils/random'
 import { v4 as uuidv4 } from 'uuid'
-import type { AuthUser, UserPublic } from '../user'
+import type { AuthUser, UserPrivate, UserPublic } from '../user'
 import type { ProjectInsertableNoUser } from '../project'
 import type { TaskInsertable } from '../task'
 
@@ -72,9 +72,9 @@ export const userMatcher = (overrides: Partial<Insertable<User>> = {}) => ({
   ...fakeUser(overrides),
 })
 
-export const userPublicMatcher = (
+export const userPrivateMatcher = (
   overrides: Partial<Insertable<UserPublic>> = {}
-): UserPublic => ({
+): UserPrivate => ({
   id: expect.stringMatching(uuidRegex),
   ...overrides,
   ...fakePublicUser(overrides),
