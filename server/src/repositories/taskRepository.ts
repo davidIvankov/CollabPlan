@@ -40,6 +40,14 @@ export function taskRepository(db: Database) {
         .returning(taskKeysAll)
         .executeTakeFirstOrThrow()
     },
+    async unassign(taskId: string) {
+      return db
+        .updateTable(TABLES.TASK)
+        .where('id', '=', taskId)
+        .set({ assignedTo: null, scheduledTime: {} })
+        .returning(taskKeysAll)
+        .executeTakeFirstOrThrow()
+    },
     async remove(taskId: string) {
       return db
         .deleteFrom(TABLES.TASK)

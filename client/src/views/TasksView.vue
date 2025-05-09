@@ -49,7 +49,7 @@ const goToAddTask = async () => {
 
     <div class="task-section">
       <h2 class="section-title">Unassigned Tasks</h2>
-      <div v-if="unassignedTasks.length" class="task-list">
+      <div v-if="unassignedTasks.length" class="task-list" data-testid="unassignedTasks">
         <Task
           v-for="task in unassignedTasks"
           :key="task.id"
@@ -63,7 +63,7 @@ const goToAddTask = async () => {
 
     <div class="task-section">
       <h2 class="section-title">Assigned Tasks</h2>
-      <div v-if="assignedTasks.length" class="task-list">
+      <div v-if="assignedTasks.length" class="task-list" data-testid="assignedTasks">
         <Task
           v-for="task in assignedTasks"
           :key="task.id"

@@ -50,19 +50,10 @@ await insertAll(db, TABLES.PROJECT_PARTICIPANT, [
   },
 ])
 
-const { assign } = createCaller({ db, authUser: { id: user.id } })
+const { assign, unassign } = createCaller({ db, authUser: { id: user.id } })
 
-describe('create', async () => {
-  afterAll(async () => {
-    await clearTables(db, [
-      TABLES.PROJECT,
-      TABLES.PROJECT_PARTICIPANT,
-      TABLES.USER,
-      TABLES.TASK,
-    ])
-  })
-
-  it('assigns user to the task if he has slots', async () => {
+describe('assign', async () => {
+  it('assigns user to the task', async () => {
     const assignment = await assign({
       id: taskOne.id,
       scheduledTime: {
@@ -90,5 +81,43 @@ describe('create', async () => {
         },
       })
     ).rejects.toThrow(/Invalid slot duration/)
+  })
+})
+
+describe('unassign', async () => {
+  const assignedTask = fakeInsertableTask({
+    projectId: project.id,
+    assignedTo: user.id,
+    scheduledTime: {
+      start: '2025-02-25T15:00:00Z',
+      end: '2025-02-25T16:00:00Z',
+    },
+  })
+  const [taskAssigned] = await insertAll(db, TABLES.TASK, assignedTask)
+
+  afterAll(async () => {
+    await clearTables(db, [
+      TABLES.PROJECT,
+      TABLES.PROJECT_PARTICIPANT,
+      TABLES.USER,
+      TABLES.TASK,
+    ])
+  })
+
+  it('unassign user if userId matches assigned to id', async () => {
+    const unassignment = await unassign(taskAssigned.id)
+
+    expect(unassignment).toMatchObject({
+      assignedTo: null,
+      scheduledTime: {},
+    })
+  })
+
+  it('throws error if user is not assigned that task', async () => {
+    await expect(
+      createCaller({ db, authUser: { id: userTwo.id } }).unassign(
+        taskAssigned.id
+      )
+    ).rejects.toThrow(/task is not assigned to you./)
   })
 })

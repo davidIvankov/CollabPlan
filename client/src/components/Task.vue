@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { assignTask, deleteTask, markAsDone } from '@/stores/task'
+import { assignTask, deleteTask, markAsDone, unassignTask } from '@/stores/task'
 import { authUserId, getUser } from '@/stores/user'
 import { formatDateForTemplate, formatSlot, getUserLocalDate } from '@/utils/time'
 import type { Slot, TaskSelectable } from '@server/shared/types'
@@ -21,6 +21,11 @@ const scheduleTask = async () => {
   await assignTask({ id: scheduledTime.value.id, scheduledTime: slot })
   emit('task-updated')
   shouldShowForm.value = false
+}
+
+const unassign = async () => {
+  await unassignTask(props.task.id)
+  emit('task-updated')
 }
 
 const removeTask = async () => {
@@ -65,6 +70,14 @@ const isEmptyObject = (obj: unknown): boolean =>
         </p>
         <p class="schedule-label">End:</p>
         <p class="schedule-date">{{ formatDateForTemplate((task?.scheduledTime as Slot).end) }}</p>
+        <button
+          class="btn schedule danger"
+          @click="unassign"
+          v-if="task.assignedTo === authUserId && task.status !== 'done'"
+          data-testid="unassign"
+        >
+          UNASSIGN
+        </button>
       </div>
       <p><strong>Duration:</strong> {{ task?.duration }} minutes</p>
       <p><strong>Created at:</strong> {{ formatDateForTemplate(task?.createdAt.toISOString()) }}</p>
@@ -79,12 +92,13 @@ const isEmptyObject = (obj: unknown): boolean =>
         class="btn schedule"
         @click="shouldShowForm = !shouldShowForm"
         v-if="!task.assignedTo"
+        data-testid="Schedule"
       >
         {{ shouldShowForm ? 'Back' : 'Schedule' }}
       </button>
       <form v-if="shouldShowForm" @submit.prevent="scheduleTask">
         <input v-model="scheduledTime.date" type="datetime-local" class="schedule-input" required />
-        <button type="submit" class="add">+</button>
+        <button type="submit" data-testid="assign" class="add">+</button>
       </form>
       <button
         class="btn schedule danger"

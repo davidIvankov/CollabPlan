@@ -5,6 +5,7 @@ import reviewTask from './reviewTask'
 import get from './get'
 import setDone from './setDone'
 import remove from './remove'
+import unassign from './unassign'
 
 export default router({
   create,
@@ -13,4 +14,5 @@ export default router({
   reviewTask,
   get,
   remove,
+  unassign,
 })
