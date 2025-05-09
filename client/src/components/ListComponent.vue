@@ -31,6 +31,7 @@ onMounted(async () => {
   }
   if (isParticipantList(props.listItems))
     localListItems.value = props.listItems.map((item) => ({ ...item, showDetails: false }))
+  else localListItems.value = props.listItems
 })
 
 const isDeletable = (userId: string) => {
