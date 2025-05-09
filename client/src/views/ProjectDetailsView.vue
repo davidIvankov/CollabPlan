@@ -30,7 +30,7 @@ const leaveProject = async () => {
 }
 </script>
 <template>
-  <div class="project-details">
+  <div class="project-details" v-if="project">
     <RouterLink :to="`/dashboard/projects/${route.params.id}/update`" v-if="isOwner">
       <img src="@/assets/icons/settings.svg" alt="go back" class="svg" />
     </RouterLink>

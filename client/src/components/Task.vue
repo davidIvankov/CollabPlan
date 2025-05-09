@@ -6,6 +6,7 @@ import type { Slot, TaskSelectable } from '@server/shared/types'
 import { onMounted, ref } from 'vue'
 
 const shouldShowForm = ref<boolean>(false)
+const isCollapsed = ref(true)
 const props = defineProps<{ task: TaskSelectable; projectCreatedBy: string }>()
 const userName = ref('Unassigned')
 const scheduledTime = ref({
@@ -51,8 +52,8 @@ const isEmptyObject = (obj: unknown): boolean =>
 </script>
 
 <template>
-  <div class="task-card">
-    <div class="task-header">
+  <div class="task-card" :class="{ collapsed: isCollapsed }">
+    <div class="task-header" @click="isCollapsed = !isCollapsed">
       <h2 data-testid="TaskName">{{ task.name }}</h2>
       <span class="task-status" :class="task?.status">{{ task?.status }}</span>
     </div>
@@ -112,6 +113,28 @@ const isEmptyObject = (obj: unknown): boolean =>
 </template>
 
 <style scoped>
+.task-card {
+  transition:
+    max-height 0.3s ease,
+    padding 0.3s ease;
+  overflow: hidden;
+  max-height: 1000px; /* large enough for expanded */
+  background-color: var(--task-background);
+  color: var(--task-font);
+  border-radius: 8px;
+  padding: 16px; /* Adjust padding for a balanced look */
+  margin: 16px;
+  max-width: 700px; /* Slightly larger overall size */
+  font-size: 16px; /* Slightly larger font size for general text */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.task-card.collapsed {
+  max-height: 60px; /* Adjust height to fit the header */
+  padding: 0; /* Remove extra padding */
+  overflow: hidden;
+}
 .danger {
   margin-top: 16px;
   background-color: var(--button-danger);
@@ -170,27 +193,28 @@ const isEmptyObject = (obj: unknown): boolean =>
 .schedule-input {
   margin-top: 16px;
 }
-.task-card {
-  background-color: var(--task-background);
-  color: var(--task-font);
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
 
 .task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s; /* Smooth transitions */
+  padding: 16px; /* Ensure consistent padding within the header */
+}
+
+.task-header:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Light background change on hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow on hover */
+  cursor: pointer; /* Change cursor to pointer for interactivity */
 }
 
 .task-header h2 {
-  font-size: var(--mobile-title);
+  font-size: 18px; /* Reduce the task name size */
   margin: 0;
+  font-weight: 500; /* Make it less bold */
 }
 
 .task-status {

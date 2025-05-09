@@ -17,6 +17,10 @@
   --desktop-text: 20px;
   --desktop-title: 72px;
 }
+*:not(input):not(textarea):not([contenteditable='true']) {
+  caret-color: transparent;
+  user-select: none;
+}
 
 body {
   font-family: 'Montserrat', sans-serif;
