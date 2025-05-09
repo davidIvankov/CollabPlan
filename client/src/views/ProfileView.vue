@@ -2,10 +2,10 @@
 import { getUser } from '@/stores/user'
 import { onMounted, ref, computed, type Ref } from 'vue'
 import ListComponent from '@/components/ListComponent.vue'
-import type { UserPublic } from '../../../server/src/entities/user'
+import type { UserPrivate } from '@server/shared/types'
 import { getByCreatedBy, getByParticipant } from '@/stores/project'
 
-const user: Ref<UserPublic | undefined> = ref()
+const user: Ref<UserPrivate | undefined> = ref()
 const usersProjects = ref()
 const participatingIn = ref()
 

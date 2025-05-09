@@ -15,15 +15,22 @@ const props = defineProps<{
   type: 'project-basic' | 'project-with-role' | 'participant'
 }>()
 
-const localListItems = ref<ParticipantSelected[] | ProjectByParticipant[] | ProjectPublic[] | null>(
+type ExtendedParticipant = ParticipantSelected & { showDetails: boolean }
+
+const localListItems = ref<ExtendedParticipant[] | ProjectByParticipant[] | ProjectPublic[] | null>(
   null
 )
+
+function isParticipantList(items: any[]): items is ParticipantSelected[] {
+  return props.type === 'participant'
+}
 
 onMounted(async () => {
   if (props.projectId) {
     project.value = await getProjectById(props.projectId)
   }
-  localListItems.value = props.listItems.map((item) => ({ ...item, showDetails: false }))
+  if (isParticipantList(props.listItems))
+    localListItems.value = props.listItems.map((item) => ({ ...item, showDetails: false }))
 })
 
 const isDeletable = (userId: string) => {
@@ -33,7 +40,7 @@ const isDeletable = (userId: string) => {
 const remove = async (userId: string, name: string) => {
   if (!confirm(`Delete participant ${name}!`)) return
   await removeParticipant({ projectId: props.projectId as string, userId: userId })
-  localListItems.value = (localListItems.value as ParticipantSelected[]).filter(
+  localListItems.value = (localListItems.value as ExtendedParticipant[]).filter(
     (item: ParticipantSelected) => item.userId !== userId
   )
 }
@@ -77,7 +84,7 @@ const toggleDetails = (item: any) => {
             <span class="avatar">{{ getInitials(item.name) }}</span>
             <h3>{{ item.name }}</h3>
           </div>
-          <div v-if="item.showDetails" class="bottom-row">
+          <div v-if="(item as ExtendedParticipant).showDetails" class="bottom-row">
             <p class="email">
               Email: <strong>{{ (item as ParticipantSelected).email }}</strong>
             </p>
@@ -208,11 +215,6 @@ ul {
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
-}
-
-.top-row:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .bottom-row {
