@@ -62,6 +62,15 @@ export const formatDateForTemplate = (dateString: string) => {
   }).format(date)
 }
 
+export const isInDateRange = (dateObj: Date, from: string | null, to: string | null) => {
+  const fromDate = from ? new Date(from) : null
+  const toDate = to ? new Date(to) : null
+
+  if (toDate) toDate.setHours(23, 59, 59, 999)
+
+  return (!fromDate || dateObj >= fromDate) && (!toDate || dateObj <= toDate)
+}
+
 export const formatForCalendar = (utcDateString: string): string => {
   const localDate = convertToLocal(utcDateString)
 

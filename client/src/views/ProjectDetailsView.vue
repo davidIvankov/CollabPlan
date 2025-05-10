@@ -5,13 +5,13 @@ import VueMarkdown from 'vue-markdown-render'
 import { getProjectById } from '@/stores/project'
 import { getParticipantByProjectId, removeParticipant } from '@/stores/participant'
 import ListComponent from '@/components/ListComponent.vue'
-import type { ProjectPublic } from '@server/shared/types'
+import type { ParticipantSelected, ProjectPublic } from '@server/shared/types'
 import { authUserId } from '@/stores/user'
 
 const route = useRoute()
 const router = useRouter()
 const project: Ref<ProjectPublic | null> = ref(null)
-const participants = ref()
+const participants = ref<ParticipantSelected[]>()
 
 const isOwner = computed(() => props.userId === project.value?.createdBy)
 const props = defineProps<{ projectId: string; userId: string }>()

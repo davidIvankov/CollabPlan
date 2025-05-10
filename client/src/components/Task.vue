@@ -43,6 +43,7 @@ const setDone = async () => {
 
 onMounted(async () => {
   if (!props.task.assignedTo) return
+  console.log(props.task.createdAt instanceof Date)
   const user = await getUser(props.task.assignedTo)
   userName.value = user.name
 })
