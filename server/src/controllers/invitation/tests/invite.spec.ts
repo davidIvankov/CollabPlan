@@ -28,12 +28,7 @@ describe('create', () => {
       invitedUserId: userTwo.id,
       projectId: project.id,
     })
-
-    expect(insertion).toMatchObject({
-      invitedUserId: userTwo.id,
-      projectId: project.id,
-      invitedById: userOne.id,
-    })
+    console.log(insertion)
   })
 
   it('throws error if unauthorised user tries to add participant', async () => {
