@@ -67,6 +67,7 @@ const leaveProject = async () => {
 .project-details {
   margin-top: 5vw;
   padding-bottom: 20vw;
+  margin-bottom: 10vw;
   width: 100%;
   display: flex;
   flex-direction: column;
