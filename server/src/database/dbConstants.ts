@@ -11,6 +11,12 @@ export const TASK_STATUS = {
   DONE: 'done',
 } as const
 
+export const INVITATION_STATUS = {
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  DECLINED: 'declined',
+} as const
+
 export const ROLE = {
   MEMBER: 'member',
   ADMIN: 'admin',

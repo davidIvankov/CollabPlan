@@ -19,6 +19,15 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
+export interface Invitations {
+  createdAt: Generated<Timestamp>
+  id: Generated<string>
+  invitedById: string
+  invitedUserId: string
+  projectId: string
+  status: Generated<string>
+}
+
 export interface Project {
   createdAt: Generated<Timestamp>
   createdBy: string | null
@@ -54,6 +63,7 @@ export interface User {
 }
 
 export interface DB {
+  invitations: Invitations
   project: Project
   projectParticipant: ProjectParticipant
   task: Task
