@@ -68,6 +68,13 @@ const userInitials = computed(() => {
   margin: 10px 0;
 }
 
+.list {
+  display: flex;
+  align-items: flex-start;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 .profile {
   padding: 16px;
   text-align: center;
@@ -111,6 +118,7 @@ const userInitials = computed(() => {
   text-align: left;
   margin-top: 20px;
   width: 100%;
+  padding: 0; /* Ensure no extra padding */
 }
 
 .lists-container {
@@ -121,6 +129,7 @@ const userInitials = computed(() => {
 
 .list {
   flex: 1;
+  display: flex;
 }
 
 h3 {
@@ -194,13 +203,16 @@ li:hover {
   }
 
   .lists-container {
-    flex-direction: row; /* Display lists side by side */
-    justify-content: space-between;
-    gap: 40px; /* Add spacing between the lists */
+    display: grid; /* Use CSS Grid for layout */
+    grid-template-columns: repeat(2, 1fr); /* Create three equal columns */
+    margin-top: 32px; /* Add more spacing on top for desktop */
+    width: 100%;
   }
 
   .list {
-    max-width: 45%; /* Limit the width of each list */
+    flex: 1;
+    width: 100%; /* Allow lists to adjust dynamically */
+    height: 100%;
   }
 }
 </style>

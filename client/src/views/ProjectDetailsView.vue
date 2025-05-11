@@ -39,19 +39,21 @@ const leaveProject = async () => {
     <h1>{{ project?.name }}</h1>
 
     <VueMarkdown v-if="project?.description" :source="project.description" class="description" />
-    <ListComponent
-      v-if="participants"
-      title="Participants"
-      :projectId="projectId"
-      :authUserId="authUserId"
-      :listItems="participants"
-      type="participant"
-    ></ListComponent>
+    <div class="list">
+      <ListComponent
+        v-if="participants"
+        title="Participants"
+        :projectId="projectId"
+        :authUserId="authUserId"
+        :listItems="participants"
+        type="participant"
+      ></ListComponent>
+    </div>
     <RouterLink
       data-testid="addParticipant"
       v-if="isOwner"
       :to="`/dashboard/projects/${route.params.id}/add-participant`"
-      class="btn"
+      class="btn add"
       >+ Add Participant</RouterLink
     >
   </div>
@@ -61,14 +63,23 @@ const leaveProject = async () => {
 .description {
   overflow: auto;
 }
+
 .project-details {
   margin-top: 5vw;
   padding-bottom: 20vw;
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  gap: 2vw;
+}
+
+.add {
+  align-self: center;
+}
+
+.project-details > * {
+  text-align: center;
 }
 .leave-btn {
   background-color: var(--button-danger);
@@ -84,6 +95,14 @@ const leaveProject = async () => {
   border: none;
   width: 50%;
 }
+.list {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 h1 {
   font-size: 24px;
   margin-top: 48px;

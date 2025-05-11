@@ -117,8 +117,12 @@ const toggleDetails = (item: any) => {
   color: white;
   margin: 2vw;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: space-between;
+  padding: 16px;
+  background: var(--background-grey);
 }
 
 .delete-btn {
@@ -142,6 +146,7 @@ const toggleDetails = (item: any) => {
 h1 {
   font-size: 20px;
   margin-bottom: 20px;
+  align-self: center;
 }
 
 .participant,
@@ -150,9 +155,9 @@ h1 {
   color: white;
 }
 ul {
-  width: 50%;
+  width: 100%;
   margin: 0;
-  padding-left: 2vw;
+  padding: 0; /* Removed padding-left */
 }
 .list-item {
   overflow: hidden;
@@ -268,5 +273,9 @@ ul {
   width: 100%;
   height: 100%;
   padding: 15px;
+}
+
+li {
+  list-style: none;
 }
 </style>

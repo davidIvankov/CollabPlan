@@ -66,6 +66,10 @@ onMounted(async () => {
 /* Individual list styles */
 .list {
   flex: 1;
+  display: flex;
+  align-items: flex-start;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 h3 {
@@ -108,6 +112,10 @@ li:hover {
     width: 80%; /* Center the button and make it wider */
   }
 
+  .list {
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
   li {
     font-size: 14px;
     padding: 8px;
