@@ -3,6 +3,7 @@ export const TABLES = {
   PROJECT: 'project',
   PROJECT_PARTICIPANT: 'projectParticipant',
   TASK: 'task',
+  INVITATIONS: 'invitations',
 } as const
 
 export const TASK_STATUS = {

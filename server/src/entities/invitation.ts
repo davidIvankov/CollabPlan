@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import type { Invitations } from '@server/database'
 import { INVITATION_STATUS } from '@server/database/dbConstants'
+import type { Insertable, Selectable } from 'kysely'
 import { idSchema } from './shared'
 
 export const invitationSchema = z.object({
@@ -24,3 +25,16 @@ export const invitationInputSchema = invitationSchema.pick({
 export const invitationKeysAll = Object.keys(
   invitationSchema.shape
 ) as (keyof Invitations)[]
+
+export type InvitationsSelectable = Selectable<Invitations>
+
+export type InvitationsInsertable = Insertable<
+  Omit<Invitations, 'id' | 'createdAt' | 'status'>
+>
+
+export type InvitationsUpdatable = Selectable<
+  Pick<Invitations, 'id' | 'projectId' | 'status'>
+>
+
+export type InvitationsStatus =
+  (typeof INVITATION_STATUS)[keyof typeof INVITATION_STATUS]

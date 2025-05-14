@@ -73,6 +73,9 @@ export function taskRepository(db: Database) {
         .returning(taskKeysAll)
         .executeTakeFirstOrThrow()
     },
+    async deleteAll(): Promise<void> {
+      db.deleteFrom(TABLES.TASK).execute()
+    },
   }
 }
 

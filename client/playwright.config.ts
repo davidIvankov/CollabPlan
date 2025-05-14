@@ -8,6 +8,8 @@ const config: PlaywrightTestConfig = {
   testDir: './e2e',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 30_000 : 10_000,
+  globalSetup: './e2e/utils/global-setup',
+  globalTeardown: './e2e/utils/global-teardown',
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.

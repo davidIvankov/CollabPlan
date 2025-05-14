@@ -18,7 +18,8 @@
 
     "paths": {
       "@server/*": ["./src/*"],
-      "@tests/*": ["./tests/*"]
+      "@tests/*": ["./tests/*"],
+      "@shared/*": ["../shared/*"]
     }
   }
 }

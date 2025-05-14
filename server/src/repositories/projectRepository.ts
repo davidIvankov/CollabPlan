@@ -63,6 +63,9 @@ export function projectRepository(db: Database) {
         .returning(projectKeysPublic)
         .executeTakeFirst()
     },
+    async deleteAll(): Promise<void> {
+      db.deleteFrom(TABLES.PROJECT).execute()
+    },
   }
 }
 

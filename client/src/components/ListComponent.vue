@@ -46,7 +46,7 @@ const remove = async (userId: string, name: string) => {
   )
 }
 
-const toggleDetails = (item: any) => {
+const toggleDetails = (item: ExtendedParticipant) => {
   item.showDetails = !item.showDetails
 }
 </script>
@@ -81,7 +81,7 @@ const toggleDetails = (item: any) => {
         </RouterLink>
 
         <div v-else-if="type === 'participant'" class="participant-item">
-          <div class="top-row" @click="toggleDetails(item)">
+          <div class="top-row" @click="toggleDetails(item as ExtendedParticipant)">
             <span class="avatar">{{ getInitials(item.name) }}</span>
             <h3>{{ item.name }}</h3>
           </div>

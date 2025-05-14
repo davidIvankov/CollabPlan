@@ -47,6 +47,9 @@ export function userRepository(db: Database) {
         .select(userKeysPrivate)
         .executeTakeFirstOrThrow()
     },
+    async deleteAll(): Promise<void> {
+      db.deleteFrom(TABLES.USER).execute()
+    },
   }
 }
 

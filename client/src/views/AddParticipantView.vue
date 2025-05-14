@@ -2,36 +2,80 @@
 import { computed, onMounted, ref } from 'vue'
 import { getInitials } from '@/utils/getInitials'
 import { search } from '@/stores/user'
-import { createParticipant, getParticipantByProjectId } from '@/stores/participant'
-import { useRoute, useRouter } from 'vue-router'
-import type { ProjectParticipantPublic, UserPublic } from '@server/shared/types'
+import { getParticipantByProjectId } from '@/stores/participant'
+import {
+  invite,
+  INVITATION_STATUS,
+  remove,
+  getInvitationsByProjectId,
+  getInvitationStatus,
+} from '@/stores/invitations'
+import { useRoute } from 'vue-router'
+import type {
+  ProjectParticipantPublic,
+  UserPublic,
+  InvitationsStatus,
+  InvitationsSelectable,
+} from '@server/shared/types'
 
 const route = useRoute()
-const router = useRouter()
 const searchQuery = ref('')
-const users = ref()
+const invitations = ref<InvitationsSelectable[]>([])
+const users =
+  ref<(UserPublic & { status?: InvitationsStatus; showDetails?: ReturnType<typeof ref> })[]>()
 const searchTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 const participants = ref()
-
+type UserExtended = UserPublic & { status?: InvitationsStatus; showDetails: ReturnType<typeof ref> }
 const projectId = route.params.id as string
-const noParticipants = computed(() => {
+
+const noParticipants = computed<UserExtended[]>(() => {
+  const getStatus = getInvitationStatus(invitations.value)
+
   if (!participants.value || !users.value) return []
+
   const participantsIds = participants.value.map(
     (participant: ProjectParticipantPublic) => participant.userId
   )
-  return users.value.filter((user: UserPublic) => {
-    return !participantsIds.includes(user.id)
-  })
+
+  return users.value
+    .filter((user: UserPublic) => {
+      return !participantsIds.includes(user.id)
+    })
+    .map((user) => {
+      return { ...user, showDetails: ref(false), status: getStatus(user.id) }
+    })
 })
 
 onMounted(async () => {
   participants.value = await getParticipantByProjectId(projectId)
+  invitations.value = await getInvitationsByProjectId(projectId)
 })
 
-const addParticipant = async (userId: string) => {
-  await createParticipant({ userId, projectId })
+const getStatusText = (status?: InvitationsStatus): string => {
+  switch (status) {
+    case INVITATION_STATUS.DECLINED:
+      return 'Invitation declined'
+    case INVITATION_STATUS.PENDING:
+      return 'Invitation sent'
+    default:
+      return ''
+  }
+}
 
-  router.push(`/dashboard/projects/${projectId}/details`)
+const inviteParticipant = async (invitedUserId: string) => {
+  await invite({ invitedUserId, projectId })
+
+  invitations.value = await getInvitationsByProjectId(projectId)
+}
+
+const cancelInvitation = async (invitedUserId: string) => {
+  await remove({ invitedUserId, projectId })
+
+  invitations.value = await getInvitationsByProjectId(projectId)
+}
+
+const toggleDetails = (user: UserExtended) => {
+  user.showDetails.value = !user.showDetails.value
 }
 
 const handleSearch = async () => {
@@ -55,11 +99,27 @@ const handleSearch = async () => {
 
     <div class="participant-list">
       <div v-for="user in noParticipants" :key="user?.id" class="participant">
-        <div class="avatar">{{ getInitials(user?.name) }}</div>
-        <div class="data">
-          <p class="name">{{ user?.name }}</p>
+        <div class="top-row" @click="toggleDetails(user)" data-testid="top-row">
+          <div class="avatar">{{ getInitials(user?.name) }}</div>
+          <div class="data">
+            <p class="name">{{ user?.name }}</p>
+
+            <p data-testid="invitation-status">{{ getStatusText(user.status) }}</p>
+          </div>
         </div>
-        <button data-testid="add" class="add-btn" @click="addParticipant(user?.id)">Add</button>
+        <div v-if="(user as UserExtended).showDetails.value" class="bottom-row">
+          <button
+            v-if="user.status !== INVITATION_STATUS.PENDING"
+            data-testid="add"
+            class="add-btn"
+            @click="inviteParticipant(user.id)"
+          >
+            Invite
+          </button>
+          <button v-else data-testid="cancel" class="cancel-btn" @click="cancelInvitation(user.id)">
+            Cancel Invitation
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -76,6 +136,32 @@ const handleSearch = async () => {
 .data p {
   background-color: inherit;
   margin: 0;
+}
+
+.top-row {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-start;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  width: 100%;
+}
+
+.bottom-row {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #2c3e50; /* Darker color for better contrast */
+  color: white; /* Text color to ensure visibility */
+  padding: 10px;
+  border-radius: 0 0 8px 8px; /* Match the container's border radius at the bottom */
+  overflow: hidden; /* Prevent content from overflowing the border radius */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
 }
 
 .search-container {
@@ -110,8 +196,8 @@ const handleSearch = async () => {
 .participant {
   gap: 2vw;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between; /* Ensure the button sticks to the right */
   background: var(--grey-icon);
   padding: 12px;
   border-radius: 8px;
@@ -140,6 +226,16 @@ const handleSearch = async () => {
 
 .add-btn {
   background-color: var(--button-blue);
+  color: var(--white);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: auto; /* Push the button to the far right */
+}
+
+.cancel-btn {
+  background-color: var(--button-danger);
   color: var(--white);
   border: none;
   padding: 8px 12px;

@@ -1,17 +1,30 @@
-import { projectParticipantInsertableSchema } from '@server/entities/projectParticipant'
+import { INVITATION_STATUS } from '@server/database/dbConstants'
+import { createUserParticipantSchema } from '@server/entities/projectParticipant'
+import { invitationsRepository } from '@server/repositories/invitationsRepository'
 import { projectParticipantRepository } from '@server/repositories/projectParticipantRepo'
-import { projectRepository } from '@server/repositories/projectRepository'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import provideRepos from '@server/trpc/provideRepos'
-import { checkOwnership } from '@server/utils/authUtils'
+import { TRPCError } from '@trpc/server'
 
 export default authenticatedProcedure
-  .use(provideRepos({ projectParticipantRepository, projectRepository }))
-  .input(projectParticipantInsertableSchema)
+  .use(provideRepos({ projectParticipantRepository, invitationsRepository }))
+  .input(createUserParticipantSchema)
   .mutation(async ({ input, ctx: { authUser, repos } }) => {
-    const project = await repos.projectRepository.getById(input.projectId)
+    const invitation = await repos.invitationsRepository.update(input)
 
-    checkOwnership(project, authUser, 'add participant to')
+    if (!invitation) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Invitation not found',
+      })
+    }
 
-    return repos.projectParticipantRepository.create(input)
+    if (invitation.status === INVITATION_STATUS.DECLINED) {
+      return invitation
+    }
+
+    return repos.projectParticipantRepository.create({
+      projectId: input.projectId,
+      userId: authUser.id,
+    })
   })

@@ -30,6 +30,7 @@ defineEmits<{
 
 <style scoped>
 .container {
+  margin-bottom: 10vw;
   margin-top: 24px;
   width: 100%;
   display: flex;

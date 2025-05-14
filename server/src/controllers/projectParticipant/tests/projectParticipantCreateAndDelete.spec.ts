@@ -7,7 +7,7 @@ import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll, selectAll } from '@tests/utils/records'
-import { TABLES } from '@server/database/dbConstants'
+import { INVITATION_STATUS, TABLES } from '@server/database/dbConstants'
 import projectParticipantRouter from '..'
 
 const createCaller = createCallerFactory(projectParticipantRouter)
@@ -24,30 +24,49 @@ const [project, projectTwo] = await insertAll(db, TABLES.PROJECT, [
   fakeProject({ createdBy: userOne.id }),
 ])
 
+const [invitation] = await insertAll(db, TABLES.INVITATIONS, [
+  { projectId: project.id, invitedById: userOne.id, invitedUserId: userTwo.id },
+])
+
 const { create, remove } = createCaller({ db, authUser: { id: userOne.id } })
 
 describe('create', () => {
   it('creates project participant if input is valid', async () => {
     const insertion = await create({
-      userId: userOne.id,
+      id: invitation.id,
       projectId: project.id,
+      status: INVITATION_STATUS.ACCEPTED,
     })
 
-    const projects = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+    const projectParticipants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
 
     expect(insertion).toEqual(
       projectParticipantMatcher({ projectId: project.id, userId: userOne.id })
     )
-    expect(projects).toEqual([insertion])
+    expect(projectParticipants).toEqual([insertion])
+  })
+
+  it('updates invitation to declined if status is declined', async () => {
+    const insertion = await create({
+      id: invitation.id,
+      projectId: project.id,
+      status: INVITATION_STATUS.DECLINED,
+    })
+
+    const projectParticipants = await selectAll(db, TABLES.PROJECT_PARTICIPANT)
+
+    expect(insertion).toMatchObject({ status: INVITATION_STATUS.DECLINED })
+    expect(projectParticipants).toEqual([])
   })
 
   it('throws error if unauthorised user tries to add participant', async () => {
     await expect(
       createCaller({ db, authUser: { id: userTwo.id } }).create({
-        projectId: project.id,
-        userId: userTwo.id,
+        projectId: projectTwo.id,
+        id: invitation.id,
+        status: INVITATION_STATUS.ACCEPTED,
       })
-    ).rejects.toThrow(/add participant to/)
+    ).rejects.toThrow(/Invitation not found/)
   })
 })
 

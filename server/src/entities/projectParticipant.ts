@@ -3,6 +3,7 @@ import type { Insertable, Selectable } from 'kysely'
 import type { ProjectParticipant } from '@server/database'
 import { ROLE } from '@server/database/dbConstants'
 import { availabilitySlotSchema, idSchema } from './shared'
+import { invitationSchema } from './invitation'
 
 export const availabilitySchema = z.array(availabilitySlotSchema).default([])
 
@@ -25,6 +26,12 @@ export type ParticipantSelected = {
   role: 'admin' | 'member'
   email: string
 }
+
+export const createUserParticipantSchema = invitationSchema.omit({
+  createdAt: true,
+  invitedById: true,
+  invitedUserId: true,
+})
 
 export type ProjectParticipantPublic = Pick<
   Selectable<ProjectParticipant>,

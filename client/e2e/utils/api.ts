@@ -50,6 +50,10 @@ export async function loginNewUser(
   }
 }
 
+export const deleteAllRecords = trpc.forTest.deleteAll.mutate
+export const createUser = trpc.user.signup.mutate
+export const createTestProject = trpc.project.create.mutate
+
 export async function asUser<T extends any>(
   page: Page,
   userLogin: UserLogin,

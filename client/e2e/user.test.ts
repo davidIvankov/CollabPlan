@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test'
-import { asUser } from 'utils/api'
+import { asUser, createUser } from 'utils/api'
 import { fakeUser } from 'utils/fakeData'
 
-const user = fakeUser({ name: 'Jure' })
-
 test.describe.serial('login and sign in', () => {
+  const user = fakeUser({ name: 'Jure' })
   const URL_LOGGED_IN = '/dashboard/profile'
 
   test('visitor can signup', async ({ page }) => {
@@ -47,7 +46,6 @@ test.describe.serial('login and sign in', () => {
 
   test('visitor can logout', async ({ page }) => {
     const user = fakeUser()
-
     await asUser(page, user, async () => {
       await page.goto(URL_LOGGED_IN)
       const logoutButton = page.getByTestId('logout')

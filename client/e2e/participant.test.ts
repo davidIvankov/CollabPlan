@@ -1,54 +1,46 @@
 import { test, expect } from '@playwright/test'
-import { asUser } from './utils/api'
+import { asUser, createTestProject, createUser } from './utils/api'
 import { fakeProject, fakeUser } from './utils/fakeData'
 
-test.describe.serial('particiapants', () => {
+test.describe.serial('particiapants', async () => {
+  let projectId: string
   const projectOwner = fakeUser()
-  test('user can add participant', async ({ page }) => {
-    const project = fakeProject()
-    const user = fakeUser({ name: 'Mario' })
-    await page.goto('/signup')
+  const user = fakeUser({ name: 'Mario' })
 
-    const form = page.getByRole('form', { name: 'Signup' })
+  test.beforeAll(async () => {
+    await createUser(user)
+    await createUser(projectOwner)
+  })
 
-    await form.locator('input[data-testid="name"]').fill(user.name)
-    await form.locator('input[type="email"]').fill(user.email)
-    await form.locator('input[type="password"]').fill(user.password)
-    await form.locator('button[type="submit"]').click()
-
-    await page.waitForURL('/dashboard/profile')
-    const logoutButton = page.getByTestId('logout')
-
-    await logoutButton.click()
-
+  test('user can invite participant', async ({ page }) => {
     await asUser(page, projectOwner, async () => {
-      await page.goto('/dashboard/projects/new')
+      const projectInserted = await createTestProject(fakeProject())
 
-      const form = page.getByRole('form', { name: 'NewProject' })
-      await form.getByRole('textbox', { name: 'Name' }).fill(project.name)
-      await form.getByRole('textbox', { name: 'Description' }).fill(project.description)
+      projectId = projectInserted.id
 
-      await form.locator('button[type="submit"]').click()
-
-      await page.waitForURL(
-        /\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/details$/
-      )
+      await page.goto(`/dashboard/projects/${projectId}/details`)
 
       await page.getByTestId('addParticipant').click()
 
       await page.waitForURL(
         /\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/add-participant$/
       )
-
       await page.getByTestId('search').fill(user.name)
-      await page.locator('[data-testid="add"]').first().click()
+      await page.getByTestId('top-row').first().click()
+      await page.getByTestId('add').first().click()
 
-      await page.waitForURL(
-        /\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/details$/
-      )
+      await expect(page.getByTestId('invitation-status').first()).toHaveText('Invitation sent')
+    })
+  })
 
-      const listItems = page.locator('ul > li')
-      await expect(listItems).toHaveCount(2)
+  test('user can cancel invitation', async ({ page }) => {
+    await asUser(page, projectOwner, async () => {
+      await page.goto(`/dashboard/projects/${projectId}/add-participant`)
+      await page.getByTestId('search').fill(user.name)
+      await page.getByTestId('top-row').first().click()
+      await page.getByTestId('cancel').click()
+
+      await expect(page.getByTestId('invitation-status').first()).toHaveText('')
     })
   })
 })

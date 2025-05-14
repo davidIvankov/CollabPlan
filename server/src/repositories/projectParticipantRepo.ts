@@ -114,6 +114,9 @@ export function projectParticipantRepository(db: Database) {
         .returning(['availability'])
         .executeTakeFirst()
     },
+    async deleteAll(): Promise<void> {
+      db.deleteFrom(TABLES.PROJECT_PARTICIPANT).execute()
+    },
   }
 }
 

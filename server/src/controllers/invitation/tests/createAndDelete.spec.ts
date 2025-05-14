@@ -20,23 +20,55 @@ const [project] = await insertAll(db, TABLES.PROJECT, [
   fakeProject({ createdBy: userOne.id }),
 ])
 
-const { invite } = createCaller({ db, authUser: { id: userOne.id } })
+const { invite, remove } = createCaller({ db, authUser: { id: userOne.id } })
 
 describe('create', () => {
-  it('creates project participant if input is valid', async () => {
+  it('creates invitation if input is valid', async () => {
     const insertion = await invite({
       invitedUserId: userTwo.id,
       projectId: project.id,
     })
-    console.log(insertion)
+
+    expect(insertion).toMatchObject({
+      invitedUserId: userTwo.id,
+      projectId: project.id,
+      invitedById: userOne.id,
+    })
   })
 
-  it('throws error if unauthorised user tries to add participant', async () => {
+  it('throws error if unauthorised user tries to add invitation', async () => {
     await expect(
       createCaller({ db, authUser: { id: userTwo.id } }).invite({
         projectId: project.id,
         invitedUserId: userTwo.id,
       })
     ).rejects.toThrow(/invite participant to/)
+  })
+})
+
+describe('remove', async () => {
+  const [invitation] = await insertAll(db, TABLES.INVITATIONS, [
+    {
+      projectId: project.id,
+      invitedById: userOne.id,
+      invitedUserId: userTwo.id,
+    },
+  ])
+  it('deletes invitation if authorized', async () => {
+    const deletion = await remove({
+      invitedUserId: userTwo.id,
+      projectId: project.id,
+    })
+
+    expect(deletion).toEqual(invitation)
+  })
+
+  it('throws error if unauthorised user tries to delete invitation', async () => {
+    await expect(
+      createCaller({ db, authUser: { id: userTwo.id } }).remove({
+        projectId: project.id,
+        invitedUserId: userTwo.id,
+      })
+    ).rejects.toThrow(/You are not authorized to remove this invitation./)
   })
 })

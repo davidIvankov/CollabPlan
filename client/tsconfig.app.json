@@ -1,6 +1,12 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "../server/src/shared/**/*"],
+  "include": [
+    "env.d.ts",
+    "../shared/**/*",
+    "src/**/*",
+    "src/**/*.vue",
+    "../server/src/shared/**/*"
+  ],
   "exclude": ["src/**/tests/*", "node_modules"],
   "compilerOptions": {
     "rootDir": "..",

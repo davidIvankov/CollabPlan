@@ -1,34 +1,29 @@
 import { test, expect } from '@playwright/test'
-import { asUser } from './utils/api'
+import { asUser, createTestProject, createUser } from './utils/api'
 import { fakeProject, fakeUser } from './utils/fakeData'
 
 test.describe.serial('task', () => {
   let projectId: string
+  let createdBy: string
   const projectOwner = fakeUser()
-  const project = fakeProject()
+
+  test.beforeAll(async () => {
+    createdBy = (await createUser(projectOwner)).id
+  })
+
   test('user can add task', async ({ page }) => {
     await asUser(page, projectOwner, async () => {
-      await page.goto('/dashboard/projects/new')
+      const projectInserted = await createTestProject(fakeProject())
 
-      const form = page.getByRole('form', { name: 'NewProject' })
-      await form.getByRole('textbox', { name: 'Name' }).fill(project.name)
-      await form.getByRole('textbox', { name: 'Description' }).fill(project.description)
+      projectId = projectInserted.id
 
-      await form.locator('button[type="submit"]').click()
-
-      await page.waitForURL(
-        /\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/details$/
-      )
+      await page.goto(`/dashboard/projects/${projectId}/details`)
 
       await page.getByTestId('tasks').click()
 
       await page.waitForURL(
         /\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/tasks$/
       )
-
-      const url = page.url()
-      const match = url.match(/\/([a-f0-9-]{36})\/tasks$/)
-      projectId = match?.[1]
 
       await page.getByTestId('addTask').click()
 
@@ -58,6 +53,7 @@ test.describe.serial('task', () => {
   test('user can assign task to himself', async ({ page }) => {
     await asUser(page, projectOwner, async () => {
       await page.goto(`/dashboard/projects/${projectId}/tasks`)
+
       await page.getByTestId('Schedule').click()
 
       await page.getByTestId('assign').click()

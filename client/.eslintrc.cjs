@@ -3,11 +3,11 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 
 module.exports = {
   root: true,
-  'extends': [
+  extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
     '@vue/eslint-config-typescript',
-    '@vue/eslint-config-prettier/skip-formatting'
+    '@vue/eslint-config-prettier/skip-formatting',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
@@ -31,14 +31,11 @@ module.exports = {
               'repositories',
               'trpc',
               'utils',
-            ].flatMap(path => [
-              `@server/${path}`,
-              `@mono/server/src/${path}`,
-            ]),
+            ].flatMap((path) => [`@server/${path}`, `@mono/server/src/${path}`]),
             message: 'Please only import from @server/shared or @mono/server/src/shared.',
           },
         ],
       },
-    ]
+    ],
   },
 }
