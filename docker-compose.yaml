@@ -18,11 +18,11 @@ services:
     build:
       context: .
       dockerfile: ./server/Dockerfile
-    env_file:
-      - ./env
     environment:
       DATABASE_URL: postgres://turing:turing@postgres:5432/tasksync_db
       PORT: 3000
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_PASS: ${{ secrets.SMTP_PASS }}
     depends_on:
       - postgres
   client:
