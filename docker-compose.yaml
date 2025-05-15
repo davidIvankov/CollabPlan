@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: ./server/Dockerfile
     env_file:
-      - ./server/.env
+      - ./env
     environment:
       DATABASE_URL: postgres://turing:turing@postgres:5432/tasksync_db
       PORT: 3000
