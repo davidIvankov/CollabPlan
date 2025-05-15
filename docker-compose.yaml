@@ -23,8 +23,6 @@ services:
     environment:
       DATABASE_URL: postgres://turing:turing@postgres:5432/tasksync_db
       PORT: 3000
-      SMTP_USER: ${SMTP_USER}
-      SMTP_PASS: ${SMTP_PASS}
     depends_on:
       - postgres
   client:
