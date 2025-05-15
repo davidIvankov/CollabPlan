@@ -33,6 +33,15 @@ const schema = z
     database: z.object({
       connectionString: z.string().url(),
     }),
+
+    smtp: z.object({
+      user: z.string().email({
+        message: 'SMTP_USER must be a valid email address',
+      }),
+      pass: z.string().min(1, {
+        message: 'SMTP_PASS must be provided',
+      }),
+    }),
   })
   .readonly()
 
@@ -50,6 +59,11 @@ const config = schema.parse({
   database: {
     connectionString: env.DATABASE_URL,
   },
+
+  smtp: {
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
+  },
 })
 
 export default config
@@ -61,20 +75,3 @@ function coerceBoolean(value: unknown) {
 
   return undefined
 }
-
-/* z
-        .string()
-        .refine(
-          (val) => {
-            try {
-              ms(val as StringValue)
-              return true
-            } catch {
-              return false
-            }
-          },
-          {
-            message: 'Invalid expiresIn format',
-          }
-        )
-        .default('7d') as unknown as StringValue */
