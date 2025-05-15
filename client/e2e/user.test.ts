@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { asUser, createUser } from 'utils/api'
+import { asUser } from 'utils/api'
 import { fakeUser } from 'utils/fakeData'
 
 test.describe.serial('login and sign in', () => {

@@ -1,19 +1,23 @@
 <script lang="ts" setup>
-import { getUser } from '@/stores/user'
+import { authUserId, getUser } from '@/stores/user'
 import { onMounted, ref, computed, type Ref } from 'vue'
 import ListComponent from '@/components/ListComponent.vue'
 import type { UserPrivate } from '@server/shared/types'
-import { getByCreatedBy, getByParticipant } from '@/stores/project'
+import {
+  usersProjects,
+  participatingIn,
+  updateParticipatingIn,
+  updateUsersProjects,
+} from '@/stores/project'
 
 const user: Ref<UserPrivate | undefined> = ref()
-const usersProjects = ref()
-const participatingIn = ref()
 
 onMounted(async () => {
+  await updateUsersProjects(authUserId.value as string)
+  await updateParticipatingIn(authUserId.value as string)
   user.value = await getUser()
-  usersProjects.value = await getByCreatedBy()
-  participatingIn.value = await getByParticipant(user.value.id)
 })
+
 const userInitials = computed(() => {
   return user.value?.name ? user.value.name.substring(0, 2).toUpperCase() : ''
 })

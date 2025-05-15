@@ -79,5 +79,9 @@ h2 {
     font-size: var(--desktop-title); /* Use a larger font size for desktop */
     text-align: center; /* Center the heading */
   }
+
+  button {
+    position: relative;
+  }
 }
 </style>

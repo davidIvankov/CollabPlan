@@ -26,14 +26,23 @@ export const invitationKeysAll = Object.keys(
   invitationSchema.shape
 ) as (keyof Invitations)[]
 
+export const invitationKeysOmitIdAndCreatedAt = Object.keys(
+  invitationSchema.shape
+).filter((key) => key !== 'createdAt' && key !== 'id') as (keyof Invitations)[]
+
 export type InvitationsSelectable = Selectable<Invitations>
+
+export type InvitationByInvitedUserId = InvitationsSelectable & {
+  invitedByName: string
+  projectName: string
+}
 
 export type InvitationsInsertable = Insertable<
   Omit<Invitations, 'id' | 'createdAt' | 'status'>
 >
 
 export type InvitationsUpdatable = Selectable<
-  Pick<Invitations, 'id' | 'projectId' | 'status'>
+  Pick<Invitations, 'id' | 'projectId'> & { status: InvitationsStatus }
 >
 
 export type InvitationsStatus =

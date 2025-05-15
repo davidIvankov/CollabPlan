@@ -15,34 +15,49 @@ const [userOne, userTwo] = await insertAll(db, TABLES.USER, [
   fakeUser(),
   fakeUser({ email: 'fake@gmail.com' }),
 ])
-const [project] = await insertAll(db, TABLES.PROJECT, [
+const [projectOne, projectTwo] = await insertAll(db, TABLES.PROJECT, [
   fakeProject({ createdBy: userOne.id }),
-  fakeProject({ createdBy: userOne.id }),
+  fakeProject({ createdBy: userTwo.id }),
 ])
 
-const invitationContent = {
-  projectId: project.id,
-  invitedById: userOne.id,
-  invitedUserId: userTwo.id,
-}
-const [invitation] = await insertAll(db, TABLES.INVITATIONS, [
-  invitationContent,
+const [invitationOne, invitationTwo] = await insertAll(db, TABLES.INVITATIONS, [
+  {
+    projectId: projectOne.id,
+    invitedById: userOne.id,
+    invitedUserId: userTwo.id,
+  },
+  {
+    projectId: projectTwo.id,
+    invitedById: userTwo.id,
+    invitedUserId: userOne.id,
+  },
 ])
 
-const { getByProjectId } = createCaller({ db, authUser: { id: userOne.id } })
+const { getByProjectId, getByInvitedUserId } = createCaller({
+  db,
+  authUser: { id: userOne.id },
+})
 
 describe('getByProjectId', () => {
   it('get invitation list if authorized', async () => {
-    const insertion = await getByProjectId(project.id)
+    const insertion = await getByProjectId(projectOne.id)
 
-    expect(insertion).toEqual([invitation])
+    expect(insertion).toEqual([invitationOne])
   })
 
   it('throws error if unauthorised user tries to add participant', async () => {
     await expect(
       createCaller({ db, authUser: { id: userTwo.id } }).getByProjectId(
-        project.id
+        projectOne.id
       )
     ).rejects.toThrow(/to get invitations of/)
+  })
+})
+
+describe('getByInvitedUserId', () => {
+  it('get invitations list for single user', async () => {
+    const response = await getByInvitedUserId()
+
+    expect(response[0]).toMatchObject(invitationTwo)
   })
 })

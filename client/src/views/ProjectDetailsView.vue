@@ -31,7 +31,11 @@ const leaveProject = async () => {
 </script>
 <template>
   <div class="project-details" v-if="project">
-    <RouterLink :to="`/dashboard/projects/${route.params.id}/update`" v-if="isOwner">
+    <RouterLink
+      :to="`/dashboard/projects/${route.params.id}/update`"
+      class="update-button"
+      v-if="isOwner"
+    >
       <img src="@/assets/icons/settings.svg" alt="go back" class="svg" />
     </RouterLink>
     <button class="leave-btn" @click="leaveProject" v-else>Leave Project</button>
@@ -109,6 +113,12 @@ h1 {
   margin-top: 48px;
   color: var(--text-green);
 }
+
+@media (min-width: 768px) {
+  .update-button {
+    position: relative;
+  }
+}
 @media (min-width: 1024px) {
   .project-details {
     margin-top: 0; /* Remove top margin for proper vertical centering */
@@ -117,6 +127,10 @@ h1 {
     min-height: 70vh; /* Adjust height for desktop */
     margin-left: auto; /* Center horizontally */
     margin-right: auto; /* Center horizontally */
+  }
+
+  .update-button {
+    position: relative;
   }
 
   h1 {

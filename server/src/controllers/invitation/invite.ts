@@ -1,3 +1,4 @@
+import { INVITATION_STATUS } from '@server/database/dbConstants'
 import { invitationInputSchema } from '@server/entities/invitation'
 import { invitationsRepository } from '@server/repositories/invitationsRepository'
 import { projectRepository } from '@server/repositories/projectRepository'
@@ -13,6 +14,18 @@ export default authenticatedProcedure
     const project = await repos.projectRepository.getById(input.projectId)
 
     checkOwnership(project, authUser, 'invite participant to')
+
+    const invitation =
+      await repos.invitationsRepository.getByUserAndProjectId(input)
+
+    if (invitation) {
+      const { id } = invitation
+      return repos.invitationsRepository.update({
+        id,
+        projectId,
+        status: INVITATION_STATUS.PENDING,
+      })
+    }
 
     return repos.invitationsRepository.create({
       invitedById: authUser.id,

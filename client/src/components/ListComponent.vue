@@ -3,8 +3,8 @@ import { RouterLink } from 'vue-router'
 import { getInitials } from '@/utils/getInitials'
 import type { ParticipantSelected, ProjectByParticipant, ProjectPublic } from '@server/shared/types'
 import { authUserId } from '@/stores/user'
-import { onMounted, ref } from 'vue'
-import { getProjectById } from '@/stores/project'
+import { onMounted, ref, watch } from 'vue'
+import { getProjectById, participatingIn } from '@/stores/project'
 import { removeParticipant } from '@/stores/participant'
 
 const project = ref<ProjectPublic | null>(null)
@@ -17,9 +17,16 @@ const props = defineProps<{
 
 type ExtendedParticipant = ParticipantSelected & { showDetails: boolean }
 
-const localListItems = ref<ExtendedParticipant[] | ProjectByParticipant[] | ProjectPublic[] | null>(
-  null
-)
+const localListItems = ref<
+  ExtendedParticipant[] | ProjectByParticipant[] | ProjectPublic[] | null
+>()
+
+watch(participatingIn, () => {
+  if (props.type === 'project-with-role')
+    localListItems.value = participatingIn.value.map((item) => {
+      return { ...item, showDetails: false }
+    })
+})
 
 function isParticipantList(items: any[]): items is ParticipantSelected[] {
   return props.type === 'participant'
@@ -70,6 +77,7 @@ const toggleDetails = (item: ExtendedParticipant) => {
         </RouterLink>
 
         <RouterLink
+          data-testid="participatingIn"
           v-else-if="type === 'project-with-role'"
           :to="`/dashboard/projects/${(item as ProjectByParticipant).id}/details`"
           class="item-link"

@@ -2,14 +2,12 @@
 import { authUserId } from '@/stores/user'
 import { onMounted, ref } from 'vue'
 import ListComponent from '@/components/ListComponent.vue'
-import { getByCreatedBy, getByParticipant } from '@/stores/project'
-
-const usersProjects = ref()
-const participatingIn = ref()
+import { updateParticipatingIn, updateUsersProjects } from '@/stores/project'
+import { usersProjects, participatingIn } from '@/stores/project'
 
 onMounted(async () => {
-  usersProjects.value = await getByCreatedBy(authUserId.value as string)
-  participatingIn.value = await getByParticipant(authUserId.value as string)
+  await updateUsersProjects(authUserId.value as string)
+  await updateParticipatingIn(authUserId.value as string)
 })
 </script>
 <template>

@@ -3,7 +3,7 @@ import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll } from '@tests/utils/records'
-import { TABLES } from '@server/database/dbConstants'
+import { INVITATION_STATUS, TABLES } from '@server/database/dbConstants'
 import projectParticipantRouter from '..'
 
 const createCaller = createCallerFactory(projectParticipantRouter)
@@ -11,9 +11,10 @@ const db = await wrapInRollbacks(createTestDatabase())
 
 // a general setup for the tests
 await clearTables(db, [TABLES.PROJECT])
-const [userOne, userTwo] = await insertAll(db, TABLES.USER, [
+const [userOne, userTwo, userThree] = await insertAll(db, TABLES.USER, [
   fakeUser(),
   fakeUser({ email: 'fake@gmail.com' }),
+  fakeUser({ email: 'different@gmail.com' }),
 ])
 const [project] = await insertAll(db, TABLES.PROJECT, [
   fakeProject({ createdBy: userOne.id }),
@@ -22,7 +23,7 @@ const [project] = await insertAll(db, TABLES.PROJECT, [
 
 const { invite, remove } = createCaller({ db, authUser: { id: userOne.id } })
 
-describe('create', () => {
+describe('invite', () => {
   it('creates invitation if input is valid', async () => {
     const insertion = await invite({
       invitedUserId: userTwo.id,
@@ -33,6 +34,27 @@ describe('create', () => {
       invitedUserId: userTwo.id,
       projectId: project.id,
       invitedById: userOne.id,
+    })
+  })
+
+  it('updates declined invitation', async () => {
+    const [invitation] = await insertAll(db, TABLES.INVITATIONS, [
+      {
+        projectId: project.id,
+        invitedById: userOne.id,
+        invitedUserId: userThree.id,
+        status: INVITATION_STATUS.DECLINED,
+      },
+    ])
+
+    const mutation = await invite({
+      invitedUserId: userThree.id,
+      projectId: project.id,
+    })
+
+    expect(mutation).toEqual({
+      ...invitation,
+      status: INVITATION_STATUS.PENDING,
     })
   })
 

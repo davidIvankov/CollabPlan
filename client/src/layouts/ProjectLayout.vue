@@ -4,7 +4,7 @@ import { getTasks } from '@/stores/task'
 import { authUserId } from '@/stores/user'
 import type { TaskSelectable } from '@server/shared/types'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, RouterView } from 'vue-router'
 
 const route = useRoute()
 const projectId = route.params.id
@@ -20,22 +20,25 @@ const reloadTasks = async () => {
 </script>
 
 <template>
-  <ProjectNavigation :projectId="projectId as string"></ProjectNavigation>
-  <RouterView
-    :projectId="projectId"
-    v-if="tasks"
-    :tasks="tasks"
-    :userId="authUserId"
-    @task-updated="reloadTasks"
-  ></RouterView>
+  <div class="container">
+    <ProjectNavigation :projectId="projectId as string"></ProjectNavigation>
+    <RouterView
+      class="routerView"
+      :projectId="projectId"
+      v-if="tasks"
+      :tasks="tasks"
+      :userId="authUserId"
+      @task-updated="reloadTasks"
+    ></RouterView>
 
-  <RouterLink
-    class="button"
-    :to="`/dashboard/projects/${projectId}/calendar`"
-    active-class="invisible"
-  >
-    <img src="@/assets/icons/calendar.svg" alt="Calendar" class="calendarIcon" />
-  </RouterLink>
+    <RouterLink
+      class="button"
+      :to="`/dashboard/projects/${projectId}/calendar`"
+      active-class="invisible"
+    >
+      <img src="@/assets/icons/calendar.svg" alt="Calendar" class="calendarIcon" />
+    </RouterLink>
+  </div>
 </template>
 <style scoped>
 .calendarIcon {
@@ -64,5 +67,29 @@ const reloadTasks = async () => {
   position: fixed;
   bottom: calc(84px + 3vw);
   right: 24px;
+}
+
+@media (min-width: 768px) {
+  .button {
+    top: 80px; /* Position at the top */
+    left: 24px; /* Position at the left */
+    bottom: auto; /* Reset bottom positioning */
+    right: auto; /* Reset right positioning */
+  }
+}
+
+@media (min-width: 1025px) {
+  .container {
+    padding-left: 90px;
+  }
+  .button {
+    top: 24px; /* Position at the top */
+    left: 224px; /* Position at the left */
+    bottom: auto; /* Reset bottom positioning */
+    right: auto; /* Reset right positioning */
+  }
+  .RouterView .formContainer {
+    padding: 0;
+  }
 }
 </style>
