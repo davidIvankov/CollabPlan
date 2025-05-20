@@ -5,18 +5,25 @@ import type {
   NotificationSelectable,
 } from '@server/entities/notification'
 import { type NotificationRepository } from '@server/repositories/notificationRepository'
+import {
+  sendInvitationNotificationToUser,
+  sendNotificationToUsers,
+} from '@server/sse'
 
 export function sendNotificationCreator<T>(template: (args: T) => string) {
   return async (
     args: T,
     notificationRepository: NotificationRepository,
     insertionArgs: NotificationInvitationInsertable
-  ): Promise<NotificationSelectable> =>
-    notificationRepository.createInvitationNotification({
+  ): Promise<NotificationSelectable> => {
+    sendInvitationNotificationToUser(insertionArgs.userId)
+
+    return notificationRepository.createInvitationNotification({
       message: template(args),
       type: NOTIFICATION_TYPE.INVITATION,
       ...insertionArgs,
     })
+  }
 }
 
 export function groupNotificationCreator<T>(template: (args: T) => string) {
@@ -26,6 +33,8 @@ export function groupNotificationCreator<T>(template: (args: T) => string) {
     usersIds: string[],
     insertionArgsArrPartial: NotificationProjectInsertableNoUserId
   ): Promise<NotificationSelectable[]> => {
+    sendNotificationToUsers(usersIds)
+
     const message = template(args)
     return Promise.all(
       usersIds.map((userId) =>

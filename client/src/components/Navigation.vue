@@ -13,8 +13,11 @@ import {
   notifications,
   invitationNotifications,
   getInvitationNotifications,
+  refreshNotifications,
+  refreshInvitations,
 } from '@/stores/notification'
 import { showInvitations, showNotifications, toggleOffPanels } from '@/stores/shared'
+import { useSSENotifications } from '@/composables/useSSENotifications/useSSENotifications'
 
 const page = ref<number>(1)
 
@@ -33,6 +36,10 @@ const toggleNotifications = () => {
   }
   showNotifications.value = !showNotifications.value
 }
+
+useSSENotifications((data) =>
+  data.type === 'INVITATION' ? refreshInvitations() : refreshNotifications()
+)
 
 onMounted(async () => {
   notifications.value = await getProjectNotifications(1)

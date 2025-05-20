@@ -9,6 +9,7 @@ import type { Database } from './database'
 import { appRouter } from './controllers'
 import type { Context } from './trpc'
 import config from './config'
+import { sseNotificationsHandler } from './sse'
 
 export default function createApp(db: Database) {
   const app = express()
@@ -49,6 +50,8 @@ export default function createApp(db: Database) {
       )
     })
   }
+
+  app.get('/api/v1/sse/notifications', sseNotificationsHandler)
 
   return app
 }
