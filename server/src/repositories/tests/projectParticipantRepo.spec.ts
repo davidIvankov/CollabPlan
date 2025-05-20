@@ -45,14 +45,24 @@ describe('create', async () => {
   })
 })
 
-describe('get', () => {
+describe('getAllExceptUser', () => {
   beforeAll(async () => {
     await insertAll(db, TABLES.PROJECT_PARTICIPANT, [
       projectParticipant,
       projectParticipantTwo,
     ])
   })
+  it('returns participants from one project excluding one with the provided id', async () => {
+    const participants = await repository.getAllExceptUser(
+      project.id,
+      userOne.id
+    )
 
+    expect(participants).toEqual([[userTwo.id], [userTwo.email]])
+  })
+})
+
+describe('get', () => {
   it('returns participant when projectId and userId provided', async () => {
     const participant = await repository.get(projectParticipant)
 

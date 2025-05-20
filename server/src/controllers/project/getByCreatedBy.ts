@@ -10,8 +10,7 @@ export default authenticatedProcedure
   .query(
     async ({ input, ctx: { repos, authUser } }): Promise<ProjectPublic[]> => {
       const createdBy = input || authUser.id
-      const project = await repos.projectRepository.getByCreatedBy(createdBy)
 
-      return project
+      return repos.projectRepository.getByCreatedBy(createdBy)
     }
   )

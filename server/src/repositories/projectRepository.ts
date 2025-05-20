@@ -69,4 +69,4 @@ export function projectRepository(db: Database) {
   }
 }
 
-export type ArticleRepository = ReturnType<typeof projectRepository>
+export type ProjectRepository = ReturnType<typeof projectRepository>

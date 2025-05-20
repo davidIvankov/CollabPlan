@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Navigation from '@/components/Navigation.vue'
+import { toggleOffPanels } from '@/stores/shared'
 import { logout } from '@/stores/user'
 import { useRouter } from 'vue-router'
 
@@ -15,7 +16,9 @@ function logoutUser() {
   <button @click="logoutUser" data-testid="logout">
     <img src="@/assets/icons/logout.svg" alt="logout" class="logout" />
   </button>
-  <RouterView />
+  <div @click="toggleOffPanels">
+    <RouterView />
+  </div>
   <Navigation></Navigation>
 </template>
 <style scoped>

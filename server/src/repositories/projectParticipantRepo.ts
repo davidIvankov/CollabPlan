@@ -9,6 +9,7 @@ import {
   type UpdateRoleInsertable,
 } from '@server/entities/projectParticipant'
 import type { Slot } from '@server/entities/shared'
+import { userKeysProjectNotification } from '@server/entities/user'
 import { type TaskAssignArguments } from '../entities/task'
 
 export function projectParticipantRepository(db: Database) {
@@ -21,6 +22,22 @@ export function projectParticipantRepository(db: Database) {
         .values(insertableProjectParticipant)
         .returning(projectParticipantKeysPublic)
         .executeTakeFirstOrThrow()
+    },
+    async getAllExceptUser(
+      projectId: string,
+      userId: string
+    ): Promise<string[][]> {
+      return db
+        .selectFrom(TABLES.PROJECT_PARTICIPANT)
+        .where('projectId', '=', projectId)
+        .where('userId', '!=', userId)
+        .innerJoin(TABLES.USER, 'userId', 'user.id')
+        .select(userKeysProjectNotification)
+        .execute()
+        .then((users) => [
+          users.map((user) => user.id),
+          users.map((user) => user.email),
+        ])
     },
 
     async get(

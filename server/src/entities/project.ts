@@ -49,3 +49,9 @@ export type ProjectInsertableNoUser = Insertable<
 
 export type ProjectUpdate = Updateable<Pick<Project, 'name' | 'description'>> &
   Pick<Selectable<Project>, 'id'>
+
+export function isProject(
+  project: ProjectPublic | undefined
+): project is ProjectPublic {
+  return project !== undefined
+}

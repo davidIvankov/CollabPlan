@@ -4,12 +4,18 @@ export const TABLES = {
   PROJECT_PARTICIPANT: 'projectParticipant',
   TASK: 'task',
   INVITATIONS: 'invitations',
+  NOTIFICATION: 'notification',
 } as const
 
 export const TASK_STATUS = {
   TODO: 'todo',
   REVIEW: 'review',
   DONE: 'done',
+} as const
+
+export const NOTIFICATION_TYPE = {
+  INVITATION: 'INVITATION',
+  PROJECT_UPDATE: 'PROJECT_UPDATE',
 } as const
 
 export const INVITATION_STATUS = {

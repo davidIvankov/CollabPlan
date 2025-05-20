@@ -1,25 +1,22 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref } from 'vue'
+import { defineProps, onMounted, onUnmounted, ref } from 'vue'
 import type { InvitationByInvitedUserId } from '@server/shared/types'
+import { refreshInvitations, setSeen } from '@/stores/notification'
+import type { InvitationUpdateClient } from '@/stores/invitations'
 
-const props = defineProps({
-  invitation: {
-    type: Object as () => InvitationByInvitedUserId,
-    required: true,
-  },
-  acceptInvitation: {
-    type: Function,
-    required: true,
-  },
-  declineInvitation: {
-    type: Function,
-    required: true,
-  },
-})
+const props = defineProps<{
+  invitation: InvitationByInvitedUserId
+  acceptInvitation: (arg: InvitationUpdateClient) => Promise<void>
+  declineInvitation: (arg: InvitationUpdateClient) => Promise<void>
+}>()
 
 const extendedInvitation = ref<ExtendedInvitation>()
 onMounted(async () => {
   extendedInvitation.value = { ...props.invitation, showDetails: false }
+})
+
+onUnmounted(async () => {
+  await refreshInvitations()
 })
 
 type ExtendedInvitation = InvitationByInvitedUserId & { showDetails: boolean }

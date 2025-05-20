@@ -2,8 +2,10 @@ import { fakeProject, fakeUser } from '@server/entities/tests/fakes'
 import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
+import { vi } from 'vitest'
 import { clearTables, insertAll } from '@tests/utils/records'
 import { INVITATION_STATUS, TABLES } from '@server/database/dbConstants'
+import { emailService } from '@server/services/mailer'
 import projectParticipantRouter from '..'
 
 const createCaller = createCallerFactory(projectParticipantRouter)
@@ -21,6 +23,12 @@ const [project] = await insertAll(db, TABLES.PROJECT, [
   fakeProject({ createdBy: userOne.id }),
 ])
 
+vi.mock('@server/services/mailer', () => ({
+  emailService: {
+    sendInvitationEmail: vi.fn(() => Promise.resolve()),
+  },
+}))
+
 const { invite, remove } = createCaller({ db, authUser: { id: userOne.id } })
 
 describe('invite', () => {
@@ -34,6 +42,12 @@ describe('invite', () => {
       invitedUserId: userTwo.id,
       projectId: project.id,
       invitedById: userOne.id,
+    })
+
+    expect(emailService.sendInvitationEmail).toBeCalledWith(userTwo.email, {
+      recipientName: userTwo.name,
+      projectName: project.name,
+      inviterName: userOne.name,
     })
   })
 

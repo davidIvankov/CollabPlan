@@ -1,6 +1,7 @@
 import { router } from '../trpc'
 import forTest from './forTest'
 import invitation from './invitation'
+import notification from './notification'
 import project from './project'
 import projectParticipant from './projectParticipant'
 import task from './task'
@@ -13,6 +14,7 @@ export const appRouter = router({
   task,
   invitation,
   forTest,
+  notification,
 })
 
 export type AppRouter = typeof appRouter

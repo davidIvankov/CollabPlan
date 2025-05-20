@@ -25,6 +25,12 @@ const [project] = await insertAll(
   fakeProject({ createdBy: user.id })
 )
 
+vi.mock('@server/services/mailer', () => ({
+  emailService: {
+    sendActivityNotificationEmail: vi.fn(() => Promise.resolve()),
+  },
+}))
+
 const task = fakeInsertableTask({ projectId: project.id })
 const [taskOne] = await insertAll(db, TABLES.TASK, task)
 await insertAll(db, TABLES.PROJECT_PARTICIPANT, [

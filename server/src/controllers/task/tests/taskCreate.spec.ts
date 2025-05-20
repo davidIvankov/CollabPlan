@@ -13,6 +13,12 @@ import taskRouter from '..'
 const createCaller = createCallerFactory(taskRouter)
 const db = await wrapInRollbacks(createTestDatabase())
 
+vi.mock('@server/services/mailer', () => ({
+  emailService: {
+    sendActivityNotificationEmail: vi.fn(() => Promise.resolve()),
+  },
+}))
+
 // a general setup for the tests
 await clearTables(db, [TABLES.TASK])
 const [user, userTwo] = await insertAll(db, TABLES.USER, [

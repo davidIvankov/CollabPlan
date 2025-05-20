@@ -4,6 +4,7 @@ import { projectRepository } from './projectRepository'
 import { projectParticipantRepository } from './projectParticipantRepo'
 import { taskRepository } from './taskRepository'
 import { invitationsRepository } from './invitationsRepository'
+import { notificationRepository } from './notificationRepository'
 
 export type RepositoryFactory = <T>(db: Database) => T
 
@@ -14,6 +15,7 @@ const repositories = {
   projectParticipantRepository,
   taskRepository,
   invitationsRepository,
+  notificationRepository,
 }
 
 export type RepositoriesFactories = typeof repositories

@@ -28,6 +28,19 @@ export interface Invitations {
   status: Generated<string>
 }
 
+export interface Notification {
+  createdAt: Generated<Timestamp>
+  emailed: Generated<boolean>
+  id: Generated<string>
+  message: string
+  projectId: string
+  seen: Generated<boolean>
+  taskId: string | null
+  triggeredBy: string
+  type: string
+  userId: string
+}
+
 export interface Project {
   createdAt: Generated<Timestamp>
   createdBy: string | null
@@ -64,6 +77,7 @@ export interface User {
 
 export interface DB {
   invitations: Invitations
+  notification: Notification
   project: Project
   projectParticipant: ProjectParticipant
   task: Task

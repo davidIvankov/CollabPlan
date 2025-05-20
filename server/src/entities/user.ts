@@ -21,6 +21,10 @@ export const userKeysPublic = ['id', 'name'] as const
 
 export const userKeysPrivate = ['id', 'name', 'email'] as const
 
+export const userKeysProjectNotification = ['user.id as id', 'email'] as const
+
+export type UserProjectNotification = Selectable<Pick<User, 'id'>>
+
 export type UserPrivate = Pick<
   Selectable<User>,
   (typeof userKeysPrivate)[number]
