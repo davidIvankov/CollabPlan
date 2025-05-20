@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, type Ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 import Invitation from './Invitation.vue'
 import Notification from './Notification.vue'
 import type { InvitationByInvitedUserId, NotificationResponse } from '@server/shared/types'
@@ -19,6 +19,14 @@ import {
 import { showInvitations, showNotifications, toggleOffPanels } from '@/stores/shared'
 import { useSSENotifications } from '@/composables/useSSENotifications/useSSENotifications'
 
+const sseListener = useSSENotifications((data) => {
+  console.log('sex')
+  if (data.type === 'INVITATION') refreshInvitations()
+  else {
+    refreshNotifications()
+  }
+})
+
 const page = ref<number>(1)
 
 const getCount = (res: Ref<NotificationResponse | undefined>) => {
@@ -37,11 +45,8 @@ const toggleNotifications = () => {
   showNotifications.value = !showNotifications.value
 }
 
-useSSENotifications((data) =>
-  data.type === 'INVITATION' ? refreshInvitations() : refreshNotifications()
-)
-
 onMounted(async () => {
+  sseListener.startListening()
   notifications.value = await getProjectNotifications(1)
   invitationNotifications.value = await getInvitationNotifications(1)
 })
@@ -81,8 +86,8 @@ const declineInvitation = async ({ id, projectId }: InvitationUpdateClient) => {
   updateInvitations(id)
 }
 
-watch(participatingIn, (newVal) => {
-  console.log('participatingIn changed:', newVal)
+onBeforeUnmount(() => {
+  if (sseListener) sseListener.stopListening()
 })
 </script>
 
