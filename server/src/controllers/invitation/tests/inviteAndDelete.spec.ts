@@ -4,7 +4,11 @@ import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { vi } from 'vitest'
 import { clearTables, insertAll } from '@tests/utils/records'
-import { INVITATION_STATUS, TABLES } from '@server/database/dbConstants'
+import {
+  INVITATION_STATUS,
+  NOTIFICATION_TYPE,
+  TABLES,
+} from '@server/database/dbConstants'
 import { emailService } from '@server/services/mailer'
 import projectParticipantRouter from '..'
 
@@ -90,6 +94,14 @@ describe('remove', async () => {
       invitedUserId: userTwo.id,
     },
   ])
+  await insertAll(db, TABLES.NOTIFICATION, {
+    message: 'hello',
+    type: NOTIFICATION_TYPE.INVITATION,
+    triggeredBy: userOne.id,
+    userId: userTwo.id,
+    projectId: project.id,
+  })
+
   it('deletes invitation if authorized', async () => {
     const deletion = await remove({
       invitedUserId: userTwo.id,
