@@ -28,7 +28,7 @@ export const getDocuments = (tasks: DocumentParams[]) =>
       title: name,
       snippet: description ?? '',
       data: {
-        text: description ?? 'No description provided.',
+        description: description ?? 'No description provided.',
         projectName,
         projectDescription,
         estimatedDuration,
