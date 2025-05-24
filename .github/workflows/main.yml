@@ -17,7 +17,8 @@ jobs:
     services:
       # spin up a database for tests
       postgres:
-        image: postgres:16.1-alpine
+        image: ankane/pgvector
+
         env:
           # Postgres will create a database with the following credentials
           POSTGRES_USER: turing
