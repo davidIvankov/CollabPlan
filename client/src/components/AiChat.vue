@@ -96,7 +96,7 @@ async function sendUserProposal() {
 onMounted(async () => {
   user.value = await getUser(authUserId.value as string)
   // In test mode, mock handleEstimateAI with a dummy effect and delay
-  if (!import.meta.env.PROD && import.meta.env.DEV) {
+  if (import.meta.env.VITE_E2E) {
     // @ts-ignore
     window.__mockHandleEstimateAI = async function () {
       aiLoading.value = true
