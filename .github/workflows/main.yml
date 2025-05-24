@@ -197,7 +197,7 @@ jobs:
                 "DATABASE_URL": "${{ secrets.PROD_DATABASE_URL }}",
                 "TOKEN_KEY": "${{ secrets.PROD_TOKEN_KEY }}",
                 "SMTP_USER":"${{ secrets.SMTP_USER }}",
-                "SMTP_PASS":"${{ secrets.SMTP_PASS }}"
+                "SMTP_PASS":"${{ secrets.SMTP_PASS }}",
                 "COHERE_API_KEY":"${{ secrets.COHERE_API_KEY }}"
               }
             }
