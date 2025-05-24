@@ -76,7 +76,7 @@ jobs:
       # differences between dev mode and production mode front
       # end code.
       - name: Build front end for E2E tests
-        run: npm run build -w=client
+        run: VITE_E2E=true npm run build -w=client
 
       # Just to make sure that our server is up and running before
       # we start our E2E tests, we will use a health check action
