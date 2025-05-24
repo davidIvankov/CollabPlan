@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { authUserId } from '@/stores/user'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import ListComponent from '@/components/ListComponent.vue'
 import { updateParticipatingIn, updateUsersProjects } from '@/stores/project'
 import { usersProjects, participatingIn } from '@/stores/project'

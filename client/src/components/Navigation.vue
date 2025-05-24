@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, type Ref } from 'vue'
 import Invitation from './Invitation.vue'
 import Notification from './Notification.vue'
 import type { InvitationByInvitedUserId, NotificationResponse } from '@server/shared/types'
 import { getInvitationsByUserId, type InvitationUpdateClient } from '@/stores/invitations'
 import { createParticipant } from '@/stores/participant'
 import { INVITATION_STATUS } from '../stores/invitations'
-import { participatingIn, updateParticipatingIn } from '@/stores/project'
+import { updateParticipatingIn } from '@/stores/project'
 import { authUserId } from '@/stores/user'
 import {
   getProjectNotifications,

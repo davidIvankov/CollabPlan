@@ -4,11 +4,10 @@ import { fakeProject, fakeUser } from './utils/fakeData'
 
 test.describe.serial('task', () => {
   let projectId: string
-  let createdBy: string
   const projectOwner = fakeUser()
 
   test.beforeAll(async () => {
-    createdBy = (await createUser(projectOwner)).id
+    await createUser(projectOwner)
   })
 
   test('user can add task', async ({ page }) => {

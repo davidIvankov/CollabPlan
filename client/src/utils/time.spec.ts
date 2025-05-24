@@ -6,7 +6,6 @@ import {
   formatDateForTemplate,
   formatForCalendar,
   dateForCalendar,
-  convertToLocal,
 } from './time'
 
 describe('time utilities', () => {
