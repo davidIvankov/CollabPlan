@@ -35,10 +35,26 @@ const removeTask = async () => {
   emit('task-updated')
 }
 
+const showActualDurationPrompt = ref(false)
+const actualDuration = ref<number>(props.task.duration)
+
 const setDone = async () => {
-  if (!confirm('completed task? this action is irreversible!')) return
-  await markAsDone(props.task.id)
+  showActualDurationPrompt.value = true
+}
+
+const confirmActualDuration = async () => {
+  if (!actualDuration.value || isNaN(Number(actualDuration.value))) {
+    alert('Please enter a valid duration in minutes.')
+    return
+  }
+  await markAsDone({ id: props.task.id, actualDuration: actualDuration.value })
   emit('task-updated')
+  showActualDurationPrompt.value = false
+}
+
+const cancelActualDuration = () => {
+  showActualDurationPrompt.value = false
+  actualDuration.value = props.task.duration
 }
 
 onMounted(async () => {
@@ -81,7 +97,13 @@ const isEmptyObject = (obj: unknown): boolean =>
           UNASSIGN
         </button>
       </div>
-      <p><strong>Duration:</strong> {{ task?.duration }} minutes</p>
+      <p>
+        <strong> {{ task.actualDuration ? 'Estimated' : '' }} Duration:</strong>
+        {{ task?.duration }} minutes
+      </p>
+      <p v-if="task.actualDuration">
+        <strong>Actual Duration:</strong> {{ task.actualDuration }} minutes
+      </p>
       <p><strong>Created at:</strong> {{ formatDateForTemplate(task?.createdAt.toISOString()) }}</p>
       <button
         class="btn schedule success"
@@ -109,6 +131,26 @@ const isEmptyObject = (obj: unknown): boolean =>
       >
         DELETE
       </button>
+    </div>
+    <div v-if="showActualDurationPrompt" class="actual-duration-modal">
+      <div class="modal-content">
+        <label for="actual-duration-input"
+          ><strong>How long did it actually take (minutes)?</strong></label
+        >
+        <input
+          id="actual-duration-input"
+          v-model="actualDuration"
+          type="number"
+          min="1"
+          class="actual-duration-input"
+          placeholder="Enter minutes"
+          required
+        />
+        <div class="modal-actions">
+          <button class="btn success" @click="confirmActualDuration">Confirm</button>
+          <button class="btn danger" @click="cancelActualDuration">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -246,5 +288,42 @@ const isEmptyObject = (obj: unknown): boolean =>
 
 .task-status.todo {
   background-color: #e74c3c;
+}
+
+.actual-duration-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.duration-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>

@@ -46,6 +46,8 @@ describe('remove', async () => {
   it('remove task if authenticated.', async () => {
     const response = await remove({ id: taskOne.id, projectId: project.id })
 
-    expect(response).toEqual(taskOne)
+    const { embedding, ...expectedResponse } = taskOne
+
+    expect(response).toEqual(expectedResponse)
   })
 })

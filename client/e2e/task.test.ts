@@ -36,6 +36,7 @@ test.describe.serial('task', () => {
       await taskForm
         .getByRole('textbox', { name: 'Description' })
         .fill('Some Job description as a placeholder')
+
       await taskForm.getByRole('spinbutton', { name: 'Duration' }).fill('60')
 
       await taskForm.locator('button[type="submit"]').click()
@@ -47,6 +48,23 @@ test.describe.serial('task', () => {
       const taskTitle = page.getByTestId('TaskName')
 
       await expect(taskTitle).toContainText('Job')
+    })
+  })
+
+  test('user can ask AI for duration suggestion', async ({ page }) => {
+    await asUser(page, projectOwner, async () => {
+      await page.goto(`/dashboard/projects/${projectId}/add-task`)
+
+      const taskForm = page.getByRole('form', { name: 'NewTask' })
+      await taskForm.getByRole('textbox', { name: 'Name' }).fill('Job')
+      await taskForm
+        .getByRole('textbox', { name: 'Description' })
+        .fill('Some Job description as a placeholder')
+      await page.getByTestId('open_chat_button').click()
+      await expect(page.getByTestId('loading')).toBeVisible()
+      await expect(page.getByTestId('chat_message')).toHaveText(
+        'This is a mock AI response (test mode).'
+      )
     })
   })
 

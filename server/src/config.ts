@@ -42,6 +42,11 @@ const schema = z
         message: 'SMTP_PASS must be provided',
       }),
     }),
+    cohere: z.object({
+      apiKey: z.string().min(1, {
+        message: 'COHERE_API_KEY must be provided',
+      }),
+    }),
   })
   .readonly()
 
@@ -63,6 +68,9 @@ const config = schema.parse({
   smtp: {
     user: env.SMTP_USER,
     pass: env.SMTP_PASS,
+  },
+  cohere: {
+    apiKey: env.COHERE_API_KEY,
   },
 })
 

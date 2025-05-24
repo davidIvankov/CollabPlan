@@ -9,11 +9,18 @@ export type EventData = { type: 'PROJECT_NOTIFICATION' | 'INVITATION' }
 export function useSSENotifications(onMessage: (data: EventData) => void) {
   let controller: AbortController | null = null
 
-  function startListening() {
+  function startListening(retryCount = 0) {
+    // Abort previous controller if exists
+    if (controller) {
+      controller.abort()
+      controller = null
+    }
     const token = getStoredAccessToken(localStorage)
     if (!token) return
 
     controller = new AbortController()
+    const MAX_RETRIES = 5
+    const RETRY_DELAY = 2000
 
     fetchEventSource(`${apiOrigin}/api/v1/sse/notifications`, {
       headers: {
@@ -30,13 +37,20 @@ export function useSSENotifications(onMessage: (data: EventData) => void) {
       },
       onerror(err) {
         console.error('SSE error:', err)
-        // Reconnect logic can go here if desired
+        if (retryCount < MAX_RETRIES) {
+          setTimeout(() => {
+            startListening(retryCount + 1)
+          }, RETRY_DELAY)
+        } else {
+          console.error('SSE: Max retries reached, giving up.')
+        }
       },
     })
   }
 
   function stopListening() {
     controller?.abort()
+    controller = null
   }
 
   onBeforeUnmount(() => {

@@ -39,7 +39,8 @@ describe('get', async () => {
 
   it('get tasks of one project', async () => {
     const response = await get(project.id)
+    const { embedding, ...expectedResponse } = taskOne
 
-    expect(response).toEqual([taskOne])
+    expect(response).toEqual([expectedResponse])
   })
 })

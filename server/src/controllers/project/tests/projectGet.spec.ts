@@ -11,18 +11,21 @@ const db = await wrapInRollbacks(createTestDatabase())
 
 // a general setup for the tests
 await clearTables(db, [TABLES.PROJECT])
-const [user] = await insertAll(db, TABLES.USER, fakeUser())
-const { id } = user
+const [userOne, userTwo] = await insertAll(db, TABLES.USER, [
+  fakeUser(),
+  fakeUser({ email: 'antonio@gmail.com' }),
+])
+const { id } = userOne
 await insertAll(db, TABLES.PROJECT, [
-  fakeProject({ createdBy: user.id }),
-  fakeProject({ createdBy: user.id }),
+  fakeProject({ createdBy: userOne.id }),
+  fakeProject({ createdBy: userTwo.id }),
 ])
 
 const [projectOne, projectTwo] = await selectAll(db, TABLES.PROJECT)
 
 const { getById, getByCreatedBy } = createCaller({
   db,
-  authUser: { id: user.id },
+  authUser: { id: userTwo.id },
 })
 
 describe('getById', () => {
@@ -42,8 +45,13 @@ describe('getByCreatedBy', () => {
     await clearTables(db, [TABLES.PROJECT, TABLES.USER])
   })
   it('should return the project if it exists', async () => {
-    const response = await getByCreatedBy(user.id)
+    const response = await getByCreatedBy(userOne.id)
 
-    expect(response).toEqual([projectOne, projectTwo])
+    expect(response).toEqual([projectOne])
+  })
+
+  it('should return an empty array if user has no projects', async () => {
+    const response = await getByCreatedBy()
+    expect(response).toEqual([projectTwo])
   })
 })

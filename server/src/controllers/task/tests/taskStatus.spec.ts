@@ -65,11 +65,15 @@ const { setDone } = createCaller({
   authUser: { id: user.id },
 })
 
-describe('setReview', () => {
-  it('sets task to review', async () => {
-    const response = await setDone(taskOne.id)
+describe('setDone', () => {
+  it('sets done', async () => {
+    const response = await setDone({ id: taskOne.id, actualDuration: 120 })
 
-    expect(response).toEqual({ id: taskOne.id, status: TASK_STATUS.DONE })
+    expect(response).toMatchObject({
+      id: taskOne.id,
+      status: TASK_STATUS.DONE,
+      actualDuration: 120,
+    })
   })
 
   it('throws error if task not assigned to the user', async () => {
@@ -78,8 +82,8 @@ describe('setReview', () => {
       authUser: { id: userTwo.id },
     })
 
-    await expect(unauthorizedCaller.setDone(taskOne.id)).rejects.toThrow(
-      /task is not assigned to you./
-    )
+    await expect(
+      unauthorizedCaller.setDone({ id: taskOne.id, actualDuration: 0 })
+    ).rejects.toThrow(/task is not assigned to you./)
   })
 })

@@ -46,6 +46,7 @@ export const fakeInsertableTask = <T extends Partial<Insertable<Task>>>(
 })
 
 export const fakeTask = <T extends Partial<Task>>(overrides: T): Task => ({
+  embedding: null,
   status: 'todo',
   id: uuidv4(),
   createdAt: new Date(),
@@ -55,6 +56,7 @@ export const fakeTask = <T extends Partial<Task>>(overrides: T): Task => ({
   assignedTo: null,
   scheduledTime: {},
   description: null,
+  actualDuration: null,
   ...overrides,
 })
 

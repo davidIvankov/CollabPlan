@@ -11,8 +11,9 @@ import { taskRepository } from '../taskRepository'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const repository = taskRepository(db)
-
 await clearTables(db, [TABLES.USER, TABLES.PROJECT])
+
+const testVectorArray = Array.from({ length: 512 }, (_, i) => (i + 1) / 100)
 const [userOne] = await insertAll(db, 'user', [
   fakeUser(),
   fakeUser({ email: 'stipe@gmail.com' }),
@@ -37,7 +38,8 @@ describe('create', () => {
 describe('getById', () => {
   it('returns task by id', async () => {
     const selection = await repository.getById(taskOne.id)
-    expect(selection).toEqual(taskOne)
+    const { embedding, ...expectedResponse } = taskOne
+    expect(selection).toEqual(expectedResponse)
   })
 })
 
@@ -63,38 +65,38 @@ describe('assign', () => {
 
 describe('setStatus', () => {
   it('sets status correctly', async () => {
-    await repository.setDone(taskOne.id)
+    await repository.setDone({
+      id: taskOne.id,
+      actualDuration: 120,
+      embedding: JSON.stringify(testVectorArray),
+    })
     const tasks = await selectAll(db, TABLES.TASK)
 
     expect(tasks[0]).toMatchObject({
       id: taskOne.id,
       status: TASK_STATUS.DONE,
+      actualDuration: 120,
     })
   })
 })
 
-describe('reviewTask', () => {
-  afterAll(async () => {
-    await clearTables(db, [
-      TABLES.PROJECT,
-      TABLES.PROJECT_PARTICIPANT,
-      TABLES.USER,
-      TABLES.TASK,
-    ])
-  })
-
-  it('reviews task', async () => {
-    await repository.reviewTask({
-      id: taskOne.id,
-      status: TASK_STATUS.DONE,
-      description: 'done well',
-    })
-    const tasks = await selectAll(db, TABLES.TASK)
-
-    expect(tasks[0]).toMatchObject({
-      id: taskOne.id,
-      status: TASK_STATUS.DONE,
-      description: 'done well',
-    })
+describe('getByEmbedding', () => {
+  it('returns top 5 tasks ordered by embedding similarity', async () => {
+    const baseEmbedding = Array.from({ length: 512 }, (_, i) => (i + 1) / 100)
+    const tasks = []
+    for (let i = 0; i < 6; i += 1) {
+      const emb = baseEmbedding.map((v) => v + i)
+      const t = fakeInsertableTask({
+        projectId: project.id,
+        embedding: JSON.stringify(emb),
+      })
+      tasks.push(t)
+    }
+    await insertAll(db, TABLES.TASK, tasks)
+    const results = await repository.getByEmbedding(
+      JSON.stringify(baseEmbedding)
+    )
+    expect(Array.isArray(results)).toBe(true)
+    expect(results.length).toBe(5)
   })
 })

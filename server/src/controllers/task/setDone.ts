@@ -1,5 +1,5 @@
 import { isProject } from '@server/entities/project'
-import { idSchema } from '@server/entities/shared'
+import { setDoneSchema } from '@server/entities/task'
 import { notificationRepository } from '@server/repositories/notificationRepository'
 import { projectParticipantRepository } from '@server/repositories/projectParticipantRepo'
 import { projectRepository } from '@server/repositories/projectRepository'
@@ -9,6 +9,7 @@ import { emailService } from '@server/services/mailer'
 import { notificationService } from '@server/services/notifications'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import provideRepos from '@server/trpc/provideRepos'
+import { createEmbedding } from '@server/utils/cohere'
 import { TRPCError } from '@trpc/server'
 
 export default authenticatedProcedure
@@ -21,9 +22,9 @@ export default authenticatedProcedure
       userRepository,
     })
   )
-  .input(idSchema)
-  .mutation(async ({ input: id, ctx: { authUser, repos } }) => {
-    const task = await repos.taskRepository.getById(id)
+  .input(setDoneSchema)
+  .mutation(async ({ input, ctx: { authUser, repos } }) => {
+    const task = await repos.taskRepository.getById(input.id)
 
     if (task.assignedTo !== authUser.id) {
       throw new TRPCError({
@@ -70,5 +71,7 @@ export default authenticatedProcedure
       }
     )
 
-    return repos.taskRepository.setDone(id)
+    const embedding = await createEmbedding(task, project)
+
+    return repos.taskRepository.setDone({ embedding, ...input })
   })

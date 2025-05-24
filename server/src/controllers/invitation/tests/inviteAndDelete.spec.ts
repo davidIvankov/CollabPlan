@@ -10,6 +10,7 @@ import {
   TABLES,
 } from '@server/database/dbConstants'
 import { emailService } from '@server/services/mailer'
+import { notificationService } from '@server/services/notifications'
 import projectParticipantRouter from '..'
 
 const createCaller = createCallerFactory(projectParticipantRouter)
@@ -83,6 +84,35 @@ describe('invite', () => {
         invitedUserId: userTwo.id,
       })
     ).rejects.toThrow(/invite participant to/)
+  })
+
+  it('calls notificationService.invitation with correct arguments', async () => {
+    const spy = vi.spyOn(notificationService, 'invitation')
+    await invite({
+      invitedUserId: userTwo.id,
+      projectId: project.id,
+    })
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        projectName: project.name,
+        triggeredByName: userOne.id,
+      }),
+      expect.anything(),
+      expect.objectContaining({
+        projectId: project.id,
+        userId: userTwo.id,
+        triggeredBy: userOne.id,
+      })
+    )
+  })
+
+  it('throws if invited user does not exist', async () => {
+    await expect(
+      invite({
+        invitedUserId: 'nonexistent-user-id',
+        projectId: project.id,
+      })
+    ).rejects.toThrow()
   })
 })
 

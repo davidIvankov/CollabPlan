@@ -57,10 +57,12 @@ export interface ProjectParticipant {
 }
 
 export interface Task {
+  actualDuration: number | null
   assignedTo: string | null
   createdAt: Generated<Timestamp>
   description: string | null
   duration: number
+  embedding: string | null
   id: Generated<string>
   name: string
   projectId: string
