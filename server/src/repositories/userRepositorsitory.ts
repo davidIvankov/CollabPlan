@@ -2,6 +2,7 @@ import type { Database } from '@server/database'
 import { TABLES } from '@server/database/dbConstants'
 import type { User } from '@server/database/types'
 import {
+  type ChangePassword,
   type UserPrivate,
   type UserPublic,
   userKeysAll,
@@ -16,6 +17,17 @@ export function userRepository(db: Database) {
       return db
         .insertInto(TABLES.USER)
         .values(user)
+        .returning(userKeysPrivate)
+        .executeTakeFirstOrThrow()
+    },
+    async updatePassword({
+      password,
+      id,
+    }: ChangePassword): Promise<UserPublic> {
+      return db
+        .updateTable(TABLES.USER)
+        .set({ password })
+        .where('id', '=', id)
         .returning(userKeysPrivate)
         .executeTakeFirstOrThrow()
     },

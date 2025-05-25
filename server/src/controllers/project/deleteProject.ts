@@ -9,8 +9,10 @@ import { projectParticipantRepository } from '@server/repositories/projectPartic
 import { userRepository } from '@server/repositories/userRepositorsitory'
 import { notificationService } from '@server/services/notifications'
 import { emailService } from '@server/services/mailer'
+import { withBaseUrl } from '@server/trpc/middleware/withBaseUrl'
 
 export default authenticatedProcedure
+  .use(withBaseUrl)
   .use(
     provideRepos({
       projectRepository,
@@ -20,7 +22,7 @@ export default authenticatedProcedure
     })
   )
   .input(idSchema)
-  .mutation(async ({ input: projectId, ctx: { repos, authUser } }) => {
+  .mutation(async ({ input: projectId, ctx: { repos, authUser, baseUrl } }) => {
     const project = await repos.projectRepository.getById(projectId)
 
     if (!project) {
@@ -51,7 +53,7 @@ export default authenticatedProcedure
 
     emailService.sendActivityNotificationEmail(
       userEmails,
-      { projectName: project.name },
+      { projectName: project.name, baseUrl },
       lastSent
     )
 

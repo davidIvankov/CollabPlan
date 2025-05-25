@@ -26,7 +26,7 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
         <input
           placeholder="example@email.com"
           type="email"
-          autocomplete="username"
+          autocomplete="email"
           v-model="userForm.email"
           :required="true"
         />
@@ -42,6 +42,7 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
           v-model="userForm.password"
           :required="true"
         />
+        <RouterLink to="/forgot-password" class="forgotPassword-link">Forgot password?</RouterLink>
       </div>
 
       <p v-if="errorMessage" data-testid="errorMessage" type="danger">
@@ -87,5 +88,15 @@ button {
 
 .signIn {
   text-decoration: underline;
+}
+
+.forgotPassword-link {
+  align-self: flex-end;
+  margin-top: -18px;
+  margin-bottom: 8px;
+  font-size: 0.98em;
+  color: #2980b9;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

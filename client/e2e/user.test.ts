@@ -60,3 +60,19 @@ test.describe.serial('login and sign in', () => {
     })
   })
 })
+
+test.describe.serial('reset password', () => {
+  test('visitor can get reset password email sent', async ({ page }) => {
+    await page.goto('/forgot-password')
+
+    const form = page.getByRole('form', { name: 'ForgotPassword' })
+
+    form.locator('input[type="email"]').fill('fake@gmail.com')
+
+    await form.locator('button[type="submit"]').click()
+
+    await expect(page.getByTestId('emailSentSuccess')).toHaveText(
+      'If this email exists, a reset link has been sent. Please check your inbox.'
+    )
+  })
+})

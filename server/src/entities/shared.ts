@@ -16,3 +16,15 @@ export const vector = z
   .array(z.number())
   .length(512, { message: 'Vector must have exactly 512 dimensions' })
   .nullable()
+
+export const emailSchema = z.string().trim().toLowerCase().email()
+
+export const passwordSchema = z
+  .string()
+  .min(8, 'Password must be at least 8 characters long')
+  .max(64, 'Password must be at most 64 characters long')
+
+export const passwordResetSchema = z.object({
+  token: z.string(),
+  password: passwordSchema,
+})

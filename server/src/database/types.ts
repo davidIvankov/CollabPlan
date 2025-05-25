@@ -41,6 +41,12 @@ export interface Notification {
   userId: string
 }
 
+export interface PasswordResetToken {
+  expiresAt: Timestamp
+  token: string
+  userId: string
+}
+
 export interface Project {
   createdAt: Generated<Timestamp>
   createdBy: string | null
@@ -80,6 +86,7 @@ export interface User {
 export interface DB {
   invitations: Invitations
   notification: Notification
+  passwordResetToken: PasswordResetToken
   project: Project
   projectParticipant: ProjectParticipant
   task: Task

@@ -10,8 +10,10 @@ import { checkOwnership } from '@server/utils/authUtils'
 import { emailService } from '@server/services/mailer'
 import { notificationService } from '@server/services/notifications'
 import { notificationRepository } from '@server/repositories/notificationRepository'
+import { withBaseUrl } from '@server/trpc/middleware/withBaseUrl'
 
 export default authenticatedProcedure
+  .use(withBaseUrl)
   .use(
     provideRepos({
       projectRepository,
@@ -21,7 +23,7 @@ export default authenticatedProcedure
     })
   )
   .input(invitationInputSchema)
-  .mutation(async ({ input, ctx: { authUser, repos } }) => {
+  .mutation(async ({ input, ctx: { authUser, repos, baseUrl } }) => {
     const { projectId, invitedUserId } = input
     const project: ProjectPublic = (await repos.projectRepository.getById(
       input.projectId
@@ -38,6 +40,7 @@ export default authenticatedProcedure
       recipientName,
       projectName,
       inviterName,
+      baseUrl,
     })
 
     await notificationService.invitation(

@@ -67,10 +67,10 @@ describe('getDocuments', () => {
       title: 'Task 1',
       snippet: 'desc1',
       data: expect.objectContaining({
-        text: 'desc1',
         projectName: 'Project 1',
         projectDescription: 'projdesc1',
         estimatedDuration: 10,
+        description: 'desc1',
         actualDuration: 5,
       }),
     })
@@ -79,7 +79,7 @@ describe('getDocuments', () => {
       title: 'Task 2',
       snippet: '',
       data: expect.objectContaining({
-        text: 'No description provided.',
+        description: 'No description provided.',
         projectName: 'Project 2',
         projectDescription: null,
         estimatedDuration: 20,

@@ -1,16 +1,12 @@
 import { z } from 'zod'
-import type { Selectable } from 'kysely'
+import type { Insertable, Selectable } from 'kysely'
 import type { User } from '@server/database/types'
-import { idSchema } from './shared'
+import { emailSchema, idSchema, passwordSchema } from './shared'
 
 export const userSchema = z.object({
   id: idSchema,
-  email: z.string().trim().toLowerCase().email(),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters long')
-    .max(64, 'Password must be at most 64 characters long'),
-
+  email: emailSchema,
+  password: passwordSchema,
   name: z.string().min(1).max(500),
 })
 
@@ -34,3 +30,7 @@ export type UserPublic = Pick<Selectable<User>, (typeof userKeysPublic)[number]>
 // a specific schema for authenticated user that is used in JWT
 export const authUserSchema = userSchema.pick({ id: true })
 export type AuthUser = z.infer<typeof authUserSchema>
+
+export type ChangePassword = Omit<Insertable<User>, 'name' | 'email'> & {
+  id: string
+}

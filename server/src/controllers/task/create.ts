@@ -10,9 +10,11 @@ import { notificationRepository } from '@server/repositories/notificationReposit
 import { TRPCError } from '@trpc/server'
 import { isProject } from '@server/entities/project'
 import { emailService } from '@server/services/mailer'
+import { withBaseUrl } from '@server/trpc/middleware/withBaseUrl'
 import { notificationService } from '../../services/notifications/index'
 
 export default authenticatedProcedure
+  .use(withBaseUrl)
   .use(
     provideRepos({
       projectRepository,
@@ -23,7 +25,7 @@ export default authenticatedProcedure
     })
   )
   .input(taskInsertableSchema)
-  .mutation(async ({ input, ctx: { authUser, repos } }) => {
+  .mutation(async ({ input, ctx: { authUser, repos, baseUrl } }) => {
     const { projectId } = input
     const project = await repos.projectRepository.getById(projectId)
     checkOwnership(project, authUser, 'add task to')
@@ -46,7 +48,7 @@ export default authenticatedProcedure
 
     emailService.sendActivityNotificationEmail(
       userEmails,
-      { projectName: project.name },
+      { projectName: project.name, baseUrl },
       lastSent
     )
 

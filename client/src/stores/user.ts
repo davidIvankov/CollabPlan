@@ -17,6 +17,9 @@ export const isLoggedIn = computed(() => !!authToken.value)
 
 export const getUser = trpc.user.getUser.query
 
+export const sendResetEmail = trpc.user.sendResetEmail.mutate
+
+export const resetPassword = trpc.user.resetPassword.mutate
 export const search = trpc.user.search.query
 
 export async function login(userLogin: { email: string; password: string }) {

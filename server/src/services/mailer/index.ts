@@ -5,6 +5,8 @@ import {
   SUBJECT_INVITATION,
   invitationTemplate,
   activityTemplate,
+  passwordResetTemplate,
+  SUBJECT_PASSWORD_RESET,
 } from './templates'
 
 type TemplateSender<TVars> = (to: string, vars: TVars) => Promise<void>
@@ -16,7 +18,7 @@ type TemplateSenderActivity<TVars> = (
 ) => Promise<boolean>
 
 export function createTemplateSender<TVars>(template: {
-  subject: typeof SUBJECT_INVITATION
+  subject: typeof SUBJECT_INVITATION | typeof SUBJECT_PASSWORD_RESET
   generateHtml: (vars: TVars) => string
   generateText?: (vars: TVars) => string
 }): TemplateSender<TVars>
@@ -28,12 +30,15 @@ export function createTemplateSender<TVars>(template: {
 }): TemplateSenderActivity<TVars>
 
 export function createTemplateSender<TVars>(template: {
-  subject: typeof SUBJECT_ACTIVITY | typeof SUBJECT_INVITATION
+  subject:
+    | typeof SUBJECT_ACTIVITY
+    | typeof SUBJECT_INVITATION
+    | typeof SUBJECT_PASSWORD_RESET
   generateHtml: (vars: TVars) => string
   generateText?: (vars: TVars) => string
 }): any {
   let result: TemplateSender<TVars> | TemplateSenderActivity<TVars>
-  if (template.subject === SUBJECT_INVITATION) {
+  if (template.subject !== SUBJECT_ACTIVITY) {
     result = async (to: string, vars: TVars) => {
       await transporter.sendMail({
         from: `"CollabPlan" <${config.smtp.user}>`,
@@ -78,4 +83,5 @@ export function createTemplateSender<TVars>(template: {
 export const emailService = {
   sendInvitationEmail: createTemplateSender(invitationTemplate),
   sendActivityNotificationEmail: createTemplateSender(activityTemplate),
+  sendResetEmail: createTemplateSender(passwordResetTemplate),
 }

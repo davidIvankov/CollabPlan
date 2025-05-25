@@ -6,6 +6,8 @@ import {
   activityTemplate,
   SUBJECT_INVITATION,
   SUBJECT_ACTIVITY,
+  passwordResetTemplate,
+  SUBJECT_PASSWORD_RESET,
 } from '../templates'
 import { transporter } from '../mailer'
 
@@ -13,6 +15,8 @@ const MOCK_TEMPLATE_INVITATION = '<p>HTML content</p>'
 const MOCK_TEXT_INVITATION = 'Text content'
 const MOCK_TEMPLATE_ACTIVITY = '<p>Activity HTML content</p>'
 const MOCK_TEXT_ACTIVITY = 'Activity Text content'
+const MOCK_TEMPLATE_RESET = '<p>Reset HTML content</p>'
+const MOCK_TEXT_RESET = 'Reset Text content'
 
 vi.mock('../mailer', () => ({
   transporter: {
@@ -34,10 +38,16 @@ vi.mock(import('../templates'), async (importOriginal) => {
       generateHtml: vi.fn(() => MOCK_TEMPLATE_ACTIVITY),
       generateText: vi.fn(() => MOCK_TEXT_ACTIVITY),
     },
+    passwordResetTemplate: {
+      ...actual.passwordResetTemplate,
+      generateHtml: vi.fn((args) => MOCK_TEMPLATE_RESET + JSON.stringify(args)),
+      generateText: vi.fn((args) => MOCK_TEXT_RESET + JSON.stringify(args)),
+    },
   }
 })
 
-const { sendInvitationEmail, sendActivityNotificationEmail } = emailService
+const { sendInvitationEmail, sendActivityNotificationEmail, sendResetEmail } =
+  emailService
 
 describe('Template Senders', async () => {
   beforeAll(() => {
@@ -56,6 +66,7 @@ describe('Template Senders', async () => {
       inviterName: 'John',
       projectName: 'Project X',
       recipientName: 'Jane',
+      baseUrl: 'http//something/',
     }
 
     await sendInvitationEmail('test@example.com', emailVars)
@@ -71,8 +82,32 @@ describe('Template Senders', async () => {
     })
   })
 
+  it('should send password reset email', async () => {
+    const emailVars = {
+      userName: 'John',
+      token: 'test-token-123',
+      baseUrl: 'http//something/',
+    }
+
+    await sendResetEmail('test@example.com', emailVars)
+
+    expect(passwordResetTemplate.generateHtml).toHaveBeenCalledWith(emailVars)
+    expect(passwordResetTemplate.generateText).toHaveBeenCalledWith(emailVars)
+    expect(transporter.sendMail).toHaveBeenCalledWith({
+      from: `"CollabPlan" <${config.smtp.user}>`,
+      to: 'test@example.com',
+      subject: SUBJECT_PASSWORD_RESET,
+      html: MOCK_TEMPLATE_RESET + JSON.stringify(emailVars),
+      text: MOCK_TEXT_RESET + JSON.stringify(emailVars),
+    })
+  })
+
   it('should send an activity notification email with the correct template if more then 24 h has passed since the last one', async () => {
-    const emailVars = { projectName: 'Project Y', recipientName: 'Doe' }
+    const emailVars = {
+      baseUrl: 'http//something/',
+      projectName: 'Project Y',
+      recipientName: 'Doe',
+    }
 
     await sendActivityNotificationEmail(
       ['notify@example.com', 'test@example.com'],
@@ -92,7 +127,11 @@ describe('Template Senders', async () => {
   })
 
   it('should send an activity notification email with the correct template if there was no previous notifications', async () => {
-    const emailVars = { projectName: 'Project Y', recipientName: 'Doe' }
+    const emailVars = {
+      projectName: 'Project Y',
+      recipientName: 'Doe',
+      baseUrl: 'http//something/',
+    }
 
     await sendActivityNotificationEmail(
       ['notify@example.com', 'test@example.com'],
@@ -112,7 +151,11 @@ describe('Template Senders', async () => {
   })
 
   it('should not send an activity notification email with the correct template if less then 24 h has passed since the last one', async () => {
-    const emailVars = { projectName: 'Project Y', recipientName: 'Doe' }
+    const emailVars = {
+      projectName: 'Project Y',
+      recipientName: 'Doe',
+      baseUrl: 'http//something/',
+    }
 
     const response = await sendActivityNotificationEmail(
       ['notify@example.com', 'test@example.com'],

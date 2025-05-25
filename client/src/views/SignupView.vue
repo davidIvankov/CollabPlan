@@ -15,8 +15,6 @@ const userForm = ref({
 
 const hasSucceeded = ref(false)
 
-// Wrap our signup call in a try/catch block to catch any errors.
-// Set the error message if there is an error.
 const errorMessage = ref('')
 async function submitSignup() {
   try {

@@ -8,10 +8,12 @@ import { userRepository } from '@server/repositories/userRepositorsitory'
 import { emailService } from '@server/services/mailer'
 import { notificationService } from '@server/services/notifications'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
+import { withBaseUrl } from '@server/trpc/middleware/withBaseUrl'
 import provideRepos from '@server/trpc/provideRepos'
 import { TRPCError } from '@trpc/server'
 
 export default authenticatedProcedure
+  .use(withBaseUrl)
   .use(
     provideRepos({
       taskRepository,
@@ -22,7 +24,7 @@ export default authenticatedProcedure
     })
   )
   .input(idSchema)
-  .mutation(async ({ input, ctx: { authUser, repos } }) => {
+  .mutation(async ({ input, ctx: { authUser, repos, baseUrl } }) => {
     const task = await repos.taskRepository.getById(input)
     if (authUser.id !== task.assignedTo) {
       throw new TRPCError({
@@ -50,7 +52,7 @@ export default authenticatedProcedure
 
     emailService.sendActivityNotificationEmail(
       userEmails,
-      { projectName: project.name },
+      { projectName: project.name, baseUrl },
       lastSent
     )
 

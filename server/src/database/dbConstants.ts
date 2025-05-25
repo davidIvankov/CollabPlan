@@ -5,6 +5,7 @@ export const TABLES = {
   TASK: 'task',
   INVITATIONS: 'invitations',
   NOTIFICATION: 'notification',
+  PASSWORD_RESET_TOKEN: 'passwordResetToken',
 } as const
 
 export const TASK_STATUS = {
