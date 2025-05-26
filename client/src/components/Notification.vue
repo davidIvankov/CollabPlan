@@ -3,11 +3,11 @@ import { defineProps, onUnmounted } from 'vue'
 import { toggleOffPanels } from '../stores/shared'
 import type { NotificationSelectable } from '@server/shared/types'
 import { refreshNotifications, setSeen } from '@/stores/notification'
+import { timeAgo } from '@/utils/time'
 
 const props = defineProps<{
   notification: NotificationSelectable
 }>()
-
 onUnmounted(async () => {
   if (!props.notification.seen) {
     await setSeen(props.notification.id)
@@ -15,7 +15,6 @@ onUnmounted(async () => {
   }
 })
 </script>
-//add created_at
 <template>
   <div @click="toggleOffPanels">
     <router-link
@@ -27,6 +26,7 @@ onUnmounted(async () => {
         <p class="icon">❗</p>
         <div class="text-content">
           <p class="message">{{ props.notification.message }}</p>
+          <p>{{ timeAgo(props.notification.createdAt.toISOString()) }}</p>
         </div>
       </div>
     </router-link>

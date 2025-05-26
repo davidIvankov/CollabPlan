@@ -3,6 +3,7 @@ import { defineProps, onMounted, onUnmounted, ref } from 'vue'
 import type { InvitationByInvitedUserId } from '@server/shared/types'
 import { refreshInvitations, setSeen } from '@/stores/notification'
 import type { InvitationUpdateClient } from '@/stores/invitations'
+import { timeAgo } from '@/utils/time'
 
 const props = defineProps<{
   invitation: InvitationByInvitedUserId
@@ -41,6 +42,7 @@ const toggleDetails = (item: ExtendedInvitation) => {
         sent by:
         {{ extendedInvitation.invitedByName }}
       </p>
+      <p>{{ timeAgo(extendedInvitation.createdAt.toISOString()) }}</p>
     </div>
     <div class="invitation-actions bottom-row" v-if="extendedInvitation.showDetails">
       <button

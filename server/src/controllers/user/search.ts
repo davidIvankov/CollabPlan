@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 export default publicProcedure
   .use(provideRepos({ userRepository }))
-  .input(z.string().min(1))
+  .input(z.string())
   .query(async ({ input, ctx: { repos } }) => {
     const userList = await repos.userRepository.search(input)
 

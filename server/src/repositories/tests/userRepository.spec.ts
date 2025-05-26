@@ -33,7 +33,7 @@ describe('findByEmail', () => {
 
   it('finds user when email provided', async () => {
     const user = fakeUser()
-    await insertAll(db, TABLES.USER, [fakeUser()])
+    await insertAll(db, TABLES.USER, [user])
     const selection = await repository.findByEmail(user.email)
 
     expect(selection).toEqual(userMatcher(user))

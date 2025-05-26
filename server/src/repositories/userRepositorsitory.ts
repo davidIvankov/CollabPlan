@@ -42,13 +42,17 @@ export function userRepository(db: Database) {
       return user
     },
     async search(query: string) {
+      const trimmedQuery = query.trim()
+
+      if (!trimmedQuery) {
+        return []
+      }
+
       return db
         .selectFrom(TABLES.USER)
-        .where(({ or, eb }) =>
-          or([
-            eb('name', 'ilike', `%${query}%`), // Case-insensitive partial name search
-          ])
-        )
+        .where(({ or, eb }) => or([eb('name', 'ilike', `%${trimmedQuery}%`)]))
+        .orderBy('name')
+        .limit(15)
         .select(userKeysPublic)
         .execute()
     },

@@ -36,8 +36,4 @@ describe('search', () => {
 
     expect(result).toEqual([])
   })
-
-  it('should throw error if search query is to short', async () => {
-    await expect(search('')).rejects.toThrow(/character/)
-  })
 })

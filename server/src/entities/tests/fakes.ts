@@ -22,7 +22,7 @@ export const fakeUser = <T extends Partial<Insertable<User>>>(
   overrides: T = {} as T
 ) =>
   ({
-    name: 'John Doe',
+    name: random.name(),
     email: 'johndoe@example.com',
     password: 'Password.123!',
     ...overrides,
@@ -31,7 +31,7 @@ export const fakeUser = <T extends Partial<Insertable<User>>>(
 export const fakePublicUser = <T extends Partial<Insertable<User>>>(
   overrides: T = {} as T
 ) => ({
-  name: 'John Doe',
+  name: random.name(),
   email: 'johndoe@example.com',
   ...overrides,
 })
