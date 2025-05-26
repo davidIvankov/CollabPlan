@@ -4,6 +4,7 @@ import { authUserId, getUser } from '@/stores/user'
 import { formatDateForTemplate, formatSlot, getUserLocalDate } from '@/utils/time'
 import type { Slot, TaskSelectable } from '@server/shared/types'
 import { onMounted, ref } from 'vue'
+import VueMarkdown from 'vue-markdown-render'
 
 const shouldShowForm = ref<boolean>(false)
 const isCollapsed = ref(true)
@@ -75,7 +76,10 @@ const isEmptyObject = (obj: unknown): boolean =>
       <span class="task-status" :class="task?.status">{{ task?.status }}</span>
     </div>
     <div class="task-details">
-      <p class="task-description">{{ task?.description || 'No description provided.' }}</p>
+      <VueMarkdown
+        :source="task?.description || 'No description provided.'"
+        class="task-description"
+      />
       <p><strong>Assigned to:</strong> {{ userName }}</p>
       <p>
         <strong>Scheduled Time:</strong>

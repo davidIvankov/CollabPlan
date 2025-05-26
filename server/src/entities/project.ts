@@ -6,7 +6,7 @@ import { idSchema } from './shared'
 export const projectSchema = z.object({
   id: idSchema,
   name: z.string().min(1).max(500),
-  description: z.string().min(20).max(1000),
+  description: z.string().min(20).max(2000),
   createdBy: idSchema,
   createdAt: z.date().default(() => new Date()),
 })
