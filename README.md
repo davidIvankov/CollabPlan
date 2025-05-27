@@ -17,6 +17,16 @@ The application is hosted at:
 - **Notifications**: Receive notifications for invitations, project updates, and task assignments.
 - **Calendar Integration**: Visualize tasks in a calendar for better planning and scheduling.
 
+## Screenshots
+
+Below are some screenshots from the application:
+
+![Screenshot 1](./screenshoots/Screenshot%20From%202025-05-27%2014-48-34.png)
+![Screenshot 2](./screenshoots/Screenshot%20From%202025-05-27%2014-49-35.png)
+![Screenshot 3](./screenshoots/Screenshot%20From%202025-05-27%2014-51-13.png)
+![Screenshot 4](./screenshoots/Screenshot%20From%202025-05-27%2014-55-02.png)
+![Screenshot 5](./screenshoots/Screenshot%20From%202025-05-27%2014-57-10.png)
+
 ## Setup
 
 1. Clone the repository:
