@@ -1,6 +1,6 @@
 # CollabPlan
 
-CollabPlan is a collaborative project planning application designed for remote teams. It provides features such as authentication, project creation, participant management, task assignment, and calendar integration for task visualization. The app is ideal for remote teams looking to streamline their project planning and collaboration.
+CollabPlan is a collaborative project planning application designed for remote teams. It provides features such as authentication, project creation, participant management, task assignment, AI-powered task duration suggestions, notifications, and calendar integration for task visualization. The app is ideal for remote teams looking to streamline their project planning and collaboration.
 
 ## Hosted Application
 
@@ -13,6 +13,8 @@ The application is hosted at:
 - **Project Management**: Create and manage projects.
 - **Participant Management**: Add participants to projects and assign roles.
 - **Task Management**: Create tasks, assign them to participants, and track their progress.
+- **AI Task Duration Suggestion**: Get smart suggestions for how long a task might take, powered by AI.
+- **Notifications**: Receive notifications for invitations, project updates, and task assignments.
 - **Calendar Integration**: Visualize tasks in a calendar for better planning and scheduling.
 
 ## Setup

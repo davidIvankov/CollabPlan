@@ -8,7 +8,10 @@ import VueMarkdown from 'vue-markdown-render'
 
 const shouldShowForm = ref<boolean>(false)
 const isCollapsed = ref(true)
-const props = defineProps<{ task: TaskSelectable; projectCreatedBy: string }>()
+const props = defineProps<{
+  task: TaskSelectable
+  projectCreatedBy: string
+}>()
 const userName = ref('Unassigned')
 const scheduledTime = ref({
   userId: authUserId.value as string,
@@ -60,7 +63,6 @@ const cancelActualDuration = () => {
 
 onMounted(async () => {
   if (!props.task.assignedTo) return
-  console.log(props.task.createdAt instanceof Date)
   const user = await getUser(props.task.assignedTo)
   userName.value = user.name
 })

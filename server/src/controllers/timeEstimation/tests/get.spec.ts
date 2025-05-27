@@ -35,6 +35,7 @@ vi.mock('@server/utils/cohere', async () => {
   return {
     ...actual,
     createEmbedding: vi.fn().mockResolvedValue(testVectorArray),
+    getDocuments: vi.fn().mockReturnValue([]),
     cohere: {
       chat: vi.fn().mockResolvedValue({
         text: 'Estimated time: 30-60 minutes',
