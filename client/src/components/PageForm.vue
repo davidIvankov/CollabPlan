@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+
+
 defineProps<{
   heading: string
   formLabel: string
@@ -36,6 +38,7 @@ defineEmits<{
   display: flex;
   flex-direction: column;
 }
+
 p .formContainer {
   width: 100%;
   display: flex;
@@ -52,7 +55,7 @@ p .formContainer {
   height: 50vh;
 }
 
-.formContainer > div {
+.formContainer>div {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -65,19 +68,26 @@ h2 {
 
 @media (min-width: 1024px) {
   .formContainer {
-    width: 60%; /* Make the form narrower */
-    margin: 0 auto; /* Center the form horizontally */
-    gap: 2vw; /* Reduce the gap for a more compact layout */
+    width: 60%;
+    /* Make the form narrower */
+    margin: 0 auto;
+    /* Center the form horizontally */
+    gap: 2vw;
+    /* Reduce the gap for a more compact layout */
   }
 
   .form {
-    height: auto; /* Allow the form to adjust its height dynamically */
-    padding: 20px; /* Add padding for better spacing */
+    height: auto;
+    /* Allow the form to adjust its height dynamically */
+    padding: 20px;
+    /* Add padding for better spacing */
   }
 
   h2 {
-    font-size: var(--desktop-title); /* Use a larger font size for desktop */
-    text-align: center; /* Center the heading */
+    font-size: var(--desktop-title);
+    /* Use a larger font size for desktop */
+    text-align: center;
+    /* Center the heading */
   }
 
   button {

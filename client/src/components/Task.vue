@@ -5,7 +5,6 @@ import { formatDateForTemplate, formatSlot, getUserLocalDate } from '@/utils/tim
 import type { Slot, TaskSelectable } from '@server/shared/types'
 import { onMounted, ref } from 'vue'
 import VueMarkdown from 'vue-markdown-render'
-
 const shouldShowForm = ref<boolean>(false)
 const isCollapsed = ref(true)
 const props = defineProps<{
@@ -77,6 +76,7 @@ const isEmptyObject = (obj: unknown): boolean =>
       <h2 data-testid="TaskName">{{ task.name }}</h2>
       <span class="task-status" :class="task?.status">{{ task?.status }}</span>
     </div>
+
     <div class="task-details">
       <VueMarkdown
         :source="task?.description || 'No description provided.'"
@@ -167,7 +167,6 @@ const isEmptyObject = (obj: unknown): boolean =>
     max-height 0.3s ease,
     padding 0.3s ease;
   overflow: hidden;
-  max-height: 1000px; /* large enough for expanded */
   background-color: var(--task-background);
   color: var(--task-font);
   border-radius: 8px;

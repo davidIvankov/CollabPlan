@@ -19,6 +19,7 @@ import type {
 } from '@server/shared/types'
 
 const route = useRoute()
+
 const searchQuery = ref('')
 const invitations = ref<InvitationsSelectable[]>([])
 const users =
@@ -156,12 +157,17 @@ const handleSearch = async () => {
   width: 100%;
   flex-direction: column;
   gap: 10px;
-  background-color: #2c3e50; /* Darker color for better contrast */
-  color: white; /* Text color to ensure visibility */
+  background-color: #2c3e50;
+  /* Darker color for better contrast */
+  color: white;
+  /* Text color to ensure visibility */
   padding: 10px;
-  border-radius: 0 0 8px 8px; /* Match the container's border radius at the bottom */
-  overflow: hidden; /* Prevent content from overflowing the border radius */
-  box-sizing: border-box; /* Include padding in the element's total width and height */
+  border-radius: 0 0 8px 8px;
+  /* Match the container's border radius at the bottom */
+  overflow: hidden;
+  /* Prevent content from overflowing the border radius */
+  box-sizing: border-box;
+  /* Include padding in the element's total width and height */
 }
 
 .search-container {
@@ -221,7 +227,8 @@ const handleSearch = async () => {
 }
 
 .data {
-  flex: 1; /* Allow the data section to take up remaining space */
+  flex: 1;
+  /* Allow the data section to take up remaining space */
 }
 
 .add-btn {
@@ -231,7 +238,8 @@ const handleSearch = async () => {
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  margin-left: auto; /* Push the button to the far right */
+  margin-left: auto;
+  /* Push the button to the far right */
 }
 
 .cancel-btn {
@@ -241,7 +249,8 @@ const handleSearch = async () => {
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  margin-left: auto; /* Push the button to the far right */
+  margin-left: auto;
+  /* Push the button to the far right */
 }
 
 .add-btn:hover {
