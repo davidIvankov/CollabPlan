@@ -17,7 +17,8 @@ test.describe.serial('login and sign in', () => {
     // not linking labels with inputs
     await form.locator('input[data-testid="name"]').fill(user.name)
     await form.locator('input[type="email"]').fill(user.email)
-    await form.locator('input[type="password"]').fill(user.password)
+    await form.locator('input[data-testid="password"]').fill(user.password)
+    await form.locator('input[data-testid="confirmPassword"]').fill(user.password)
     await form.locator('button[type="submit"]').click()
 
     // Then (ASSERT)

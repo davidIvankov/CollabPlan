@@ -4,12 +4,13 @@ import PageForm from '@/components/PageForm.vue'
 import { useRoute, useRouter } from 'vue-router'
 import useErrorMessage from '@/composables/useErrorMessage'
 import { createProject, getProjectById, removeProject, updateProject } from '@/stores/project'
+import type { ProjectForm } from '@server/shared/types'
 
 const router = useRouter()
 const route = useRoute()
 const oldProject = ref()
 
-const project = ref({
+const project = ref<ProjectForm>({
   name: '',
   description: '',
 })

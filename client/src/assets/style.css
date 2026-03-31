@@ -6,7 +6,9 @@
   --button-danger: #d9534f;
   --task-font: #4a2800;
   --white: #fffff0;
+  --white-disabled: #cccccc;
   --grey-icon: #3f3f3f;
+  --grey-disabled: #555555;
   --mobile-hero: 48px;
   --mobile-text: 16px;
   --mobile-title: 40px;

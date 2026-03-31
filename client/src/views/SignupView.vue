@@ -1,21 +1,38 @@
 <script lang="ts" setup>
 import PageForm from '@/components/PageForm.vue'
-import { ref } from 'vue'
+import { signupInputSchema } from '@server/shared/schemas'
+import { ref, watchEffect } from 'vue'
 import { DEFAULT_SERVER_ERROR } from '@/consts'
 import { login, signup } from '@/stores/user'
 import { useRouter } from 'vue-router'
 
+const disableSubmit = ref(false)
 const router = useRouter()
-
+const confirmPassword = ref('')
 const userForm = ref({
   name: '',
   email: '',
   password: '',
 })
+const errorMessage = ref('')
 
+watchEffect(() => {
+  const parsed = signupInputSchema.safeParse(userForm.value)
+  if (!parsed.success) {
+    errorMessage.value = parsed.error.issues[0]?.message ?? 'Invalid input'
+    disableSubmit.value = true
+    return
+  }
+  if (userForm.value.password !== confirmPassword.value) {
+    errorMessage.value = 'Passwords do not match'
+    disableSubmit.value = true
+  } else {
+    errorMessage.value = ''
+    disableSubmit.value = false
+  }
+})
 const hasSucceeded = ref(false)
 
-const errorMessage = ref('')
 async function submitSignup() {
   try {
     await signup(userForm.value)
@@ -67,6 +84,17 @@ async function submitSignup() {
           v-model="userForm.password"
           :required="true"
         />
+        <input
+          data-testid="confirmPassword"
+          placeholder="confirm password"
+          label="Confirm Password"
+          id="password"
+          name="password"
+          type="password"
+          title="Must match password"
+          :required="true"
+          v-model="confirmPassword"
+        />
       </div>
 
       <p v-if="errorMessage" data-testid="errorMessage" type="danger">
@@ -74,7 +102,7 @@ async function submitSignup() {
       </p>
       <p v-if="hasSucceeded">jup</p>
 
-      <button type="submit" class="btn">Signup</button>
+      <button type="submit" class="btn" :disabled="disableSubmit">Signup</button>
     </template>
 
     <template #footer>
@@ -98,6 +126,12 @@ async function submitSignup() {
 button {
   width: var(100% - 10px);
   margin: auto;
+}
+
+button:disabled {
+  background-color: var(--white-disabled);
+  color: var(--grey-disabled);
+  cursor: not-allowed;
 }
 
 .footer {

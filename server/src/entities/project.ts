@@ -42,6 +42,7 @@ export type ProjectPublic = Pick<
   (typeof projectKeysPublic)[number]
 >
 
+export type ProjectForm = Pick<z.infer<typeof projectSchema>, 'name' | 'description'>
 export type ProjectInsertable = Insertable<Omit<Project, 'id' | 'createdAt'>>
 export type ProjectInsertableNoUser = Insertable<
   Omit<Project, 'createdBy' | 'id' | 'createdAt'>

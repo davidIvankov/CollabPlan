@@ -29,6 +29,7 @@
     "pinia": "^2.1.7",
     "server": "^0.0.3",
     "superjson": "^2.2.1",
+    "zod": "^3.22.4",
     "vue": "^3.4.21",
     "vue-markdown-render": "^2.2.1",
     "vue-router": "^4.3.0"

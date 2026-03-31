@@ -4,7 +4,7 @@ import config from '@server/config'
 import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import { assertError } from '@server/utils/errors'
-import { userSchema } from '@server/entities/user'
+import { signupInputSchema } from '@server/shared/schemas'
 import { userRepository } from '@server/repositories/userRepositorsitory'
 
 export default publicProcedure
@@ -13,13 +13,7 @@ export default publicProcedure
       userRepository,
     })
   )
-  .input(
-    userSchema.pick({
-      email: true,
-      password: true,
-      name: true,
-    })
-  )
+  .input(signupInputSchema)
   .mutation(async ({ input: user, ctx: { repos } }) => {
     const passwordHash = await hash(user.password, config.auth.passwordCost)
 
