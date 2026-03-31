@@ -33,6 +33,13 @@ const userProposal = ref('')
 const aiAwaitingProposal = ref(false)
 const user = ref<UserPrivate>()
 
+function getAssistantText(response: AssistantMessageResponse): string {
+  return (response.content ?? [])
+    .filter((item): item is Extract<typeof item, { type: 'text' }> => item.type === 'text')
+    .map((item) => item.text)
+    .join('\n')
+}
+
 function closeAIChat() {
   aiChat.value = []
   aiAwaitingProposal.value = false
@@ -61,7 +68,7 @@ async function handleEstimateAI() {
     const aiResponse = await estimateTaskDurationAI()
     aiChat.value.push({
       role: 'assistant',
-      content: aiResponse.content ? aiResponse.content[0].text : '',
+      content: getAssistantText(aiResponse),
     })
     aiAwaitingProposal.value = true
   } catch (e) {
@@ -82,7 +89,7 @@ async function sendUserProposal() {
     const aiResponse = await estimateTaskDurationAI()
     aiChat.value.push({
       role: 'assistant',
-      content: aiResponse.content ? aiResponse.content[0].text : '',
+      content: getAssistantText(aiResponse),
     })
     aiAwaitingProposal.value = true
   } catch (e) {
