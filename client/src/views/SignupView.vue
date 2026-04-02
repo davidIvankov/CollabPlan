@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import PageForm from '@/components/PageForm.vue'
+import PasswordField from '@/components/PasswordField.vue'
 import { signupInputSchema } from '@server/shared/schemas'
 import { ref, watchEffect } from 'vue'
 import { DEFAULT_SERVER_ERROR } from '@/consts'
@@ -71,26 +72,23 @@ async function submitSignup() {
           v-model="userForm.email"
           :required="true"
         />
-        <input
+        <PasswordField
           data-testid="password"
           placeholder="password"
-          label="Password"
           id="password"
           name="password"
-          type="password"
-          autocomplete="current-password"
+          autocomplete="new-password"
           pattern="^.{8,}$"
           title="Password must be at least 8 characters long"
           v-model="userForm.password"
           :required="true"
         />
-        <input
+        <PasswordField
           data-testid="confirmPassword"
           placeholder="confirm password"
-          label="Confirm Password"
-          id="password"
-          name="password"
-          type="password"
+          id="confirm-password"
+          name="confirm-password"
+          autocomplete="new-password"
           title="Must match password"
           :required="true"
           v-model="confirmPassword"
@@ -103,9 +101,6 @@ async function submitSignup() {
       <p v-if="hasSucceeded">jup</p>
 
       <button type="submit" class="btn" :disabled="disableSubmit">Signup</button>
-    </template>
-
-    <template #footer>
       <div class="footer">
         <p>Already member?</p>
         <RouterLink to="/login" class="login"> Login </RouterLink>
@@ -122,6 +117,9 @@ async function submitSignup() {
   justify-content: center;
   gap: 4vw;
   margin-bottom: 8vw;
+}
+.input > * {
+  width: 100%;
 }
 button {
   width: var(100% - 10px);
