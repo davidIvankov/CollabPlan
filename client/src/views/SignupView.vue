@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import PageForm from '@/components/PageForm.vue'
-import PasswordField from '@/components/PasswordField.vue'
 import { signupInputSchema } from '@server/shared/schemas'
 import { ref, watchEffect } from 'vue'
 import { DEFAULT_SERVER_ERROR } from '@/consts'
 import { login, signup } from '@/stores/user'
 import { useRouter } from 'vue-router'
+import NewPassword from '@/components/NewPassword.vue'
 
 const disableSubmit = ref(false)
 const router = useRouter()
-const confirmPassword = ref('')
 const userForm = ref({
   name: '',
   email: '',
@@ -17,19 +16,22 @@ const userForm = ref({
 })
 const errorMessage = ref('')
 
+function passwordError(err: string) {
+  if (err) {
+    errorMessage.value = err
+    disableSubmit.value = true
+  } else {
+    errorMessage.value = ''
+    disableSubmit.value = false
+  }
+}
+
 watchEffect(() => {
   const parsed = signupInputSchema.safeParse(userForm.value)
   if (!parsed.success) {
     errorMessage.value = parsed.error.issues[0]?.message ?? 'Invalid input'
     disableSubmit.value = true
     return
-  }
-  if (userForm.value.password !== confirmPassword.value) {
-    errorMessage.value = 'Passwords do not match'
-    disableSubmit.value = true
-  } else {
-    errorMessage.value = ''
-    disableSubmit.value = false
   }
 })
 const hasSucceeded = ref(false)
@@ -72,27 +74,13 @@ async function submitSignup() {
           v-model="userForm.email"
           :required="true"
         />
-        <PasswordField
-          data-testid="password"
-          placeholder="password"
-          id="password"
+
+        <NewPassword
+          @error-change="passwordError"
           name="password"
-          autocomplete="new-password"
-          pattern="^.{8,}$"
-          title="Password must be at least 8 characters long"
           v-model="userForm.password"
-          :required="true"
-        />
-        <PasswordField
-          data-testid="confirmPassword"
-          placeholder="confirm password"
-          id="confirm-password"
-          name="confirm-password"
-          autocomplete="new-password"
-          title="Must match password"
-          :required="true"
-          v-model="confirmPassword"
-        />
+          id="password"
+        ></NewPassword>
       </div>
 
       <p v-if="errorMessage" data-testid="errorMessage" type="danger">
@@ -118,9 +106,7 @@ async function submitSignup() {
   gap: 4vw;
   margin-bottom: 8vw;
 }
-.input > * {
-  width: 100%;
-}
+
 button {
   width: var(100% - 10px);
   margin: auto;

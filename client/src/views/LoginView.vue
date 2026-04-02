@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import PageForm from '@/components/PageForm.vue'
 import { useRouter } from 'vue-router'
 import useErrorMessage from '@/composables/useErrorMessage'
+import PasswordField from '@/components/PasswordField.vue'
 
 const router = useRouter()
 
@@ -30,15 +31,13 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
           v-model="userForm.email"
           :required="true"
         />
-
-        <input
+        <PasswordField
           placeholder="password"
           id="password"
           name="password"
-          type="password"
+          autocomplete="current-password"
           pattern="^.{8,}$"
           title="Password must be at least 8 characters long"
-          autocomplete="current-password"
           v-model="userForm.password"
           :required="true"
         />

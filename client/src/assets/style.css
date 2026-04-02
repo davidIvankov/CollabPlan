@@ -74,6 +74,12 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  background-color: var(--white-disabled);
+  color: var(--grey-disabled);
+  cursor: not-allowed;
+}
+
 .btn {
   background-color: var(--white);
   color: var(--background-grey);
