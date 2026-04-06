@@ -65,5 +65,7 @@ export default authenticatedProcedure
       }
     )
 
+    console.log(userIds)
+
     return repos.taskRepository.create(input)
   })

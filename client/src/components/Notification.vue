@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onUnmounted } from 'vue'
+import { onUnmounted } from 'vue'
 import { toggleOffPanels } from '../stores/shared'
 import type { NotificationSelectable } from '@server/shared/types'
 import { refreshNotifications, setSeen } from '@/stores/notification'

@@ -8,6 +8,7 @@ import { createCallerFactory } from '@server/trpc'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll } from '@tests/utils/records'
 import { TABLES } from '@server/database/dbConstants'
+import { notificationService } from '@server/services/notifications/index'
 import taskRouter from '..'
 
 const createCaller = createCallerFactory(taskRouter)
@@ -19,6 +20,11 @@ vi.mock('@server/services/mailer', () => ({
   },
 }))
 
+vi.mock('@server/services/notifications', () => ({
+  notificationService: {
+    createdTask: vi.fn(),
+  },
+}))
 // a general setup for the tests
 await clearTables(db, [TABLES.TASK])
 const [user, userTwo] = await insertAll(db, TABLES.USER, [
@@ -31,6 +37,10 @@ const [project] = await insertAll(
   TABLES.PROJECT,
   fakeProject({ createdBy: id })
 )
+await insertAll(db, TABLES.PROJECT_PARTICIPANT, {
+  projectId: project.id,
+  userId: userTwo.id,
+})
 
 const { create } = createCaller({ db, authUser: { id } })
 
@@ -52,6 +62,14 @@ describe('create', () => {
     expect(insertion).toMatchObject(task)
   })
 
+  it('passes correct userIds to notification service', async () => {
+    await create(fakeInsertableTask({ projectId: project.id }))
+
+    const callArgs = (notificationService.createdTask as any).mock.calls[0]
+    const userIds = callArgs[2]
+
+    expect(userIds).toEqual([userTwo.id])
+  })
   it('throws error when non authorized user tries to add task', async () => {
     const unauthorizedCaller = createCaller({
       db,

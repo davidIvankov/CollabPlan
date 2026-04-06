@@ -112,12 +112,6 @@ button {
   margin: auto;
 }
 
-button:disabled {
-  background-color: var(--white-disabled);
-  color: var(--grey-disabled);
-  cursor: not-allowed;
-}
-
 .footer {
   display: flex;
   flex-direction: column;

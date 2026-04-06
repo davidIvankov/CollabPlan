@@ -20,3 +20,6 @@ export const taskUnassignmentTemplate = (args: MessageArgsExtended) =>
 
 export const projectDeletionTemplate = (args: MessageArgs) =>
   `The project "${args.projectName}" was deleted by ${args.triggeredByName}.`
+
+export const joinedProjectTemplate = (args: MessageArgs) =>
+  `${args.triggeredByName} has joined project the "${args.projectName}".`
