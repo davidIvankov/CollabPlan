@@ -38,7 +38,7 @@ export function groupNotificationCreator<T>(template: (args: T) => string) {
     const message = template(args)
     return Promise.all(
       usersIds.map((userId) =>
-        repository.createInvitationNotification({
+        repository.createProjectNotification({
           message,
           type: NOTIFICATION_TYPE.PROJECT_UPDATE,
           userId,
