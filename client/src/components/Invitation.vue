@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { defineProps, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import type { InvitationByInvitedUserId } from '@server/shared/types'
-import { refreshInvitations, setSeen } from '@/stores/notification'
+import { refreshInvitations } from '@/stores/notification'
 import type { InvitationUpdateClient } from '@/stores/invitations'
 import { timeAgo } from '@/utils/time'
 
