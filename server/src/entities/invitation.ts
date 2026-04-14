@@ -42,7 +42,9 @@ export type InvitationsInsertable = Insertable<
 >
 
 export type InvitationsUpdatable = Selectable<
-  Pick<Invitations, 'id' | 'projectId'> & { status: InvitationsStatus }
+  Pick<Invitations, 'id' | 'projectId'> & {
+    status: InvitationsStatus
+  }
 >
 
 export type InvitationsStatus =

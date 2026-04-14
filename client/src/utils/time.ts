@@ -7,15 +7,6 @@ export const convertToUTC = (localDate: Date): Date => {
 
   return utcDate
 }
-/*
-export const convertToLocal = (utcDateString: string): Date => {
-  const utcDate = new Date(utcDateString)
-  const offsetMinutes = utcDate.getTimezoneOffset()
-
-  const localDate = new Date(utcDate.getTime() + offsetMinutes * 60000)
-
-  return localDate
-}*/
 
 const formatToDateTimeLocal = (date: Date): string => {
   const year = date.getFullYear()
@@ -48,9 +39,7 @@ export const formatSlot = (startTime: string, duration: number): Slot => {
 }
 
 export const timeAgo = (dateString: string): string => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
+  const diffMs = new Date().getTime() - new Date(dateString).getTime()
   const diffSec = Math.floor(diffMs / 1000)
   const diffMin = Math.floor(diffSec / 60)
   const diffHr = Math.floor(diffMin / 60)
@@ -70,8 +59,6 @@ export const timeAgo = (dateString: string): string => {
 }
 
 export const formatDateForTemplate = (dateString: string) => {
-  const date = new Date(dateString)
-
   return new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -81,7 +68,7 @@ export const formatDateForTemplate = (dateString: string) => {
     minute: 'numeric',
     second: 'numeric',
     hour12: true,
-  }).format(date)
+  }).format(new Date(dateString))
 }
 
 export const isInDateRange = (dateObj: Date, from: string | null, to: string | null) => {

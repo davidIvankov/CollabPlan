@@ -29,7 +29,7 @@ export function invitationsRepository(db: Database) {
         .updateTable(TABLES.INVITATIONS)
         .where('projectId', '=', projectId)
         .where('id', '=', id)
-        .set({ status })
+        .set({ status, createdAt: new Date() })
         .returning(invitationKeysAll)
         .executeTakeFirst()
     },

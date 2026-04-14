@@ -42,7 +42,7 @@ const toggleDetails = (item: ExtendedInvitation) => {
         sent by:
         {{ extendedInvitation.invitedByName }}
       </p>
-      <p>{{ timeAgo(extendedInvitation.createdAt.toISOString()) }}</p>
+      <p data-testid="timeAgo">{{ timeAgo(extendedInvitation.createdAt.toISOString()) }}</p>
     </div>
     <div class="invitation-actions bottom-row" v-if="extendedInvitation.showDetails">
       <button

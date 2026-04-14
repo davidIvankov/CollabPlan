@@ -18,6 +18,9 @@ test.describe.serial('particiapants', async () => {
   test('user can invite participant', async ({ page }) => {
     await asUser(page, projectOwner, async () => {
       const projectInserted = await createTestProject(fakeProject())
+      await page.evaluate(() => {
+        console.log('BROWSER TIME:', new Date().toISOString())
+      })
 
       projectId = projectInserted.id
 
@@ -30,6 +33,7 @@ test.describe.serial('particiapants', async () => {
       )
       await page.getByTestId('search').fill(user.name)
       await page.getByTestId('top-row').first().click()
+      console.log(await page.evaluate(() => new Date().toISOString()))
       await page.getByTestId('add').first().click()
 
       await expect(page.getByTestId('invitation-status').first()).toHaveText('Invitation sent')
@@ -46,6 +50,8 @@ test.describe.serial('particiapants', async () => {
 
       await expect(page.getByTestId('participatingIn')).toHaveCount(1)
     })
+
+    await page.clock.setSystemTime(Date.now())
   })
 
   test('user can cancel invitation', async ({ page }) => {

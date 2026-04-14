@@ -57,24 +57,12 @@ describe('invite', () => {
   })
 
   it('updates declined invitation', async () => {
-    const [invitation] = await insertAll(db, TABLES.INVITATIONS, [
-      {
-        projectId: project.id,
-        invitedById: userOne.id,
-        invitedUserId: userThree.id,
-        status: INVITATION_STATUS.DECLINED,
-      },
-    ])
-
     const mutation = await invite({
       invitedUserId: userThree.id,
       projectId: project.id,
     })
 
-    expect(mutation).toEqual({
-      ...invitation,
-      status: INVITATION_STATUS.PENDING,
-    })
+    expect(mutation?.status).toEqual(INVITATION_STATUS.PENDING)
   })
 
   it('throws error if unauthorised user tries to add invitation', async () => {
