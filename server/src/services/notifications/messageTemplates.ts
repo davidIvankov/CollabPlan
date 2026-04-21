@@ -22,4 +22,4 @@ export const projectDeletionTemplate = (args: MessageArgs) =>
   `The project "${args.projectName}" was deleted by ${args.triggeredByName}.`
 
 export const joinedProjectTemplate = (args: MessageArgs) =>
-  `${args.triggeredByName} has joined project the "${args.projectName}".`
+  `${args.triggeredByName} has joined the project "${args.projectName}".`

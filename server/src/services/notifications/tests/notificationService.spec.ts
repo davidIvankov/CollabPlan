@@ -41,6 +41,7 @@ const {
   deletedTask,
   assignedTask,
   deletedProject,
+  joinedProject,
 } = notificationService
 
 describe('notificationService', () => {
@@ -64,6 +65,30 @@ describe('notificationService', () => {
       userId: userThree.id,
     })
   })
+
+  it('sends joined project notification', async () => {
+    const result = await joinedProject(
+      { projectName: projectOne.name, triggeredByName: userOne.name },
+      repository,
+      [userTwo.id],
+      {
+        triggeredBy: userOne.id,
+        projectId: projectOne.id,
+      }
+    )
+
+    expect(result).toMatchObject([
+      {
+        message: `${userOne.name} has joined the project "${projectOne.name}".`,
+        type: NOTIFICATION_TYPE.PROJECT_UPDATE,
+        projectId: projectOne.id,
+        seen: false,
+        triggeredBy: userOne.id,
+        userId: userTwo.id,
+      },
+    ])
+  })
+
   it('sends created task notification', async () => {
     const result = await createdTask(
       { projectName: projectOne.name, triggeredByName: userOne.name },
@@ -191,6 +216,7 @@ describe('notificationService', () => {
       },
     ])
   })
+  // This needs to be sent to the all ex members of the project!!
   it('sends deleted project notification', async () => {
     const result = await deletedProject(
       { projectName: projectOne.name, triggeredByName: userOne.name },

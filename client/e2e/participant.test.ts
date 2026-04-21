@@ -50,9 +50,16 @@ test.describe.serial('particiapants', async () => {
 
       await expect(page.getByTestId('participatingIn')).toHaveCount(1)
     })
-
-    await page.clock.setSystemTime(Date.now())
   })
+
+  /*test('there is notification when user joins project', async ({ page }) => {
+    await asUser(page, projectOwner, async () => {
+      await page.goto(`/dashboard/profile`)
+
+      await page.getByTestId('notifications').click()
+
+    })
+  })*/
 
   test('user can cancel invitation', async ({ page }) => {
     await asUser(page, projectOwner, async () => {

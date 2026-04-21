@@ -1,5 +1,6 @@
 import {
   invitationNotificationTemplate,
+  joinedProjectTemplate,
   projectDeletionTemplate,
   taskAssignmentTemplate,
   taskCompletionTemplate,
@@ -14,6 +15,7 @@ import {
 
 export const notificationService = {
   invitation: sendNotificationCreator(invitationNotificationTemplate),
+  joinedProject: groupNotificationCreator(joinedProjectTemplate),
   createdTask: groupNotificationCreator(taskCreationTemplate),
   completedTask: groupNotificationCreator(taskCompletionTemplate),
   deletedTask: groupNotificationCreator(taskDeletionTemplate),

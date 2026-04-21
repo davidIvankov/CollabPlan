@@ -20,7 +20,6 @@ import { showInvitations, showNotifications, toggleOffPanels } from '@/stores/sh
 import { useSSENotifications } from '@/composables/useSSENotifications/useSSENotifications'
 
 const sseListener = useSSENotifications((data) => {
-  console.log('sex')
   if (data.type === 'INVITATION') refreshInvitations()
   else {
     refreshNotifications()
