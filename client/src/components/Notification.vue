@@ -25,7 +25,7 @@ onUnmounted(async () => {
       <div class="notification-details">
         <p class="icon">❗</p>
         <div class="text-content">
-          <p class="message">{{ props.notification.message }}</p>
+          <p class="message" data-testid="notification">{{ props.notification.message }}</p>
           <p>{{ timeAgo(props.notification.createdAt.toISOString()) }}</p>
         </div>
       </div>

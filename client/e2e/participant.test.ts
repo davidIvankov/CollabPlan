@@ -8,6 +8,7 @@ test.describe.serial('particiapants', async () => {
   const projectOwner = fakeUser()
   const user = fakeUser({ name: 'Mario' })
   const userTwo = fakeUser({ name: 'Jupe' })
+  const project = fakeProject()
 
   test.beforeAll(async () => {
     await createUser(user)
@@ -17,7 +18,7 @@ test.describe.serial('particiapants', async () => {
 
   test('user can invite participant', async ({ page }) => {
     await asUser(page, projectOwner, async () => {
-      const projectInserted = await createTestProject(fakeProject())
+      const projectInserted = await createTestProject(project)
       await page.evaluate(() => {
         console.log('BROWSER TIME:', new Date().toISOString())
       })
@@ -52,14 +53,16 @@ test.describe.serial('particiapants', async () => {
     })
   })
 
-  /*test('there is notification when user joins project', async ({ page }) => {
+  test('there is notification when user joins project', async ({ page }) => {
     await asUser(page, projectOwner, async () => {
       await page.goto(`/dashboard/profile`)
 
       await page.getByTestId('notifications').click()
-
+      await expect(page.getByTestId('notification').first()).toHaveText(
+        `${user.name} has joined the project "${project.name}".`
+      )
     })
-  })*/
+  })
 
   test('user can cancel invitation', async ({ page }) => {
     await asUser(page, projectOwner, async () => {

@@ -107,6 +107,7 @@ onBeforeUnmount(() => {
     </div>
     <button
       class="nav-item notifications"
+      data-testid="notifications"
       :class="showNotifications ? 'active' : ''"
       @click.prevent="toggleNotifications"
       style="position: relative"
